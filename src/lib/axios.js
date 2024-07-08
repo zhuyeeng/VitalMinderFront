@@ -53,12 +53,35 @@ export const fetchUsers = async () => {
   }
 };
 
-export const banUser = async (userId) => {
+// Function to ban a user
+export const banUser = async (staffId, role) => {
   try {
-    const response = await axiosInstance.post('/ban-user', { userId });
+    const response = await axiosInstance.post('/ban-user', { staffId, role });
     return response.data;
   } catch (error) {
     console.error('Error banning user:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
+// Function to unban a user
+export const unbanUser = async (staffId, role) => {
+  try {
+    const response = await axiosInstance.post('/unban-user', { staffId, role });
+    return response.data;
+  } catch (error) {
+    console.error('Error unbanning user:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
+// Function to update staff information
+export const updateStaff = async (id, staffData) => {
+  try {
+    const response = await axiosInstance.put(`/update-staff/${id}`, staffData);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating staff:', error.response?.data || error.message);
     throw error.response?.data || error.message;
   }
 };

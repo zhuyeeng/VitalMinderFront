@@ -30,7 +30,7 @@ const AdminDashboard = () => {
             <div className="w-1/4">
                 <Sidebar onRegisterClick={handleRegisterClick} />
             </div>
-            <div className="w-3/4 flex flex-col gap-10 items-center justify-center my-auto space-y-6">
+            <div className="w-3/4 flex gap-10 items-center justify-center">
                 {!showRegisterForm ? (
                     <>
                         <StaffDetail />

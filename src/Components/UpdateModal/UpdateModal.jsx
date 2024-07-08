@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { updateStaff } from '../../lib/axios'; // Adjust the path as needed
 
 const UpdateModal = ({ staff, onClose }) => {
     const [formData, setFormData] = useState({});
@@ -15,11 +16,16 @@ const UpdateModal = ({ staff, onClose }) => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Implement the update logic here
-        console.log('Updated data:', formData);
-        onClose();
+        try {
+            console.log('Submitting form data:', formData); // Log the form data before sending
+            const response = await updateStaff(formData.id, formData);
+            console.log('Updated data:', response.data);
+            onClose();
+        } catch (error) {
+            console.error('Error updating staff:', error.response?.data || error.message);
+        }
     };
 
     return (
@@ -31,7 +37,7 @@ const UpdateModal = ({ staff, onClose }) => {
                         <label className="block text-gray-700 dark:text-gray-300">Name</label>
                         <input
                             type="text"
-                            name="name"
+                            name={formData.role === 'doctor' ? 'doctor_name' : 'paramedic_staff_name'}
                             value={formData.role === 'doctor' ? formData.doctor_name : formData.paramedic_staff_name}
                             onChange={handleChange}
                             className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
@@ -41,8 +47,8 @@ const UpdateModal = ({ staff, onClose }) => {
                         <label className="block text-gray-700 dark:text-gray-300">Email</label>
                         <input
                             type="email"
-                            name="email"
-                            value={formData.role === 'doctor' ? formData.doctor_email : formData.paramedic_email}
+                            name={formData.role === 'doctor' ? 'doctor_email' : 'paramedic_staff_email'}
+                            value={formData.role === 'doctor' ? formData.doctor_email : formData.paramedic_staff_email}
                             onChange={handleChange}
                             className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
                         />
@@ -51,8 +57,8 @@ const UpdateModal = ({ staff, onClose }) => {
                         <label className="block text-gray-700 dark:text-gray-300">Phone Number</label>
                         <input
                             type="text"
-                            name="phone"
-                            value={formData.role === 'doctor' ? formData.doctor_phone_number : formData.paramedic_staff_phone}
+                            name={formData.role === 'doctor' ? 'doctor_phone_number' : 'paramedic_staff_phone_number'}
+                            value={formData.role === 'doctor' ? formData.doctor_phone_number : formData.paramedic_staff_phone_number}
                             onChange={handleChange}
                             className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
                         />
@@ -60,25 +66,104 @@ const UpdateModal = ({ staff, onClose }) => {
                     <div className="mb-4">
                         <label className="block text-gray-700 dark:text-gray-300">Gender</label>
                         <select
-                            name="gender"
-                            value={formData.gender}
+                            name={formData.role === 'doctor' ? 'doctor_gender' : 'paramedic_staff_gender'}
+                            value={formData.role === 'doctor' ? formData.doctor_gender : formData.paramedic_staff_gender}
                             onChange={handleChange}
                             className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
                         >
                             <option value="male">Male</option>
                             <option value="female">Female</option>
+                            <option value="other">Other</option>
                         </select>
                     </div>
                     <div className="mb-4">
                         <label className="block text-gray-700 dark:text-gray-300">Date of Birth</label>
                         <input
                             type="date"
-                            name="dob"
-                            value={formData.role === 'doctor' ? formData.doctor_date_of_birth : formData.paramedic_date_of_birth}
+                            name={formData.role === 'doctor' ? 'doctor_date_of_birth' : 'paramedic_staff_date_of_birth'}
+                            value={formData.role === 'doctor' ? formData.doctor_date_of_birth : formData.paramedic_staff_date_of_birth}
                             onChange={handleChange}
                             className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
                         />
                     </div>
+                    {formData.role === 'doctor' && (
+                        <>
+                            <div className="mb-4">
+                                <label className="block text-gray-700 dark:text-gray-300">Specialization</label>
+                                <input
+                                    type="text"
+                                    name="specialization"
+                                    value={formData.specialization || ''}
+                                    onChange={handleChange}
+                                    className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-gray-700 dark:text-gray-300">Clinic Address</label>
+                                <input
+                                    type="text"
+                                    name="clinic_address"
+                                    value={formData.clinic_address || ''}
+                                    onChange={handleChange}
+                                    className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-gray-700 dark:text-gray-300">Qualifications</label>
+                                <input
+                                    type="text"
+                                    name="qualifications"
+                                    value={formData.qualifications || ''}
+                                    onChange={handleChange}
+                                    className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-gray-700 dark:text-gray-300">Years of Experience</label>
+                                <input
+                                    type="number"
+                                    name="years_of_experience"
+                                    value={formData.years_of_experience || ''}
+                                    onChange={handleChange}
+                                    className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
+                                />
+                            </div>
+                        </>
+                    )}
+                    {formData.role === 'paramedic' && (
+                        <>
+                            <div className="mb-4">
+                                <label className="block text-gray-700 dark:text-gray-300">Qualifications</label>
+                                <input
+                                    type="text"
+                                    name="qualifications"
+                                    value={formData.qualifications || ''}
+                                    onChange={handleChange}
+                                    className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-gray-700 dark:text-gray-300">Assigned Area</label>
+                                <input
+                                    type="text"
+                                    name="assigned_area"
+                                    value={formData.assigned_area || ''}
+                                    onChange={handleChange}
+                                    className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-gray-700 dark:text-gray-300">Field Experience</label>
+                                <input
+                                    type="number"
+                                    name="field_experience"
+                                    value={formData.field_experience || ''}
+                                    onChange={handleChange}
+                                    className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
+                                />
+                            </div>
+                        </>
+                    )}
                     <div className="flex justify-end">
                         <button
                             type="button"
