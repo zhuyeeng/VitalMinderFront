@@ -1,0 +1,15 @@
+.wrapper{
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.wrapper.active .form-box.login {
+    transition: none;
+    translate: -400px;
+}
+
+.background {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5),
+    rgba(0, 0, 0, 0.5)), url('../../../public/assets/index.jpg'); /* Make sure this path is correct */
+    background-size: cover;
+    background-position: center;
+}

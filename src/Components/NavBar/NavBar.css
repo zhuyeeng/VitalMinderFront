@@ -1,0 +1,24 @@
+.logo {
+    background-image: url('../../../public/assets/Vital_Minder_Logo.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.bg-blur::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: transparent;
+    backdrop-filter: blur(10px);
+    transition: backdrop-filter 0.3s ease, background-color 0.3s ease;
+    z-index: -1;
+}
+
+.bg-transparent::before {
+    backdrop-filter: none;
+    background-color: transparent;
+}

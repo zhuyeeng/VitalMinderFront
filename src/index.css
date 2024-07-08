@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Hide scrollbar for Chrome, Safari, and Opera */
+body ::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge, and Firefox */
+body {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Additional custom styles */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #F5F7F8;
+  font-family: "Times New Roman", Times, serif;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  @apply bg-white dark:bg-gray-900 text-black dark:text-white;
+}
+
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}

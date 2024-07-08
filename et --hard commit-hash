@@ -1,0 +1,47 @@
+[33mcommit fd3631462b51018a43fe93d7bc99e74d58080504[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m
+Author: zhuyeeng <zhuyeeng0524@gmail.com>
+Date:   Mon Jul 8 13:45:22 2024 +0800
+
+    update admin
+
+[33mcommit 06cd497ffab73c1042eae69097ba9506c216b28a[m
+Author: zhuyeeng <zhuyeeng0524@gmail.com>
+Date:   Mon Jul 8 13:43:15 2024 +0800
+
+    added staff detail
+
+[33mcommit 2cdf36a8efa52de4cee434c416661febf508f352[m
+Author: zhuyeeng <zhuyeeng0524@gmail.com>
+Date:   Mon Jul 8 13:38:27 2024 +0800
+
+    added staff detail
+
+[33mcommit 5d70d23af5ec9bac57967c60d79ecb104c328ae4[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: zhuyeeng <zhuyeeng0524@gmail.com>
+Date:   Sun Jul 7 14:52:18 2024 +0800
+
+    register function for doctor and staff done
+
+[33mcommit ee698cd6b6097656c1d72ea6d30d537c8f88cb34[m
+Author: AlexNgZhuYee <52555255+zhuyeeng@users.noreply.github.com>
+Date:   Sun Jul 7 10:27:06 2024 +0800
+
+    doctor register form
+
+[33mcommit 4790d874a0c44259f516b2fbeffdf02ddbe6611d[m
+Author: AlexNgZhuYee <52555255+zhuyeeng@users.noreply.github.com>
+Date:   Sat Jul 6 19:36:03 2024 +0800
+
+    customer dashboard done
+
+[33mcommit 7455d5083acd9032fa27fa148284928d857574bd[m
+Author: zhuyeeng <zhuyeeng0524@gmail.com>
+Date:   Sat Jul 6 12:53:49 2024 +0800
+
+    login and register done
+
+[33mcommit 8adc4459b6bf8b5cc51a308118f3b8aa988ba743[m
+Author: zhuyeeng <zhuyeeng0524@gmail.com>
+Date:   Fri Jul 5 22:03:15 2024 +0800
+
+    Initialize project using Create React App
