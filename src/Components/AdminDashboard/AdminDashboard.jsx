@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import Sidebar from '../Sidebar/Sidebar';
 import StaffDetail from '../StaffDetail/staffDetail';
 import RegisterForm from '../RegisterForm/RegisterForm';
-import { Routes, Route } from 'react-router-dom';
 import StaffTable from '../StaffTable/StaffTable';
 import UpdateModal from '../UpdateModal/UpdateModal';
 
 const AdminDashboard = () => {
     const [selectedStaff, setSelectedStaff] = useState(null);
+    const [showRegisterForm, setShowRegisterForm] = useState(false);
 
     const handleUpdateClick = (staff) => {
         setSelectedStaff(staff);
@@ -17,17 +17,28 @@ const AdminDashboard = () => {
         setSelectedStaff(null);
     };
 
+    const handleRegisterClick = () => {
+        setShowRegisterForm(true);
+    };
+
+    const handleCloseRegisterForm = () => {
+        setShowRegisterForm(false);
+    };
+
     return (
         <div className="flex h-screen">
             <div className="w-1/4">
-                <Sidebar />
+                <Sidebar onRegisterClick={handleRegisterClick} />
             </div>
-            <div className="w-3/4 flex gap-10 items-center justify-center my-auto space-y-6">
-                <Routes>
-                    <Route path="/" element={<StaffDetail />} />
-                    <Route path="/register" element={<RegisterForm />} />
-                </Routes>
-                <StaffTable onUpdateClick={handleUpdateClick} />
+            <div className="w-3/4 flex flex-col gap-10 items-center justify-center my-auto space-y-6">
+                {!showRegisterForm ? (
+                    <>
+                        <StaffDetail />
+                        <StaffTable onUpdateClick={handleUpdateClick} />
+                    </>
+                ) : (
+                    <RegisterForm onClose={handleCloseRegisterForm} />
+                )}
             </div>
             {selectedStaff && (
                 <UpdateModal staff={selectedStaff} onClose={handleCloseModal} />

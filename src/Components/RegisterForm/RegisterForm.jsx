@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { registerUser, setAuthToken } from '../../lib/axios'; // Adjust the path to your axios file
 
-const RegisterForm = () => {
+const RegisterForm = ({ onClose }) => {
     const [userType, setUserType] = useState('doctor');
     const [formData, setFormData] = useState({
         name: '',
@@ -78,7 +78,7 @@ const RegisterForm = () => {
             setAuthToken(response.token);
             setValidationErrors({});
             setError('');
-            navigate('/AdminDashboard');
+            onClose(); // Close the form after successful registration
         } catch (err) {
             if (err.response && err.response.data) {
                 setValidationErrors(err.response.data);

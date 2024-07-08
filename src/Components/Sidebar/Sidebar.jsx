@@ -4,7 +4,7 @@ import { IoIosLogOut } from "react-icons/io";
 import { setAuthToken } from './../../lib/axios'; // Adjust the import path as needed
 import axiosInstance from './../../lib/axios'; // Adjust the import path as needed
 
-const Sidebar = () => {
+const Sidebar = ({ onRegisterClick }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const navigate = useNavigate();
@@ -88,7 +88,7 @@ const Sidebar = () => {
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5" />
           </svg>
-          <Link to="/admin-dashboard/register">Register</Link>
+          <button onClick={onRegisterClick}>Register</button>
         </div>
         <div 
           className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3"
