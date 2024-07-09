@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import LoginRegister from './Components/LoginRegister/LoginRegister';
 import Dashboard from './Components/Dashboard/Dashboard.jsx';
+import Appointment from './Components/Appointment/appointment.jsx'; // Import Appointment component
 import ProtectedRoute from './lib/protectedRoute.js';
 import AdminDashboard from './Components/AdminDashboard/AdminDashboard.jsx';
 import { setAuthToken } from './lib/axios'; // Adjust the import path as needed
@@ -49,10 +50,17 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
+      <button
+        onClick={toggleTheme}
+        className="fixed top-4 right-4 bg-blue-500 dark:bg-yellow-500 text-white p-2 rounded"
+      >
+        Toggle Theme
+      </button>
       <Routes>
         <Route path="/" element={<LoginRegister />} />
-        <Route path="/Dashboard" element={<ProtectedRoute component={Dashboard} />} />
-        <Route path="/AdminDashboard" element={<ProtectedRoute component={AdminDashboard} />} />
+        <Route path="/dashboard" element={<ProtectedRoute component={Dashboard} />} />
+        <Route path="/admindashboard" element={<ProtectedRoute component={AdminDashboard} />} />
+        <Route path="/appointment" element={<ProtectedRoute component={Appointment} />} /> {/* Add this line */}
       </Routes>
     </div>
   );

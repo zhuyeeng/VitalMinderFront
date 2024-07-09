@@ -5,7 +5,6 @@ import { setAuthToken } from './../../lib/axios'; // Adjust the import path as n
 import axiosInstance from './../../lib/axios'; // Adjust the import path as needed
 
 const NavBar = () => {
-  // const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -15,7 +14,7 @@ const NavBar = () => {
       setIsDarkMode(savedTheme === 'dark');
       document.documentElement.classList.toggle('dark', savedTheme === 'dark');
     }
-  })
+  }, []);
 
   const toggleTheme = () => {
     const newTheme = isDarkMode ? 'light' : 'dark';
@@ -48,24 +47,26 @@ const NavBar = () => {
             {/* Mobile menu button */}
           </div>
           <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
-            <div className="flex-shrink-0 logo h-12 w-12"></div>
+            <Link to="/Dashboard" className="flex-shrink-0 h-12 w-12 logo">
+              <a></a>
+            </Link>
             <div className="hidden sm:block sm:ml-6">
               <div className="flex space-x-4">
-                <Link to="/" className="text-black hover:bg-emerald-300 hover:text-white px-3 py-2 rounded-md text-2xl font-medium">Home</Link>
-                <Link to="/pricing" className="text-black hover:bg-emerald-300 hover:text-white px-3 py-2 rounded-md text-2xl font-medium">Pricings</Link>
-                <Link to="/about" className="text-black hover:bg-emerald-300 hover:text-white px-3 py-2 rounded-md text-2xl font-medium">About us</Link>
-                <Link to="/blog" className="text-black hover:bg-emerald-300 hover:text-white px-3 py-2 rounded-md text-2xl font-medium">Blog</Link>
+                <Link to="/appointment" className="text-black hover:bg-emerald-300 hover:text-white px-3 py-2 rounded-md text-2xl font-medium">Appointment</Link>
+                <Link to="/" className="text-black hover:bg-emerald-300 hover:text-white px-3 py-2 rounded-md text-2xl font-medium">Reminder</Link>
+                <Link to="/" className="text-black hover:bg-emerald-300 hover:text-white px-3 py-2 rounded-md text-2xl font-medium">Report</Link>
+                <Link to="/" className="text-black hover:bg-emerald-300 hover:text-white px-3 py-2 rounded-md text-2xl font-medium">Minder Chat</Link>
               </div>
             </div>
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
             <button onClick={handleLogout} className="text-black hover:bg-emerald-300 hover:text-white px-3 py-2 rounded-md text-2xl font-medium">Logout</button>
             <button
-        onClick={toggleTheme}
-        className="fixed top-4 right-4 bg-blue-500 dark:bg-yellow-500 text-white p-2 rounded"
-      >
-        Toggle Theme
-      </button>
+              onClick={toggleTheme}
+              className="fixed top-4 right-4 bg-blue-500 dark:bg-yellow-500 text-white p-2 rounded"
+            >
+              Toggle Theme
+            </button>
           </div>
         </div>
       </div>

@@ -27,7 +27,7 @@ const AdminDashboard = () => {
 
     return (
         <div className="flex h-screen">
-            <div className="w-1/4">
+            <div className="w-1/6">
                 <Sidebar onRegisterClick={handleRegisterClick} />
             </div>
             <div className="w-3/4 flex gap-10 items-center justify-center">
