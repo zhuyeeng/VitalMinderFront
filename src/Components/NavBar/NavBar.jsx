@@ -38,7 +38,7 @@ const NavBar = () => {
       console.error('Logout failed', err);
     }
   };
-  
+
   return (
     <nav className="fixed w-full z-20 bg-[#FCF8F3]">
       <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
@@ -53,7 +53,7 @@ const NavBar = () => {
             <div className="hidden sm:block sm:ml-6">
               <div className="flex space-x-4">
                 <Link to="/appointment" className="text-black hover:bg-emerald-300 hover:text-white px-3 py-2 rounded-md text-2xl font-medium">Appointment</Link>
-                <Link to="/" className="text-black hover:bg-emerald-300 hover:text-white px-3 py-2 rounded-md text-2xl font-medium">Reminder</Link>
+                <Link to="/reminder" className="text-black hover:bg-emerald-300 hover:text-white px-3 py-2 rounded-md text-2xl font-medium">Reminder</Link>
                 <Link to="/" className="text-black hover:bg-emerald-300 hover:text-white px-3 py-2 rounded-md text-2xl font-medium">Report</Link>
                 <Link to="/" className="text-black hover:bg-emerald-300 hover:text-white px-3 py-2 rounded-md text-2xl font-medium">Minder Chat</Link>
               </div>

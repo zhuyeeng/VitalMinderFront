@@ -86,4 +86,102 @@ export const updateStaff = async (id, staffData) => {
   }
 };
 
+// Function to fetch all reminders
+export const fetchReminders = async () => {
+  try {
+    const response = await axiosInstance.get('/fetch-reminder');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching reminders:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
+// Function to create a new reminder
+export const createReminder = async (reminderData) => {
+  try {
+    const response = await axiosInstance.post('/add-reminder', reminderData);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating reminder:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
+// Function to get a specific reminder by ID
+export const getReminder = async (id) => {
+  try {
+    const response = await axiosInstance.get(`/fetch-reminder/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching reminder:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
+// Function to update a specific reminder
+export const updateReminder = async (id, reminderData) => {
+  try {
+    const response = await axiosInstance.put(`/update-reminder/${id}`, reminderData);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating reminder:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
+// Function to delete a specific reminder
+export const deleteReminder = async (id) => {
+  try {
+    const response = await axiosInstance.delete(`/delete-reminder/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting reminder:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
+export const createAppointment = async (appointmentData) => {
+  try {
+    const response = await axiosInstance.post('/appointments', appointmentData);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating appointment:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
+// Function to get appointments by patient ID
+export const getAppointmentsByPatientId = async (patientId) => {
+  try {
+    const response = await axiosInstance.get(`/appointments/${patientId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching appointments:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
+// Function to update an appointment
+export const updateAppointment = async (id, appointmentData) => {
+  try {
+    const response = await axiosInstance.put(`/appointments/${id}`, appointmentData);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating appointment:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
+// Function to delete an appointment
+export const deleteAppointment = async (id) => {
+  try {
+    const response = await axiosInstance.delete(`/appointments/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting appointment:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
 export default axiosInstance;
