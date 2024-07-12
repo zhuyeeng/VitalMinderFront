@@ -82,7 +82,8 @@ const StaffTable = ({ onUpdateClick }) => {
 
     return (
         <div className="flex flex-col md:flex-row w-2/3">
-            <div className="flex-1 max-h-[50rem] overflow-y-auto bg-gray-500 p-4 rounded-lg shadow-lg">
+            <div className="flex-1 max-h-[50rem] overflow-y-auto bg-gray-500 p-4 rounded-lg shadow-lg h-[29rem]">
+                <h5 className="text-xl font-bold mb-4 text-black">Total Staff Information</h5>
                 <div className="w-full bg-gray-400 rounded-lg shadow-lg">
                     <table className="min-w-full divide-y divide-gray-700">
                         <thead className="bg-gray-800">
@@ -97,10 +98,10 @@ const StaffTable = ({ onUpdateClick }) => {
                         <tbody className="bg-slate-300 divide-y divide-gray-700">
                             {staffList.map((staff) => (
                                 <tr key={staff.key}>
-                                    <td className="px-4 py-2 whitespace-nowrap">{staff.role === 'doctor' ? staff.doctor_name : staff.paramedic_staff_name}</td>
-                                    <td className="px-4 py-2 whitespace-nowrap">{staff.role}</td>
-                                    <td className="px-4 py-2 whitespace-nowrap">{staff.role === 'doctor' ? staff.doctor_email : staff.paramedic_staff_email}</td>
-                                    <td className="px-4 py-2 whitespace-nowrap">{staff.account_status}</td>
+                                    <td className="px-4 py-2 whitespace-nowrap text-black">{staff.role === 'doctor' ? staff.doctor_name : staff.paramedic_staff_name}</td>
+                                    <td className="px-4 py-2 whitespace-nowrap text-black">{staff.role}</td>
+                                    <td className="px-4 py-2 whitespace-nowrap text-black">{staff.role === 'doctor' ? staff.doctor_email : staff.paramedic_staff_email}</td>
+                                    <td className="px-4 py-2 whitespace-nowrap text-black">{staff.account_status}</td>
                                     <td className="px-4 py-2 whitespace-nowrap flex space-x-2">
                                         <button class="update" onClick={() => handleUpdateClick(staff)}>Update</button>
                                         {staff.account_status === 'banned' ? (

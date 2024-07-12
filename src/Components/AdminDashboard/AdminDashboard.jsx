@@ -4,6 +4,8 @@ import StaffDetail from '../StaffDetail/staffDetail';
 import RegisterForm from '../RegisterForm/RegisterForm';
 import StaffTable from '../StaffTable/StaffTable';
 import UpdateModal from '../UpdateModal/UpdateModal';
+import PatientDetail from '../PatientDetail/PatientDetail';
+import PatientTable from '../PatientTable/PatientTable';
 
 const AdminDashboard = () => {
     const [selectedStaff, setSelectedStaff] = useState(null);
@@ -30,11 +32,17 @@ const AdminDashboard = () => {
             <div className="w-1/6">
                 <Sidebar onRegisterClick={handleRegisterClick} />
             </div>
-            <div className="w-3/4 flex gap-10 items-center justify-center">
+            <div className="w-5/6 flex flex-col gap-10 p-4">
                 {!showRegisterForm ? (
                     <>
-                        <StaffDetail />
-                        <StaffTable onUpdateClick={handleUpdateClick} />
+                        <div className="flex flex-col md:flex-row gap-10">
+                            <StaffDetail />
+                            <StaffTable onUpdateClick={handleUpdateClick} />
+                        </div>
+                        <div className="flex flex-col md:flex-row gap-10">
+                            <PatientTable />
+                            <PatientDetail />
+                        </div>
                     </>
                 ) : (
                     <RegisterForm onClose={handleCloseRegisterForm} />

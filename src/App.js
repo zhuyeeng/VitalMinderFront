@@ -7,6 +7,7 @@ import ProtectedRoute from './lib/protectedRoute.js';
 import AdminDashboard from './Components/AdminDashboard/AdminDashboard.jsx';
 import Reminder from './Components/Reminder/Reminder.jsx';
 import { setAuthToken } from './lib/axios'; // Adjust the import path as needed
+import { ReminderProvider } from './contexts/ReminderContext'; 
 
 const App = () => {
   const navigate = useNavigate();
@@ -50,13 +51,8 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
-      <button
-        onClick={toggleTheme}
-        className="fixed top-4 right-4 bg-blue-500 dark:bg-yellow-500 text-white p-2 rounded"
-      >
-        Toggle Theme
-      </button>
+    <ReminderProvider>
+      <div className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
       <Routes>
         <Route path="/" element={<LoginRegister />} />
         <Route path="/dashboard" element={<ProtectedRoute component={Dashboard} />} />
@@ -65,6 +61,7 @@ const App = () => {
         <Route path="/reminder" element={<ProtectedRoute component={Reminder} />} />
       </Routes>
     </div>
+    </ReminderProvider>
   );
 };
 

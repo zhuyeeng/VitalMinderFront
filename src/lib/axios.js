@@ -53,6 +53,17 @@ export const fetchUsers = async () => {
   }
 };
 
+// Function to fetch all the patients
+export const fetchPatients = async () => {
+  try {
+    const response = await axiosInstance.get('/fetchPatient');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching patients:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
 // Function to ban a user
 export const banUser = async (staffId, role) => {
   try {
@@ -185,3 +196,4 @@ export const deleteAppointment = async (id) => {
 };
 
 export default axiosInstance;
+

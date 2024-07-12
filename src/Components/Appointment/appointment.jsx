@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import NavBar from '../NavBar/NavBar';
 import './Appointment.css';
 import axiosInstance from '../../lib/axios';
+import AppointmentModal from '../AppointmentModal/AppointmentModal';
 
 const Appointment = () => {
   const [selectedStatus, setSelectedStatus] = useState('Pending');
@@ -15,13 +16,15 @@ const Appointment = () => {
     time: '',
     type: '',
     blood_type: '',
-    details: ''
+    details: '',
+    creator_id: '',
+    patient_id: ''
   });
 
-  const fetchAppointments = async () => {
+  const fetchAppointmentsByUserId = async (userId) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axiosInstance.get(`/appointments/1`, { // Replace '1' with actual patient ID
+      const response = await axiosInstance.get(`/appointments/user/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -32,8 +35,20 @@ const Appointment = () => {
     }
   };
 
+  const fetchPatientId = async () => {
+    const user = JSON.parse(localStorage.getItem('user')); // Parse the user object
+    const userId = user.id; // Extract the user ID
+    console.log('Fetching patient ID for user ID:', userId); // Debugging output
+
+    try {
+      await fetchAppointmentsByUserId(userId);
+    } catch (error) {
+      console.error('Error fetching appointments for user:', error.response?.data || error.message);
+    }
+  };
+
   useEffect(() => {
-    fetchAppointments();
+    fetchPatientId();
   }, []);
 
   const handleCreateAppointment = async (e) => {
@@ -53,7 +68,9 @@ const Appointment = () => {
         time: '',
         type: '',
         blood_type: '',
-        details: ''
+        details: '',
+        creator_id: newAppointment.creator_id,
+        patient_id: newAppointment.patient_id,
       });
     } catch (error) {
       console.error('Error creating appointment:', error.response?.data || error.message);
@@ -88,11 +105,18 @@ const Appointment = () => {
     }
   };
 
+  const handleModalChange = (field, value) => {
+    setNewAppointment((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
+  };
+
   const filteredAppointments = appointments.filter(appointment =>
     appointment.status === selectedStatus &&
     (filterType === '' || appointment.type.toLowerCase().includes(filterType.toLowerCase()))
   );
-// create a modal for the create appointment function
+
   return (
     <div className='flex flex-col h-screen'>
       {/* Navigation Bar */}
@@ -102,7 +126,6 @@ const Appointment = () => {
 
       {/* Main Body part */}
       <div className='flex flex-row h-full mt-16'>
-
         {/* Appointment Sidebar */}
         <div className='bg-slate-300 w-1/4 p-4 gap-2'>
           <div className='flex justify-between mb-4'>
@@ -150,91 +173,29 @@ const Appointment = () => {
 
         {/* Appointment Detail/Create Form Section */}
         <div className='bg-slate-100 w-3/4 p-4'>
-          {isCreating ? (
+          {selectedAppointment && (
             <div className='bg-white p-4 rounded-lg shadow-md'>
-              <h2 className='text-2xl font-semibold mb-4'>Create Appointment Form</h2>
-              <form onSubmit={handleCreateAppointment}>
-                <div className='mb-4'>
-                  <label className='block text-gray-700'>Appointment Name</label>
-                  <input
-                    type='text'
-                    className='w-full p-2 border rounded-md'
-                    value={newAppointment.name}
-                    onChange={(e) => setNewAppointment({ ...newAppointment, name: e.target.value })}
-                  />
-                </div>
-                <div className='mb-4'>
-                  <label className='block text-gray-700'>Appointment Date</label>
-                  <input
-                    type='date'
-                    className='w-full p-2 border rounded-md'
-                    value={newAppointment.date}
-                    onChange={(e) => setNewAppointment({ ...newAppointment, date: e.target.value })}
-                  />
-                </div>
-                <div className='mb-4'>
-                  <label className='block text-gray-700'>Appointment Time</label>
-                  <input
-                    type='time'
-                    className='w-full p-2 border rounded-md'
-                    value={newAppointment.time}
-                    onChange={(e) => setNewAppointment({ ...newAppointment, time: e.target.value })}
-                  />
-                </div>
-                <div className='mb-4'>
-                  <label className='block text-gray-700'>Appointment Type</label>
-                  <input
-                    type='text'
-                    className='w-full p-2 border rounded-md'
-                    value={newAppointment.type}
-                    onChange={(e) => setNewAppointment({ ...newAppointment, type: e.target.value })}
-                  />
-                </div>
-                <div className='mb-4'>
-                  <label className='block text-gray-700'>Blood Type</label>
-                  <select
-                    className='w-full p-2 border rounded-md'
-                    value={newAppointment.blood_type}
-                    onChange={(e) => setNewAppointment({ ...newAppointment, blood_type: e.target.value })}
-                  >
-                    <option value=''>Select Blood Type</option>
-                    <option value='A+'>A+</option>
-                    <option value='A-'>A-</option>
-                    <option value='B+'>B+</option>
-                    <option value='B-'>B-</option>
-                    <option value='AB+'>AB+</option>
-                    <option value='AB-'>AB-</option>
-                    <option value='O+'>O+</option>
-                    <option value='O-'>O-</option>
-                  </select>
-                </div>
-                <div className='mb-4'>
-                  <label className='block text-gray-700'>Appointment Details</label>
-                  <textarea
-                    className='w-full p-2 border rounded-md'
-                    value={newAppointment.details}
-                    onChange={(e) => setNewAppointment({ ...newAppointment, details: e.target.value })}
-                  ></textarea>
-                </div>
-                <button type='submit' className='bg-blue-500 text-white px-4 py-2 rounded-md'>Create</button>
-              </form>
+              <h2 className='text-2xl font-semibold mb-4'>Appointment Details</h2>
+              <p className='mb-2'><strong>Name:</strong> {selectedAppointment.name}</p>
+              <p className='mb-2'><strong>Date:</strong> {selectedAppointment.date}</p>
+              <p className='mb-2'><strong>Time:</strong> {selectedAppointment.time}</p>
+              <p className='mb-2'><strong>Type:</strong> {selectedAppointment.type}</p>
+              <p className='mb-2'><strong>Blood Type:</strong> {selectedAppointment.blood_type}</p>
+              <p className='mb-2'><strong>Status:</strong> <span className={`px-2 py-1 rounded ${selectedAppointment.status === 'Pending' ? 'bg-yellow-500' : selectedAppointment.status === 'Accepted' ? 'bg-green-500' : selectedAppointment.status === 'Rejected' ? 'bg-red-500' : 'bg-blue-500'}`}>{selectedAppointment.status}</span></p>
+              <button onClick={() => handleDeleteAppointment(selectedAppointment.id)} className='bg-red-500 text-white px-4 py-2 rounded-md'>Delete</button>
             </div>
-          ) : (
-            selectedAppointment && (
-              <div className='bg-white p-4 rounded-lg shadow-md'>
-                <h2 className='text-2xl font-semibold mb-4'>Appointment Details</h2>
-                <p className='mb-2'><strong>Name:</strong> {selectedAppointment.name}</p>
-                <p className='mb-2'><strong>Date:</strong> {selectedAppointment.date}</p>
-                <p className='mb-2'><strong>Time:</strong> {selectedAppointment.time}</p>
-                <p className='mb-2'><strong>Type:</strong> {selectedAppointment.type}</p>
-                <p className='mb-2'><strong>Blood Type:</strong> {selectedAppointment.blood_type}</p>
-                <p className='mb-2'><strong>Status:</strong> <span className={`px-2 py-1 rounded ${selectedAppointment.status === 'Pending' ? 'bg-yellow-500' : selectedAppointment.status === 'Accepted' ? 'bg-green-500' : selectedAppointment.status === 'Rejected' ? 'bg-red-500' : 'bg-blue-500'}`}>{selectedAppointment.status}</span></p>
-                <button onClick={() => handleDeleteAppointment(selectedAppointment.id)} className='bg-red-500 text-white px-4 py-2 rounded-md'>Delete</button>
-              </div>
-            )
           )}
         </div>
       </div>
+
+      {/* Create Appointment Modal */}
+      <AppointmentModal
+        show={isCreating}
+        onClose={() => setIsCreating(false)}
+        onChange={handleModalChange}
+        onSubmit={handleCreateAppointment}
+        appointment={newAppointment}
+      />
     </div>
   );
 };

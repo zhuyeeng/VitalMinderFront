@@ -1,42 +1,23 @@
 import React, { useState, useEffect } from 'react';
+import { useReminder } from '../../contexts/ReminderContext';
 import axiosInstance from '../../lib/axios';
 import NavBar from '../NavBar/NavBar';
 import ReminderModal from '../ReminderModal/ReminderModal';
 import './Reminder.css';
-import useReminderNotifications from '../../Hooks/Notification';
 
 const Reminder = () => {
   const [showModal, setShowModal] = useState(false);
-  const [reminders, setReminders] = useState([]);
   const [selectedReminder, setSelectedReminder] = useState(null);
   const [editableReminder, setEditableReminder] = useState(null);
   const [isCreator, setIsCreator] = useState(false);
 
-  useReminderNotifications(reminders);
-
-  useEffect(() => {
-    fetchReminders();
-  }, []);
-
-  const fetchReminders = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axiosInstance.get('/fetch-reminder', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setReminders(response.data);
-      console.log('Fetched reminders:', response.data); // Log fetched reminders
-    } catch (error) {
-      console.error('Error fetching reminders:', error.response?.data || error.message);
-    }
-  };
+  const { reminders, fetchReminders } = useReminder();
 
   const handleOpenModal = () => {
     setShowModal(true);
   };
 
+  // Call fetchReminders after closing the modal
   const handleCloseModal = () => {
     setShowModal(false);
     fetchReminders();
@@ -77,7 +58,7 @@ const Reminder = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      fetchReminders();
+      fetchReminders(); // Fetch reminders after update
       alert('Reminder updated successfully');
     } catch (error) {
       console.error('Error updating reminder:', error.response?.data || error.message);
