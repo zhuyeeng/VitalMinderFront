@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import LoginRegister from './Components/LoginRegister/LoginRegister';
 import Dashboard from './Components/Dashboard/Dashboard.jsx';
-import Appointment from './Components/Appointment/Appointment.jsx';
+import Appointment from './Components/Appointment/appointment.jsx';
 import ProtectedRoute from './lib/protectedRoute.js';
 import AdminDashboard from './Components/AdminDashboard/AdminDashboard.jsx';
 import Reminder from './Components/Reminder/Reminder.jsx';

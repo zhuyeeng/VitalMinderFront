@@ -29,6 +29,7 @@ const Appointment = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+      console.log('Fetched appointments:', response.data);
       setAppointments(response.data);
     } catch (error) {
       console.error('Error fetching appointments:', error.response?.data || error.message);
@@ -41,9 +42,20 @@ const Appointment = () => {
     console.log('Fetching patient ID for user ID:', userId); // Debugging output
 
     try {
+      const token = localStorage.getItem('token');
+      const response = await axiosInstance.get(`/appointments/patient-id/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const patientId = response.data.patient_id;
+      setNewAppointment((prevState) => ({
+        ...prevState,
+        patient_id: patientId,
+      }));
       await fetchAppointmentsByUserId(userId);
     } catch (error) {
-      console.error('Error fetching appointments for user:', error.response?.data || error.message);
+      console.error('Error fetching patient ID:', error.response?.data || error.message);
     }
   };
 
@@ -54,12 +66,14 @@ const Appointment = () => {
   const handleCreateAppointment = async (e) => {
     e.preventDefault();
     try {
+      console.log('Creating appointment with:', newAppointment);
       const token = localStorage.getItem('token');
       const response = await axiosInstance.post('/appointments', newAppointment, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+      console.log('Created appointment:', response.data);
       setAppointments([...appointments, response.data]);
       setIsCreating(false);
       setNewAppointment({
@@ -85,6 +99,7 @@ const Appointment = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+      console.log('Updated appointment:', response.data);
       setAppointments(appointments.map(appt => (appt.id === id ? response.data : appt)));
     } catch (error) {
       console.error('Error updating appointment:', error.response?.data || error.message);
@@ -99,6 +114,7 @@ const Appointment = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+      console.log('Deleted appointment with ID:', id);
       setAppointments(appointments.filter(appt => appt.id !== id));
     } catch (error) {
       console.error('Error deleting appointment:', error.response?.data || error.message);
@@ -116,6 +132,8 @@ const Appointment = () => {
     appointment.status === selectedStatus &&
     (filterType === '' || appointment.type.toLowerCase().includes(filterType.toLowerCase()))
   );
+
+  console.log('Filtered appointments:', filteredAppointments);
 
   return (
     <div className='flex flex-col h-screen'>
