@@ -29,6 +29,7 @@ const Appointment = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+      console.log('Fetched appointments:', response.data);
       setAppointments(response.data);
     } catch (error) {
       console.error('Error fetching appointments:', error.response?.data || error.message);
@@ -41,9 +42,20 @@ const Appointment = () => {
     console.log('Fetching patient ID for user ID:', userId); // Debugging output
 
     try {
+      const token = localStorage.getItem('token');
+      const response = await axiosInstance.get(`/appointments/patient-id/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const patientId = response.data.patient_id;
+      setNewAppointment((prevState) => ({
+        ...prevState,
+        patient_id: patientId,
+      }));
       await fetchAppointmentsByUserId(userId);
     } catch (error) {
-      console.error('Error fetching appointments for user:', error.response?.data || error.message);
+      console.error('Error fetching patient ID:', error.response?.data || error.message);
     }
   };
 
@@ -54,13 +66,14 @@ const Appointment = () => {
   const handleCreateAppointment = async (e) => {
     e.preventDefault();
     try {
-      console.log(newAppointment);
+      console.log('Creating appointment with:', newAppointment);
       const token = localStorage.getItem('token');
       const response = await axiosInstance.post('/appointments', newAppointment, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+      console.log('Created appointment:', response.data);
       setAppointments([...appointments, response.data]);
       setIsCreating(false);
       setNewAppointment({
@@ -86,6 +99,7 @@ const Appointment = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+      console.log('Updated appointment:', response.data);
       setAppointments(appointments.map(appt => (appt.id === id ? response.data : appt)));
     } catch (error) {
       console.error('Error updating appointment:', error.response?.data || error.message);
@@ -100,6 +114,7 @@ const Appointment = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+      console.log('Deleted appointment with ID:', id);
       setAppointments(appointments.filter(appt => appt.id !== id));
     } catch (error) {
       console.error('Error deleting appointment:', error.response?.data || error.message);
@@ -114,9 +129,11 @@ const Appointment = () => {
   };
 
   const filteredAppointments = appointments.filter(appointment =>
-    appointment.status === selectedStatus &&
+    appointment.status.toLowerCase() === selectedStatus.toLowerCase() &&
     (filterType === '' || appointment.type.toLowerCase().includes(filterType.toLowerCase()))
   );
+
+  console.log('Filtered appointments:', filteredAppointments);
 
   return (
     <div className='flex flex-col h-screen'>
@@ -182,7 +199,7 @@ const Appointment = () => {
               <p className='mb-2'><strong>Time:</strong> {selectedAppointment.time}</p>
               <p className='mb-2'><strong>Type:</strong> {selectedAppointment.type}</p>
               <p className='mb-2'><strong>Blood Type:</strong> {selectedAppointment.blood_type}</p>
-              <p className='mb-2'><strong>Status:</strong> <span className={`px-2 py-1 rounded ${selectedAppointment.status === 'Pending' ? 'bg-yellow-500' : selectedAppointment.status === 'Accepted' ? 'bg-green-500' : selectedAppointment.status === 'Rejected' ? 'bg-red-500' : 'bg-blue-500'}`}>{selectedAppointment.status}</span></p>
+              <p className='mb-2'><strong>Status:</strong> <span className={`px-2 py-1 rounded ${selectedAppointment.status.toLowerCase() === 'pending' ? 'bg-yellow-500' : selectedAppointment.status.toLowerCase() === 'accepted' ? 'bg-green-500' : selectedAppointment.status.toLowerCase() === 'rejected' ? 'bg-red-500' : 'bg-blue-500'}`}>{selectedAppointment.status}</span></p>
               <button onClick={() => handleDeleteAppointment(selectedAppointment.id)} className='bg-red-500 text-white px-4 py-2 rounded-md'>Delete</button>
             </div>
           )}
