@@ -54,6 +54,7 @@ const Appointment = () => {
   const handleCreateAppointment = async (e) => {
     e.preventDefault();
     try {
+      console.log(newAppointment);
       const token = localStorage.getItem('token');
       const response = await axiosInstance.post('/appointments', newAppointment, {
         headers: {
