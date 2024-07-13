@@ -13,6 +13,11 @@ const Reminder = () => {
 
   const { reminders, fetchReminders } = useReminder();
 
+  useEffect(() => {
+    // Fetch reminders when the component mounts
+    fetchReminders();
+  }, []);
+
   const handleOpenModal = () => {
     setShowModal(true);
   };
@@ -221,7 +226,7 @@ const Reminder = () => {
         <div className='fixed top-20 right-11'>
           <button className="icon-btn add-btn" onClick={handleOpenModal}>
             <div className="add-icon"></div>
-            <div className="btn-txt">Add Reminder</div>
+            <div className="btn-txt text-black">Add Reminder</div>
           </button>
         </div>
       </div>

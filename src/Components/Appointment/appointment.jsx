@@ -3,6 +3,7 @@ import NavBar from '../NavBar/NavBar';
 import './Appointment.css';
 import axiosInstance from '../../lib/axios';
 import AppointmentModal from '../AppointmentModal/AppointmentModal';
+import AppointmentDetails from '../AppointmentDetail/AppointmentDetail';
 
 const Appointment = () => {
   const [selectedStatus, setSelectedStatus] = useState('Pending');
@@ -10,6 +11,7 @@ const Appointment = () => {
   const [isCreating, setIsCreating] = useState(false);
   const [filterType, setFilterType] = useState('');
   const [appointments, setAppointments] = useState([]);
+  const [isForSelf, setIsForSelf] = useState(true);
   const [newAppointment, setNewAppointment] = useState({
     name: '',
     date: '',
@@ -18,18 +20,19 @@ const Appointment = () => {
     blood_type: '',
     details: '',
     creator_id: '',
-    patient_id: ''
+    patient_name: '',
+    patient_id: null
   });
 
   const fetchAppointmentsByUserId = async (userId) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axiosInstance.get(`/appointments/user/${userId}`, {
+      const response = await axiosInstance.get(`/appointments/creator/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log('Fetched appointments:', response.data);
+      console.log('Fetched appointments:', response.data); // Log fetched appointments
       setAppointments(response.data);
     } catch (error) {
       console.error('Error fetching appointments:', error.response?.data || error.message);
@@ -51,7 +54,9 @@ const Appointment = () => {
       const patientId = response.data.patient_id;
       setNewAppointment((prevState) => ({
         ...prevState,
-        patient_id: patientId,
+        creator_id: userId,
+        patient_id: isForSelf ? patientId : null,
+        patient_name: isForSelf ? user.username : ''
       }));
       await fetchAppointmentsByUserId(userId);
     } catch (error) {
@@ -60,8 +65,10 @@ const Appointment = () => {
   };
 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    fetchAppointmentsByUserId(user.id);
     fetchPatientId();
-  }, []);
+  }, [isForSelf]);
 
   const handleCreateAppointment = async (e) => {
     e.preventDefault();
@@ -84,7 +91,8 @@ const Appointment = () => {
         blood_type: '',
         details: '',
         creator_id: newAppointment.creator_id,
-        patient_id: newAppointment.patient_id,
+        patient_id: isForSelf ? newAppointment.patient_id : null,
+        patient_name: ''
       });
     } catch (error) {
       console.error('Error creating appointment:', error.response?.data || error.message);
@@ -128,10 +136,31 @@ const Appointment = () => {
     }));
   };
 
-  const filteredAppointments = appointments.filter(appointment =>
-    appointment.status.toLowerCase() === selectedStatus.toLowerCase() &&
-    (filterType === '' || appointment.type.toLowerCase().includes(filterType.toLowerCase()))
-  );
+  const handleDetailsChange = (field, value) => {
+    setSelectedAppointment((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
+  };
+
+  const handleDetailsSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await handleUpdateAppointment(selectedAppointment.id, selectedAppointment);
+      setSelectedAppointment(null); // Close the details view after updating
+    } catch (error) {
+      console.error('Error updating appointment:', error.response?.data || error.message);
+    }
+  };
+
+  const filteredAppointments = appointments.filter(appointment => {
+    const statusMatches = appointment.status && appointment.status.toLowerCase() === selectedStatus.toLowerCase();
+    const typeMatches = filterType === '' || (appointment.type && appointment.type.toLowerCase().includes(filterType.toLowerCase()));
+    const creatorMatches = appointment.creator_id === JSON.parse(localStorage.getItem('user')).id;
+
+    console.log(`Filtering appointment ${appointment.id}: statusMatches=${statusMatches}, typeMatches=${typeMatches}, creatorMatches=${creatorMatches}`);
+    return statusMatches && typeMatches && creatorMatches;
+  });
 
   console.log('Filtered appointments:', filteredAppointments);
 
@@ -145,7 +174,7 @@ const Appointment = () => {
       {/* Main Body part */}
       <div className='flex flex-row h-full mt-16'>
         {/* Appointment Sidebar */}
-        <div className='bg-slate-300 w-1/4 p-4 gap-2'>
+        <div className='w-1/4 p-4 overflow-y-auto border-r-2 border-black bg-[#F1F1F1]'>
           <div className='flex justify-between mb-4'>
             <button className="boton-elegante" onClick={() => setSelectedStatus('Pending')}>Pending</button>
             <button className="boton-elegante" onClick={() => setSelectedStatus('Accepted')}>Accepted</button>
@@ -154,21 +183,30 @@ const Appointment = () => {
           </div>
 
           <div className='flex justify-between mb-4'>
-            <button onClick={() => setIsCreating(true)} className='bg-blue-500 text-white px-4 py-2 rounded'>Create Appointment</button>
+            {/* <button onClick={() => setIsCreating(true)} className='bg-blue-500 text-white px-4 py-2 rounded'>Create Appointment</button> */}
+            <button type="button" class="add-button" onClick={() => setIsCreating(true)}>
+              <span class="add-text">Create Appointment</span>
+              <span class="add-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" fill="none">
+                  <line y2="19" y1="5" x2="12" x1="12"></line>
+                  <line y2="12" y1="12" x2="19" x1="5"></line>
+                </svg>
+              </span>
+            </button>
             <input
               type="text"
               placeholder="Filter box"
-              className='p-2 border rounded-md'
+              className='p-2 border rounded-md text-black'
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
             />
           </div>
 
           {filteredAppointments.map(appointment => (
-            <div key={appointment.id} className='bg-gray-200 p-4 mb-4 rounded-lg shadow-md cursor-pointer' onClick={() => { setSelectedAppointment(appointment); setIsCreating(false); }}>
+            <div key={appointment.id} className='bg-white p-4 mb-4 rounded-lg shadow-md cursor-pointer hover:bg-gray-100 transform transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg' onClick={() => { setSelectedAppointment(appointment); setIsCreating(false); }}>
               <div className='flex justify-between'>
                 <div>
-                  <h3 className='text-lg font-semibold'>Appointment Type: {appointment.type}</h3>
+                  <h3 className='text-lg font-semibold text-black'>Appointment Type: {appointment.type}</h3>
                 </div>
                 <div className='text-right'>
                   <p className='text-gray-600'>{appointment.date}</p>
@@ -178,11 +216,11 @@ const Appointment = () => {
 
               <div className='mt-8 flex justify-between'>
                 <div>
-                  <p className='text-gray-600'>Patient Name: {appointment.name}</p>
-                  <p className='text-gray-600'>Doctor: Name</p>
+                  <p className='text-gray-600'>Patient Name: {appointment.patient?.username || appointment.patient_name}</p>
+                  <p className='text-gray-600'>Doctor: {appointment.doctor?.doctor_name || 'N/A'}</p>
                 </div>
                 <div>
-                  <div className='border border-gray-500 text-gray-700 px-4 py-2 rounded'>{appointment.status}</div>
+                  <div className='border border-gray-500 bg-[#FF6969] text-black text-lg px-4 py-2 rounded'>{appointment.status}</div>
                 </div>
               </div>
             </div>
@@ -190,18 +228,13 @@ const Appointment = () => {
         </div>
 
         {/* Appointment Detail/Create Form Section */}
-        <div className='bg-slate-100 w-3/4 p-4'>
+        <div className='w-3/4 p-4 flex justify-center'>
           {selectedAppointment && (
-            <div className='bg-white p-4 rounded-lg shadow-md'>
-              <h2 className='text-2xl font-semibold mb-4'>Appointment Details</h2>
-              <p className='mb-2'><strong>Name:</strong> {selectedAppointment.name}</p>
-              <p className='mb-2'><strong>Date:</strong> {selectedAppointment.date}</p>
-              <p className='mb-2'><strong>Time:</strong> {selectedAppointment.time}</p>
-              <p className='mb-2'><strong>Type:</strong> {selectedAppointment.type}</p>
-              <p className='mb-2'><strong>Blood Type:</strong> {selectedAppointment.blood_type}</p>
-              <p className='mb-2'><strong>Status:</strong> <span className={`px-2 py-1 rounded ${selectedAppointment.status.toLowerCase() === 'pending' ? 'bg-yellow-500' : selectedAppointment.status.toLowerCase() === 'accepted' ? 'bg-green-500' : selectedAppointment.status.toLowerCase() === 'rejected' ? 'bg-red-500' : 'bg-blue-500'}`}>{selectedAppointment.status}</span></p>
-              <button onClick={() => handleDeleteAppointment(selectedAppointment.id)} className='bg-red-500 text-white px-4 py-2 rounded-md'>Delete</button>
-            </div>
+            <AppointmentDetails
+              appointment={selectedAppointment}
+              onChange={handleDetailsChange}
+              onSubmit={handleDetailsSubmit}
+            />
           )}
         </div>
       </div>
@@ -213,6 +246,8 @@ const Appointment = () => {
         onChange={handleModalChange}
         onSubmit={handleCreateAppointment}
         appointment={newAppointment}
+        isForSelf={isForSelf}
+        onForSelfChange={setIsForSelf}
       />
     </div>
   );

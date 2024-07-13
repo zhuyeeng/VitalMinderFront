@@ -42,6 +42,17 @@ export const loginUser = async (userData) => {
   }
 };
 
+// Function to send password reset email
+export const sendPasswordResetEmail = async (email) => {
+  try {
+    const response = await axiosInstance.post('/password-reset-request', { email });
+    return response.data;
+  } catch (error) {
+    console.error('Error sending password reset email:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
 // Function to fetch doctors and paramedic staff
 export const fetchUsers = async () => {
   try {

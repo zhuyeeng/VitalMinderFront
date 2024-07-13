@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import NavBar from '../NavBar/NavBar';
 import './Dashboard.css'; // Ensure this CSS file is correctly imported
 import { SlCalender } from "react-icons/sl";
@@ -8,6 +9,7 @@ import { BsChatSquareHeart } from "react-icons/bs";
 
 const Dashboard = () => {
   const [showButton, setShowButton] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -27,6 +29,10 @@ const Dashboard = () => {
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const navigateToPage = (path) => {
+    navigate(path);
   };
 
   return (
@@ -109,7 +115,7 @@ const Dashboard = () => {
               <p className="text-base font-sans">
                 Our healthcare application, Vital_Minder, features a robust Appointment function designed to streamline the process of scheduling medical appointments. With this feature, you can effortlessly book appointments with your healthcare provider from the comfort of your home. This eliminates the need for time-consuming phone calls and in-person visits to the clinic just to secure an appointment. By making the scheduling process more efficient and user-friendly, you can manage your healthcare more effectively and ensure that you get the care you need without unnecessary hassle.
               </p>
-              <button className="cssbuttons-io-button mt-6">
+              <button className="cssbuttons-io-button mt-6" onClick={() => navigateToPage('/appointment')}>
                 Explore More
                 <div className="icon">
                   <svg
@@ -143,7 +149,7 @@ const Dashboard = () => {
               <p className="text-base font-sans">
                 The Reminder System in Vital_Minder is an essential tool for maintaining your health regimen. This feature ensures that you never miss a dose of your medication by sending you timely reminders. Keeping track of medication schedules can be challenging, especially for those managing chronic conditions or taking multiple medications. Our reminder system provides peace of mind by helping you adhere to your prescribed treatment plan, ultimately contributing to better health outcomes and reducing the risk of complications due to missed doses.
               </p>
-              <button className="cssbuttons-io-button mt-6">
+              <button className="cssbuttons-io-button mt-6" onClick={() => navigateToPage('/reminder')}>
                 Explore More
                 <div className="icon">
                   <svg
@@ -169,7 +175,7 @@ const Dashboard = () => {
               <p className="text-base font-sans">
                 With the Check Report function, Vital_Minder gives you immediate access to your latest medical reports and test results directly from the clinic after your body check. This feature is designed to keep you informed about your health status without the need for follow-up appointments or waiting for phone calls. Having instant access to your medical reports allows you to make more informed decisions about your healthcare and enables more productive discussions with your healthcare provider. Staying informed is key to proactive health management, and our Check Report function ensures you have the information you need at your fingertips.
               </p>
-              <button className="cssbuttons-io-button mt-6">
+              <button className="cssbuttons-io-button mt-6" onClick={() => navigateToPage('/report')}>
                 Explore More
                 <div className="icon">
                   <svg
@@ -205,7 +211,7 @@ const Dashboard = () => {
             <p className="text-base font-sans">
               The Minder Chat function in Vital_Minder offers you instant access to reliable health information and support through an intelligent chatbot. Whether you have questions about symptoms, medications, or general health advice, our chatbot is available to provide accurate and helpful responses. This feature ensures that you have access to health information anytime, anywhere, empowering you to manage your health proactively. The Minder Chat function is especially useful for addressing immediate health concerns and getting timely advice, making it a valuable resource for maintaining your overall wellbeing.
             </p>
-            <button className="cssbuttons-io-button mt-6">
+            <button className="cssbuttons-io-button mt-6" onClick={() => navigateToPage('/chat')}>
                 Explore More
                 <div className="icon">
                   <svg

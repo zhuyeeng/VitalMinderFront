@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUser, FaLock, FaEnvelope, FaPhone, FaCalendarAlt, FaGenderless, FaIdCard } from "react-icons/fa";
 import './LoginRegister.css'; 
-import { registerUser, loginUser, setAuthToken } from './../../lib/axios'; 
+import { registerUser, loginUser, setAuthToken, sendPasswordResetEmail } from './../../lib/axios'; 
 import axiosInstance from './../../lib/axios'; 
 
 const LoginRegister = () => {
@@ -48,7 +48,7 @@ const LoginRegister = () => {
   if (!mounted) return null; 
 
   const registerLink = () => {
-    setAction('active');
+    setAction('register');
     setFormData({
       username: '',
       email: '',
@@ -73,6 +73,14 @@ const LoginRegister = () => {
       date_of_birth: '',
       gender: '',
       identity_card_number: ''
+    });
+    setError('');
+  };
+
+  const forgotPasswordLink = () => {
+    setAction('forgot-password');
+    setFormData({
+      email: ''
     });
     setError('');
   };
@@ -145,12 +153,24 @@ const LoginRegister = () => {
             setError('Login Failed. Please try again.');
         }
     }
-};
+  };
+
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    try {
+      await sendPasswordResetEmail({
+        email: formData.email
+      });
+      setError('Password reset email sent.');
+    } catch (err) {
+      setError('Failed to send password reset email. Please try again.');
+    }
+  };
 
   return (
     <div className='flex justify-center items-center min-h-screen w-full h-full background backdrop-blur-2xl'>
-      <div className={`wrapper relative w-[420px] h-[450px] bg-transparent border-[2px] border-[rgba(255,255,255,0.1)] rounded-xl text-white flex items-center overflow-hidden transition-height duration-200 ease-in-out ${action === 'active' ? 'h-[45rem] w-[50rem]' : 'h-[450px]'}`}>
-        <div className={`form-box login w-full p-10 transition-transform duration-150 ease-in-out ${action === 'active' ? 'translate-x-[-800px] transition-none' : 'translate-x-0'}`}>
+      <div className={`wrapper relative w-[420px] bg-transparent border-[2px] border-[rgba(255,255,255,0.1)] rounded-xl text-white flex items-center overflow-hidden transition-all duration-200 ease-in-out ${action === 'register' ? 'h-[45rem] w-[50rem]' : 'h-[450px]'} ${action === 'forgot-password' ? 'h-[250px] w-[420px]' : ''}`}>
+        <div className={`form-box login w-full p-10 transition-transform duration-150 ease-in-out ${action === 'register' || action === 'forgot-password' ? 'translate-x-[-800px] transition-none' : 'translate-x-0'}`}>
           <form onSubmit={handleLogin}>
             <h1 className='text-4xl text-center'>Login</h1>
             <div className='input-box relative w-full h-14 mt-8 mb-0'>
@@ -166,7 +186,7 @@ const LoginRegister = () => {
 
             <div className='remember-forgot flex justify-between text-sm my-5'>
               <label className='mr-1 accent-white'><input type='checkbox' />Remember me</label>
-              <a href="#" className='text-white no-underline hover:underline'>Forgot Password?</a>
+              <a href="#" className='text-white no-underline hover:underline' onClick={forgotPasswordLink}>Forgot Password?</a>
             </div>
 
             <button type='submit' className='w-full h-11 bg-white border-none outline-none rounded-[40px] shadow-[0_0_10px_rgba(0,0,0,0.1)] cursor-pointer text-lg text-[#333] font-bold mt-3'>Login</button>
@@ -178,7 +198,7 @@ const LoginRegister = () => {
         </div>
 
         {/* Registration Form */}
-        <div className={`form-box register w-full p-10 absolute transition-transform duration-150 ease-in-out ${action === 'active' ? 'translate-x-0' : 'translate-x-[400px]'}`}>
+        <div className={`form-box register w-full p-10 absolute transition-transform duration-150 ease-in-out ${action === 'register' ? 'translate-x-0' : 'translate-x-[400px]'}`}>
           <form onSubmit={handleRegister}>
             <h1 className='text-4xl text-center'>Registration</h1>
             <div className='input-group flex gap-4'>
@@ -224,7 +244,7 @@ const LoginRegister = () => {
               </select>
                 <FaGenderless className='icon absolute right-5 top-2/4 transform -translate-y-1/2 text-base text-white' />
                 {validationErrors.gender && <p className="text-red-500 text-sm">{validationErrors.gender[0]}</p>}
-              </div>
+                </div>
             </div>
             <div className='input-box relative w-full h-14 mt-8 mb-0'>
               <input type='text' name='identity_card_number' placeholder='Identity Card Number' required className='w-full h-full bg-transparent outline-none border-[2px] border-[rgba(255,255,255,0.1)] rounded-[40px] text-[16px] text-white placeholder:text-white py-5 pr-11 pl-5' value={formData.identity_card_number} onChange={handleInputChange} />
@@ -243,6 +263,25 @@ const LoginRegister = () => {
 
             <div className='register-link text-sm text-center mx-0 mt-5 mb-4'>
               <p> Already have an account? <a href='#' className='text-white no-underline font-semibold hover:underline' onClick={loginLink}>Login</a></p>
+            </div>
+          </form>
+        </div>
+
+        {/* Forgot Password Form */}
+        <div className={`form-box forgot-password w-full p-10 absolute transition-transform duration-150 ease-in-out ${action === 'forgot-password' ? 'translate-x-0' : 'translate-x-[400px]'}`}>
+          <form onSubmit={handleForgotPassword}>
+            <h1 className='text-4xl text-center'>Reset Password</h1>
+            <div className='input-box relative w-full h-14 mt-8 mb-0'>
+              <input type='email' name='email' placeholder='Email' required className='w-full h-full bg-transparent outline-none border-[2px] border-[rgba(255,255,255,0.1)] rounded-[40px] text-[16px] text-white placeholder:text-white py-5 pr-11 pl-5' value={formData.email} onChange={handleInputChange} />
+              <FaEnvelope className='icon absolute right-5 top-2/4 transform -translate-y-1/2 text-base' />
+            </div>
+            
+            {error && <p className="text-red-500 text-sm mt-4">{error}</p>}
+            
+            <button type='submit' className='w-full h-11 bg-white border-none outline-none rounded-[40px] shadow-[0_0_10px_rgba(0,0,0,0.1)] cursor-pointer text-lg text-[#333] font-bold mt-3'>Send Reset Email</button>
+
+            <div className='register-link text-sm text-center mx-0 mt-5 mb-4'>
+              <p> Remembered your password? <a href='#' className='text-white no-underline font-semibold hover:underline' onClick={loginLink}>Login</a></p>
             </div>
           </form>
         </div>
