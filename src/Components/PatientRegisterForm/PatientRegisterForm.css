@@ -1,0 +1,57 @@
+.inputBox,
+.inputBox1 {
+  position: relative;
+}
+
+.inputBox input:valid~span,
+.inputBox input:focus~span,
+.inputBox1 input:valid~span,
+.inputBox1 input:focus~span,
+.inputBox select:valid~span,
+.inputBox select:focus~span,
+.inputBox input[type="date"]:valid~span,
+.inputBox input[type="date"]:focus~span {
+  transform: translateY(-1.5em);
+  font-size: 0.75em;
+  color: black;
+  background: #e3e3e3;
+  padding: 0 0.5em;
+  position: absolute;
+  top: -0.75em;
+  left: 0.75em;
+  z-index: 1;
+  transition: 0.5s;
+}
+
+.inputBox input,
+.inputBox1 input,
+.inputBox select,
+.inputBox input[type="date"] {
+  width: 100%;
+  padding: 0.75em;
+  outline: none;
+  border: none;
+  background: transparent;
+  border-bottom: 2px solid #000;
+  transition: 0.1s;
+  border-radius: 0.25em;
+}
+
+.enter {
+  height: 45px;
+  width: 100px;
+  border-radius: 5px;
+  border: 2px solid #000;
+  cursor: pointer;
+  background-color: transparent;
+  transition: 0.5s;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 2px;
+  margin-bottom: 3em;
+}
+
+.enter:hover {
+  background-color: rgb(0, 0, 0);
+  color: white;
+}

@@ -206,5 +206,80 @@ export const deleteAppointment = async (id) => {
   }
 };
 
+// Function to fetch pending appointments
+export const fetchPendingAppointments = async () => {
+  try {
+    const response = await axiosInstance.get('/appointments', {
+      params: { status: 'pending' },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching pending appointments:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
+// Function to accept an appointment
+export const acceptAppointment = async (id, doctorId, paramedicId) => {
+  try {
+    const response = await axiosInstance.put(`/appointments/status/${id}`, {
+      status: 'accepted',
+      doctor_id: doctorId,
+      paramedic_id: paramedicId,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error accepting appointment:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
+// Function to reject an appointment with a reason
+export const rejectAppointment = async (id, reason) => {
+  try {
+    const response = await axiosInstance.put(`/appointments/status/${id}`, {
+      status: 'rejected',
+      reason: reason,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error rejecting appointment:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
+// // Add the addToWaitingList function
+// export const addToWaitingList = async (appointmentId) => {
+//   try {
+//     const response = await axiosInstance.post(`/appointments/${appointmentId}/add-to-waiting-list`);
+//     return response.data;
+//   } catch (error) {
+//     console.error('Error adding to waiting list:', error.response?.data || error.message);
+//     throw error.response?.data || error.message;
+//   }
+// };
+
+// Function to add an appointment to the waiting list
+export const addToWaitingList = async (data) => {
+  try {
+    const response = await axiosInstance.post('/waiting-list', data);
+    return response.data;
+  } catch (error) {
+    console.error('Error adding to waiting list:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
+// Function to fetch pending and accepted appointments
+export const fetchPendingAndAcceptedAppointments = async () => {
+  try {
+    const response = await axiosInstance.get('/appointments/pending-and-accepted');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching pending and accepted appointments:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
 export default axiosInstance;
 

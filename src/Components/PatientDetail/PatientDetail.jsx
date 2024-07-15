@@ -12,7 +12,7 @@ const PatientDetail = () => {
     const fetchData = async () => {
       try {
         const response = await fetchPatients();
-        console.log('Fetched patients data:', response);
+        // console.log('Fetched patients data:', response);
         if (response && Array.isArray(response.patients)) {
           const maleCount = response.patients.filter(patient => patient.gender.toLowerCase() === 'male').length;
           const femaleCount = response.patients.filter(patient => patient.gender.toLowerCase() === 'female').length;

@@ -124,43 +124,46 @@ const LoginRegister = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-        const response = await loginUser({
-            email: formData.email,
-            password: formData.password
-        });
-
-        // Check if the user account is banned
-        if (response.status === 'false' && response.message === 'Your account is banned. Please contact support.') {
-            setError(response.message);
-            return;
-        }
-
-        setAuthToken(response.token); 
-        localStorage.setItem('token', response.token); 
-        setUser(response.user); 
-        localStorage.setItem('user', JSON.stringify(response.user)); 
-        setValidationErrors({});
-        
-        if (response.user.user_role === "patient") {
-            navigate('./Dashboard'); 
-        } else if (response.user.user_role === "admin") {
-            navigate('./AdminDashboard');
-        }
+      const response = await loginUser({
+        email: formData.email,
+        password: formData.password
+      });
+  
+      // Check if the user account is banned
+      if (response.status === 'false' && response.message === 'Your account is banned. Please contact support.') {
+        setError(response.message);
+        return;
+      }
+  
+      setAuthToken(response.token);
+      localStorage.setItem('token', response.token);
+      setUser(response.user);
+      localStorage.setItem('user', JSON.stringify(response.user));
+      setValidationErrors({});
+  
+      if (response.user.user_role === "patient") {
+        navigate('/dashboard');
+      } else if (response.user.user_role === "admin") {
+        navigate('/admindashboard');
+      } else if (response.user.user_role === "doctor") {
+        navigate('/doctordashboard');
+      } else if (response.user.user_role === "paramedic") {
+        navigate('/paramedic_staff_dashboard');
+      }
     } catch (err) {
-        if (err.errors) {
-            setValidationErrors(err.errors);
-        } else {
-            setError('Login Failed. Please try again.');
-        }
+      if (err.errors) {
+        setValidationErrors(err.errors);
+      } else {
+        setError('Login Failed. Please try again.');
+      }
     }
   };
+  
 
   const handleForgotPassword = async (e) => {
     e.preventDefault();
     try {
-      await sendPasswordResetEmail({
-        email: formData.email
-      });
+      await sendPasswordResetEmail(formData.email); // Ensure formData.email is a valid email string
       setError('Password reset email sent.');
     } catch (err) {
       setError('Failed to send password reset email. Please try again.');
@@ -268,11 +271,19 @@ const LoginRegister = () => {
         </div>
 
         {/* Forgot Password Form */}
-        <div className={`form-box forgot-password w-full p-10 absolute transition-transform duration-150 ease-in-out ${action === 'forgot-password' ? 'translate-x-0' : 'translate-x-[400px]'}`}>
+        <div className={`form-box forgot-password w-full p-10 absolute transition-transform duration-150 ease-in-out ${action === 'forgot-password' ? 'translate-x-0' : 'translate-x-[1000px]'}`}>
           <form onSubmit={handleForgotPassword}>
             <h1 className='text-4xl text-center'>Reset Password</h1>
             <div className='input-box relative w-full h-14 mt-8 mb-0'>
-              <input type='email' name='email' placeholder='Email' required className='w-full h-full bg-transparent outline-none border-[2px] border-[rgba(255,255,255,0.1)] rounded-[40px] text-[16px] text-white placeholder:text-white py-5 pr-11 pl-5' value={formData.email} onChange={handleInputChange} />
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              required
+              className="w-full h-full bg-transparent outline-none border-[2px] border-[rgba(255,255,255,0.1)] rounded-[40px] text-[16px] text-white placeholder:text-white py-5 pr-11 pl-5"
+              value={formData.email}
+              onChange={handleInputChange}
+            />
               <FaEnvelope className='icon absolute right-5 top-2/4 transform -translate-y-1/2 text-base' />
             </div>
             
