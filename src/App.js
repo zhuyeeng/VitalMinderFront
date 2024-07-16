@@ -6,7 +6,7 @@ import Appointment from './Components/Appointment/appointment.jsx';
 import ProtectedRoute from './lib/protectedRoute.js';
 import AdminDashboard from './Components/AdminDashboard/AdminDashboard.jsx';
 import Paramedic_Staff_Dashboard from './Components/Paramedic_Staff_Dashboard/Paramedic_Staff_Dashboard.jsx';
-import DoctorDashboard from './Components/Doctor/Doctor.jsx';
+import DoctorDashboard from './Components/DoctorDashboard/DoctorDashboard.jsx';
 import Reminder from './Components/Reminder/Reminder.jsx';
 import EditProfile from './Components/PatientEditProfile/PatientEditProfile.jsx';
 import { setAuthToken } from './lib/axios'; // Adjust the import path as needed

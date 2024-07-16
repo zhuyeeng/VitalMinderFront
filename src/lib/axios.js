@@ -248,25 +248,13 @@ export const rejectAppointment = async (id, reason) => {
   }
 };
 
-// // Add the addToWaitingList function
-// export const addToWaitingList = async (appointmentId) => {
-//   try {
-//     const response = await axiosInstance.post(`/appointments/${appointmentId}/add-to-waiting-list`);
-//     return response.data;
-//   } catch (error) {
-//     console.error('Error adding to waiting list:', error.response?.data || error.message);
-//     throw error.response?.data || error.message;
-//   }
-// };
-
-// Function to add an appointment to the waiting list
+// Add the addToWaitingList function
 export const addToWaitingList = async (data) => {
   try {
     const response = await axiosInstance.post('/waiting-list', data);
     return response.data;
   } catch (error) {
-    console.error('Error adding to waiting list:', error.response?.data || error.message);
-    throw error.response?.data || error.message;
+    throw error;
   }
 };
 

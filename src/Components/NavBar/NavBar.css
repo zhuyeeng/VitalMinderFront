@@ -125,7 +125,7 @@
     fill: white;
   }
   /* text */
-  .text {
+  .log-text {
     position: absolute;
     right: 0%;
     width: 0%;
@@ -148,7 +148,7 @@
     padding-left: 20px;
   }
   /* hover effect button's text */
-  .Btn:hover .text {
+  .Btn:hover .log-text {
     opacity: 1;
     width: 70%;
     transition-duration: .3s;

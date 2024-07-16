@@ -7,8 +7,7 @@ import { FaUserDoctor } from "react-icons/fa6";
 import PatientRegisterForm from '../PatientRegisterForm/PatientRegisterForm'; // Import the PatientRegisterForm
 import RegisterForm from '../RegisterForm/RegisterForm'; // Import the RegisterForm
 
-const Sidebar = () => {
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
+const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [userRole, setUserRole] = useState(null);
   const [isPatientRegisterModalOpen, setIsPatientRegisterModalOpen] = useState(false); // State for patient register modal
@@ -27,10 +26,6 @@ const Sidebar = () => {
       setUserRole(user.user_role);
     }
   }, []);
-
-  const toggleSidebar = () => {
-    setSidebarOpen(!isSidebarOpen);
-  };
 
   const handleRegisterClick = () => {
     if (userRole === 'admin') {
@@ -73,7 +68,7 @@ const Sidebar = () => {
 
   return (
     <>
-      <aside className={`w-60 ${isSidebarOpen ? '-translate-x-0' : '-translate-x-48'} fixed transition transform ease-in-out duration-1000 z-50 flex h-screen bg-gray-800 dark:bg-gray-900`}>
+      <aside className={`w-60 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-48'} fixed transition transform ease-in-out duration-1000 z-50 flex h-screen bg-gray-800 dark:bg-gray-900`}>
         {/* Open sidebar button */}
         <div className={`max-toolbar ${isSidebarOpen ? 'translate-x-0' : 'translate-x-24 scale-x-0'} w-full -right-6 transition transform ease-in duration-300 flex items-center justify-between border-4 border-white dark:border-gray-800 bg-gray-800 dark:bg-gray-900 absolute top-2 rounded-full h-12`}>
           <div className="flex pl-4 items-center space-x-2">

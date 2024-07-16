@@ -87,13 +87,19 @@ const Reminder = () => {
   };
 
   return (
-    <div className='flex flex-col h-screen'>
-      <div className='w-full fixed top-0'>
+    <div className="flex flex-col h-screen">
+      <div className="w-full fixed top-0">
         <NavBar />
       </div>
-      
-      <div className='flex flex-row h-full mt-16'>
-        <div className='w-1/4 p-4 overflow-y-auto border-r-2 border-black bg-[#F1F1F1]'>
+      <div className="flex flex-row mt-16">
+        <div className="w-[30%] md:w-1/4 p-4 border-r-2 border-black bg-gray-200 fixed h-full overflow-y-auto">
+          <div className="mb-4 flex items-center justify-between">
+              <button class="icon-btn add-btn" onClick={handleOpenModal}>
+                <div class="reminder-add-icon"></div>
+                <div class="btn-txt text-black">Add Reminder</div>
+              </button>
+            <input type="text" placeholder="Search..." className="ml-4 p-2 rounded border border-gray-300" />
+          </div>
           <div className='w-full h-full'>
             {reminders.map((reminder) => (
               <div 
@@ -113,124 +119,117 @@ const Reminder = () => {
             ))}
           </div>
         </div>
-        
-        <div className='flex-1 flex items-center justify-center'>
+        <div className="flex w-[70%] items-center justify-center overflow-auto p-4 md:p-8 ml-auto">
           {selectedReminder ? (
-            <div className='bg-gray-100 p-8 rounded-lg shadow-lg w-1/2 text-black'>
+            <div className="bg-gray-100 p-8 rounded-lg shadow-lg w-full md:w-3/4 text-black">
               {isCreator ? (
                 <div>
-                  <div className='flex flex-col mb-4'>
-                    <label className='mb-2 font-semibold'>Reminder Name:</label>
+                  <div className="flex flex-col mb-4">
+                    <label className="mb-2 font-semibold">Reminder Name:</label>
                     <input
                       type="text"
                       name="reminder_name"
                       value={editableReminder.reminder_name}
                       onChange={handleInputChange}
                       placeholder="Reminder Name"
-                      className='p-2 rounded-md border border-gray-300 text-black'
+                      className="p-2 rounded-md border border-gray-300 text-black"
                     />
                   </div>
-                  <div className='flex flex-col mb-4'>
-                    <label className='mb-2 font-semibold'>Medication Type:</label>
+                  <div className="flex flex-col mb-4">
+                    <label className="mb-2 font-semibold">Medication Type:</label>
                     <input
                       type="text"
                       name="medication_types"
                       value={editableReminder.medication_types}
                       onChange={handleInputChange}
                       placeholder="Medication Types"
-                      className='p-2 rounded-md border border-gray-300 text-black'
+                      className="p-2 rounded-md border border-gray-300 text-black"
                     />
                   </div>
-                  <div className='flex flex-col mb-4'>
-                    <label className='mb-2 font-semibold'>Number Of Pills:</label>
+                  <div className="flex flex-col mb-4">
+                    <label className="mb-2 font-semibold">Number Of Pills:</label>
                     <input
                       type="text"
                       name="pills_number"
                       value={editableReminder.pills_number}
                       onChange={handleInputChange}
                       placeholder="Pills Number"
-                      className='p-2 rounded-md border border-gray-300 text-black'
+                      className="p-2 rounded-md border border-gray-300 text-black"
                     />
                   </div>
-                  <div className='flex flex-col mb-4'>
-                    <label className='mb-2 font-semibold'>Time:</label>
+                  <div className="flex flex-col mb-4">
+                    <label className="mb-2 font-semibold">Time:</label>
                     <input
                       type="time"
                       name="time"
                       value={editableReminder.time}
                       onChange={handleInputChange}
                       placeholder="Time"
-                      className='p-2 rounded-md border border-gray-300 text-black'
+                      className="p-2 rounded-md border border-gray-300 text-black"
                     />
                   </div>
-                  <div className='flex flex-col mb-4'>
-                    <label className='mb-2 font-semibold'>Frequency:</label>
+                  <div className="flex flex-col mb-4">
+                    <label className="mb-2 font-semibold">Frequency:</label>
                     <input
                       type="text"
                       name="frequency"
                       value={editableReminder.frequency}
                       onChange={handleInputChange}
                       placeholder="Frequency"
-                      className='p-2 rounded-md border border-gray-300 text-black'
+                      className="p-2 rounded-md border border-gray-300 text-black"
                     />
                   </div>
-                  <div className='flex flex-col mb-4'>
-                    <label className='mb-2 font-semibold'>Instructions:</label>
+                  <div className="flex flex-col mb-4">
+                    <label className="mb-2 font-semibold">Instructions:</label>
                     <input
                       type="text"
                       name="instructions"
                       value={editableReminder.instructions}
                       onChange={handleInputChange}
                       placeholder="Instructions"
-                      className='p-2 rounded-md border border-gray-300 text-black'
+                      className="p-2 rounded-md border border-gray-300 text-black"
                     />
                   </div>
-                  <div className='flex flex-col mb-4'>
-                    <label className='mb-2 font-semibold'>Side Effects:</label>
+                  <div className="flex flex-col mb-4">
+                    <label className="mb-2 font-semibold">Side Effects:</label>
                     <input
                       type="text"
                       name="side_effects"
                       value={editableReminder.side_effects}
                       onChange={handleInputChange}
                       placeholder="Side Effects"
-                      className='p-2 rounded-md border border-gray-300 text-black'
+                      className="p-2 rounded-md border border-gray-300 text-black"
                     />
                   </div>
-                  <div className='flex justify-between'>
+                  <div className="flex justify-between">
                     <button className="update-btn" onClick={handleUpdateReminder}>Update</button>
                     <button id="btn" onClick={() => handleDeleteReminder(editableReminder.id)}><span className="text">Delete</span><span className="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"></path></svg></span></button>
                   </div>
                 </div>
               ) : (
                 <div>
-                  <h2 className='text-2xl font-bold mb-4 text-gray-700'>{selectedReminder.reminder_name}</h2>
-                  <p className='mb-2'><span className='font-semibold'>Patient Name:</span> {selectedReminder.patient?.username || 'Unknown'}</p>
-                  <p className='mb-2'><span className='font-semibold'>Created By:</span> {selectedReminder.user?.username || 'Unknown'}</p>
-                  <p className='mb-2'><span className='font-semibold'>Medication Types:</span> {selectedReminder.medication_types}</p>
-                  <p className='mb-2'><span className='font-semibold'>Pills Number:</span> {selectedReminder.pills_number}</p>
-                  <p className='mb-2'><span className='font-semibold'>Time:</span> {selectedReminder.time}</p>
-                  <p className='mb-2'><span className='font-semibold'>Frequency:</span> {selectedReminder.frequency}</p>
-                  <p className='mb-2'><span className='font-semibold'>Instructions:</span> {selectedReminder.instructions}</p>
-                  <p className='mb-4'><span className='font-semibold'>Side Effects:</span> {selectedReminder.side_effects}</p>
-                  <div className='flex justify-end'>
-                    <button id="btn" onClick={() => handleDeleteReminder(editableReminder.id)}><span className="text">Delete</span><span className="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"></path></svg></span></button>
+                  <h2 className="text-2xl font-bold mb-4 text-gray-700">{selectedReminder.reminder_name}</h2>
+                  <p className="mb-2"><span className="font-semibold">Patient Name:</span> {selectedReminder.patient?.username || 'Unknown'}</p>
+                  <p className="mb-2"><span className="font-semibold">Created By:</span> {selectedReminder.user?.username || 'Unknown'}</p>
+                  <p className="mb-2"><span className="font-semibold">Medication Types:</span> {selectedReminder.medication_types}</p>
+                  <p className="mb-2"><span className="font-semibold">Pills Number:</span> {selectedReminder.pills_number}</p>
+                  <p className="mb-2"><span className="font-semibold">Time:</span> {selectedReminder.time}</p>
+                  <p className="mb-2"><span className="font-semibold">Frequency:</span> {selectedReminder.frequency}</p>
+                  <p className="mb-2"><span className="font-semibold">Instructions:</span> {selectedReminder.instructions}</p>
+                  <p className="mb-4"><span className="font-semibold">Side Effects:</span> {selectedReminder.side_effects}</p>
+                  <div className="flex justify-end">
+                    <div className="flex justify-end">
+                      <button id="btn" onClick={() => handleDeleteReminder(editableReminder.id)}><span className="text">Delete</span><span className="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"></path></svg></span></button>
+                    </div>
                   </div>
                 </div>
               )}
             </div>
           ) : (
-            <p className='text-gray-500'>Select a reminder to view details</p>
+            <p className="text-gray-500">Select a reminder to view details</p>
           )}
         </div>
-        
-        <div className='fixed top-20 right-11'>
-          <button className="icon-btn add-btn" onClick={handleOpenModal}>
-            <div className="add-icon"></div>
-            <div className="btn-txt text-black">Add Reminder</div>
-          </button>
-        </div>
       </div>
-
       <ReminderModal 
         showModal={showModal} 
         handleClose={handleCloseModal} 

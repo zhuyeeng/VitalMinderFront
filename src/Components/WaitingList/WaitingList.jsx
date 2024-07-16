@@ -1,44 +1,59 @@
 import React, { useState, useEffect } from 'react';
-import axiosInstance from './../../lib/axios';
+import axiosInstance from '../../lib/axios';
 
-const WaitingListTable = () => {
+const WaitingListTable = ({ refreshFlag }) => {
   const [waitingList, setWaitingList] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // fetchWaitingList();
-  }, []);
+    fetchWaitingList();
+  }, [refreshFlag]); // Refresh the list when refreshFlag changes
 
-  // const fetchWaitingList = async () => {
-  //   try {
-  //     const response = await axiosInstance.get('/waiting-list');
-  //     console.log('Waiting List:', response.data);
-  //     setWaitingList(response.data);
-  //   } catch (error) {
-  //     console.error('Error fetching waiting list:', error);
-  //   }
-  // };
-
-  // console.log("Waiting List: ", waitingList);
+  const fetchWaitingList = async () => {
+    try {
+      const response = await axiosInstance.get('/waiting-list');
+      setWaitingList(response.data);
+    } catch (error) {
+      console.error('Error fetching waiting list:', error);
+      setError(error);
+    }
+  };
 
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>Patient Name</th>
-          <th>Doctor Name</th>
-          <th>Waiting Number</th>
-        </tr>
-      </thead>
-      <tbody>
-        {waitingList.map(item => (
-          <tr key={item.id}>
-            <td>{item.patient_name || 'N/A'}</td>
-            <td>{item.doctor_name || 'N/A'}</td>
-            <td>{item.waiting_number}</td>
+    <div className="p-4">
+      {error && (
+        <div className="text-red-500 mb-4">
+          Error: {error.message || 'An error occurred while fetching the waiting list.'}
+        </div>
+      )}
+      <table className="min-w-full bg-white border border-gray-300 rounded-md shadow-md">
+        <thead>
+          <tr className="bg-gray-200">
+            <th colSpan="3" className="py-2 px-4 text-center text-gray-700 font-bold">Waiting List</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+          <tr className="bg-gray-100 border-b border-gray-300">
+            <th className="py-2 px-4 text-left text-gray-600">Patient Name</th>
+            <th className="py-2 px-4 text-left text-gray-600">Doctor Name</th>
+            <th className="py-2 px-4 text-left text-gray-600">Waiting Number</th>
+          </tr>
+        </thead>
+        <tbody>
+          {waitingList.length === 0 ? (
+            <tr>
+              <td colSpan="3" className="text-center py-10 bg-gray-100">No waiting list items</td>
+            </tr>
+          ) : (
+            waitingList.map((item) => (
+              <tr key={item.id} className="border-b border-gray-300">
+                <td className="py-2 px-4">{item.patient_name || 'N/A'}</td>
+                <td className="py-2 px-4">{item.doctor_name || 'N/A'}</td>
+                <td className="py-2 px-4">{item.waiting_number}</td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+    </div>
   );
 };
 

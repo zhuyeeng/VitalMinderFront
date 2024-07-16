@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../lib/axios';
-import RejectFormModal from '../RejectAppointmentForm/RejectAppointmentForm'; // Adjust the import path
-import AssignDoctorModal from '../AssignDoctor/AssignDoctor'; // Adjust the import path
+import RejectFormModal from '../RejectAppointmentForm/RejectAppointmentForm';
+import AssignDoctorModal from '../AssignDoctor/AssignDoctor';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
@@ -19,10 +19,8 @@ const AppointmentTable = () => {
     const loadAppointments = async () => {
       try {
         const data = await fetchPendingAndAcceptedAppointments();
-        // console.log('Fetched appointments:', data); // Debugging statement
         setPendingAcceptedAppointment(data);
       } catch (error) {
-        // console.error('Error fetching appointments:', error);
         setError(error);
       } finally {
         setLoading(false);
@@ -44,7 +42,6 @@ const AppointmentTable = () => {
         throw new Error('API response is not an array');
       }
     } catch (error) {
-      console.error('Error fetching appointments:', error.response?.data || error.message);
       setError(error.response?.data || error.message);
     } finally {
       setLoading(false);
@@ -56,7 +53,6 @@ const AppointmentTable = () => {
       const response = await axiosInstance.get('/appointments/pending-and-accepted');
       return response.data;
     } catch (error) {
-      console.error('Error fetching pending and accepted appointments:', error.response?.data || error.message);
       throw error.response?.data || error.message;
     }
   };
@@ -130,10 +126,8 @@ const AppointmentTable = () => {
   }
 
   if (error) {
-    return <div>Error: {error}</div>; // Display error message
+    return <div>Error: {error}</div>;
   }
-
-  // console.log(pendingAcceptedAppointment);
 
   return (
     <div className="flex p-4 space-x-4">
@@ -163,43 +157,33 @@ const AppointmentTable = () => {
             </tr>
           </thead>
           <tbody>
-            {appointments.map((appointment, index) => (
-              <tr
-                key={appointment.id}
-                className={`${
-                  index % 2 === 0 ? 'bg-gray-50' : 'bg-white'
-                } hover:bg-gray-100`}
-              >
-                <td className="py-3 px-4 border-b">{appointment.type}</td>
-                <td className="py-3 px-4 border-b">{appointment.patient_name}</td>
-                <td className="py-3 px-4 border-b">{new Date(appointment.date).toLocaleString()}</td>
-                <td className="py-3 px-4 border-b">{appointment.status}</td>
-                <td className="py-3 px-4 border-b">
-                  <button
-                    className="bg-green-500 text-white px-4 py-2 rounded mr-2 hover:bg-green-600"
-                    onClick={() => handleAccept(appointment)}
-                  >
-                    Accept
-                  </button>
-                  <button
-                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                    onClick={() => handleReject(appointment)}
-                  >
-                    Reject
-                  </button>
-                </td>
+            {appointments.length === 0 ? (
+              <tr>
+                <td colSpan="5" className="text-center py-10 bg-gray-100">No appointments available</td>
               </tr>
-            ))}
+            ) : (
+              appointments.map((appointment, index) => (
+                <tr key={appointment.id} className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100`}>
+                  <td className="py-3 px-4 border-b">{appointment.type}</td>
+                  <td className="py-3 px-4 border-b">{appointment.patient_name}</td>
+                  <td className="py-3 px-4 border-b">{new Date(appointment.date).toLocaleString()}</td>
+                  <td className="py-3 px-4 border-b">{appointment.status}</td>
+                  <td className="py-3 px-4 border-b flex">
+                    <button className="bg-green-500 text-white px-4 py-2 rounded mr-2 hover:bg-green-600" onClick={() => handleAccept(appointment)}>
+                      Accept
+                    </button>
+                    <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600" onClick={() => handleReject(appointment)}>
+                      Reject
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
       <div className="w-1/3">
-        <Calendar
-          onChange={setDate}
-          value={date}
-          tileContent={tileContent}
-          className="border border-gray-200 rounded-lg shadow-lg"
-        />
+        <Calendar onChange={setDate} value={date} tileContent={tileContent} className="border border-gray-200 rounded-lg shadow-lg" />
       </div>
     </div>
   );
