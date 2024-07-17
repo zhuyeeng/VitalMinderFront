@@ -27,8 +27,12 @@ const AppointmentTable = () => {
       }
     };
 
+    const intervalId = setInterval(loadAppointments, 5000); // Fetch data every 5 seconds
+
     loadAppointments();
     fetchAppointments();
+
+    return () => clearInterval(intervalId); // Clean up the interval on component unmount
   }, []);
 
   const fetchAppointments = async () => {
@@ -145,8 +149,8 @@ const AppointmentTable = () => {
           onCancel={handleAssignCancel}
         />
       )}
-      <div className="w-2/3">
-        <table className="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden shadow-lg">
+      <div className="w-2/3 h-[400px] flex flex-col justify-between bg-white border border-gray-200 rounded-lg shadow-lg">
+        <table className="min-w-full h-full">
           <thead className="bg-gray-100">
             <tr>
               <th className="py-3 px-4 text-left text-gray-600 font-semibold">Appointment Type</th>
@@ -156,7 +160,7 @@ const AppointmentTable = () => {
               <th className="py-3 px-4 text-left text-gray-600 font-semibold">Actions</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="flex-1">
             {appointments.length === 0 ? (
               <tr>
                 <td colSpan="5" className="text-center py-10 bg-gray-100">No appointments available</td>
@@ -166,7 +170,7 @@ const AppointmentTable = () => {
                 <tr key={appointment.id} className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100`}>
                   <td className="py-3 px-4 border-b">{appointment.type}</td>
                   <td className="py-3 px-4 border-b">{appointment.patient_name}</td>
-                  <td className="py-3 px-4 border-b">{new Date(appointment.date).toLocaleString()}</td>
+                  <td className="py-3 px-4 border-b">{appointment.date}, {appointment.time}</td>
                   <td className="py-3 px-4 border-b">{appointment.status}</td>
                   <td className="py-3 px-4 border-b flex">
                     <button className="bg-green-500 text-white px-4 py-2 rounded mr-2 hover:bg-green-600" onClick={() => handleAccept(appointment)}>

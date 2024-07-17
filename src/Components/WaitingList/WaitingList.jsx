@@ -46,7 +46,7 @@ const WaitingListTable = ({ refreshFlag }) => {
             waitingList.map((item) => (
               <tr key={item.id} className="border-b border-gray-300">
                 <td className="py-2 px-4">{item.patient_name || 'N/A'}</td>
-                <td className="py-2 px-4">{item.doctor_name || 'N/A'}</td>
+                <td className="py-2 px-4">{item.doctor.doctor_name || 'N/A'}</td>
                 <td className="py-2 px-4">{item.waiting_number}</td>
               </tr>
             ))

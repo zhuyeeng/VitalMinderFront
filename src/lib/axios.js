@@ -163,6 +163,7 @@ export const deleteReminder = async (id) => {
   }
 };
 
+// Function to create an appointment
 export const createAppointment = async (appointmentData) => {
   try {
     const response = await axiosInstance.post('/appointments', appointmentData);
@@ -269,5 +270,30 @@ export const fetchPendingAndAcceptedAppointments = async () => {
   }
 };
 
-export default axiosInstance;
+// Function to update profile
+export const updateProfile = async (profileData) => {
+  try {
+    const response = await axiosInstance.post('/update-profile', profileData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error updating profile:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
 
+// Function to update password
+export const updatePassword = async (passwordData) => {
+  try {
+    const response = await axiosInstance.post('/update-password', passwordData);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating password:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
+export default axiosInstance;

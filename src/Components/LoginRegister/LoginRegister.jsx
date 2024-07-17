@@ -158,7 +158,6 @@ const LoginRegister = () => {
       }
     }
   };
-  
 
   const handleForgotPassword = async (e) => {
     e.preventDefault();
