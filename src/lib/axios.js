@@ -64,13 +64,25 @@ export const fetchUsers = async () => {
   }
 };
 
-// Function to fetch all the patients
-export const fetchPatients = async () => {
+// Function to fetch appointment summary
+export const fetchAppointmentsSummary = async () => {
   try {
-    const response = await axiosInstance.get('/fetchPatient');
+    const response = await axiosInstance.get('/appointments-summary');
     return response.data;
   } catch (error) {
-    console.error('Error fetching patients:', error.response?.data || error.message);
+    console.error('Error fetching appointment summary:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
+
+// Function to fetch staff information by user ID
+export const fetchStaffByUserId = async (userId) => {
+  try {
+    const response = await axiosInstance.get(`/staff/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching staff information:', error.response?.data || error.message);
     throw error.response?.data || error.message;
   }
 };

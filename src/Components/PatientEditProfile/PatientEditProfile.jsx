@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { updateProfile, updatePassword, setAuthToken } from '../../lib/axios'; // Adjust the path based on your project structure
+import { updateProfile, updatePassword, setAuthToken, fetchStaffByUserId } from '../../lib/axios'; // Adjust the path based on your project structure
 import NavBar from '../NavBar/NavBar';
+import Sidebar from '../Sidebar/Sidebar';
 
 const PatientEditProfile = () => {
   const [formData, setFormData] = useState({
@@ -26,26 +27,38 @@ const PatientEditProfile = () => {
   const [userRole, setUserRole] = useState('');
 
   useEffect(() => {
-    // Fetch user data from local storage and set to form state
-    const userData = JSON.parse(localStorage.getItem('user'));
-    if (userData) {
-      setFormData({
-        ...formData,
-        name: userData.username,
-        email: userData.email,
-        dateOfBirth: userData.date_of_birth,
-        gender: userData.gender,
-        phoneNumber: userData.phone_number,
-        identityCardNumber: userData.identity_card_number,
-        specialization: userData.specialization || '',
-        clinicAddress: userData.clinic_address || '',
-        qualifications: userData.qualifications || '',
-        yearsOfExperience: userData.years_of_experience || '',
-        assignedArea: userData.assigned_area || '',
-        fieldExperience: userData.field_experience || ''
-      });
-      setUserRole(userData.user_role);
-    }
+    const fetchAndSetUserData = async () => {
+      try {
+        const userId = JSON.parse(localStorage.getItem('user')).id; // Assume user ID is stored in local storage
+        const userData = await fetchStaffByUserId(userId);
+        localStorage.setItem('user', JSON.stringify(userData.user));
+
+        setFormData({
+          ...formData,
+          name: userData.user.username,
+          email: userData.user.email,
+          dateOfBirth: userData.user.date_of_birth,
+          gender: userData.user.gender,
+          phoneNumber: userData.user.phone_number,
+          identityCardNumber: userData.user.identity_card_number,
+          specialization: userData.details.specialization || '',
+          clinicAddress: userData.details.clinic_address || '',
+          qualifications: userData.details.qualifications || '',
+          yearsOfExperience: userData.details.years_of_experience || '',
+          assignedArea: userData.details.assigned_area || '',
+          fieldExperience: userData.details.field_experience || ''
+        });
+        setUserRole(userData.user.user_role);
+
+        if (userData.user.profile_picture) {
+          setImagePreviewUrl(`http://localhost:8000/storage/${userData.user.profile_picture}`);
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchAndSetUserData();
   }, []);
 
   const handleChange = (e) => {
@@ -69,7 +82,7 @@ const PatientEditProfile = () => {
 
   const handleSubmitProfile = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('token'); // Make sure the token is correctly retrieved (syntax error on here that why cannot update)
+    const token = localStorage.getItem('token');
 
     const formDataToSend = new FormData();
     formDataToSend.append('name', formData.name);
@@ -79,7 +92,7 @@ const PatientEditProfile = () => {
     formDataToSend.append('phone_number', formData.phoneNumber);
     formDataToSend.append('identity_card_number', formData.identityCardNumber);
     if (profileImage) {
-      formDataToSend.append('profile_image', profileImage);
+      formDataToSend.append('profile_picture', profileImage);
     }
 
     if (userRole === 'doctor') {
@@ -94,9 +107,35 @@ const PatientEditProfile = () => {
     }
 
     try {
-      setAuthToken(token); // Set the authorization token
-      const response = await updateProfile(formDataToSend);
+      setAuthToken(token);
+      await updateProfile(formDataToSend);
       alert('Profile updated successfully');
+      
+      // Fetch the latest user data and update local storage
+      const userId = JSON.parse(localStorage.getItem('user')).id;
+      const userData = await fetchStaffByUserId(userId);
+      localStorage.setItem('user', JSON.stringify(userData.user));
+
+      // Update the formData and image preview URL
+      setFormData({
+        ...formData,
+        name: userData.user.username,
+        email: userData.user.email,
+        dateOfBirth: userData.user.date_of_birth,
+        gender: userData.user.gender,
+        phoneNumber: userData.user.phone_number,
+        identityCardNumber: userData.user.identity_card_number,
+        specialization: userData.details.specialization || '',
+        clinicAddress: userData.details.clinic_address || '',
+        qualifications: userData.details.qualifications || '',
+        yearsOfExperience: userData.details.years_of_experience || '',
+        assignedArea: userData.details.assigned_area || '',
+        fieldExperience: userData.details.field_experience || ''
+      });
+      setUserRole(userData.user.user_role);
+      if (userData.user.profile_picture) {
+        setImagePreviewUrl(`http://localhost:8000/storage/${userData.user.profile_picture}`);
+      }
     } catch (error) {
       console.error('Error updating profile:', error);
       alert('Error updating profile. Please try again.');
@@ -108,11 +147,11 @@ const PatientEditProfile = () => {
     const token = localStorage.getItem('token');
 
     try {
-      setAuthToken(token); // Set the authorization token
+      setAuthToken(token);
       const response = await updatePassword({
-        oldPassword: formData.oldPassword,
-        newPassword: formData.newPassword,
-        confirmNewPassword: formData.confirmNewPassword
+        old_password: formData.oldPassword,
+        new_password: formData.newPassword,
+        new_password_confirmation: formData.confirmNewPassword
       });
       alert(response.message);
     } catch (error) {
@@ -129,20 +168,20 @@ const PatientEditProfile = () => {
 
   return (
     <div className="min-h-screen flex flex-col my-auto mx-auto">
-      <NavBar />
-      <div className="flex-grow flex items-center justify-center">
+      {userRole === 'patient' ? <NavBar /> : <Sidebar />}
+      <div className="flex-grow flex items-center justify-center py-10">
         <div className="bg-white rounded-lg shadow-md w-11/12 lg:w-4/5 max-w-4xl p-6">
           <h2 className="text-2xl font-bold mb-6 text-center text-black">Profile Editing</h2>
           <div className="flex flex-col lg:flex-row">
             <div className="flex gap-2 lg:w-1/4 lg:p-4 lg:flex-col mb-4 lg:mb-0 lg:gap-4">
-              <button 
-                onClick={() => toggleForm('profile')} 
+              <button
+                onClick={() => toggleForm('profile')}
                 className={`w-full py-2 px-4 rounded ${showProfileForm ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}
               >
                 Profile
               </button>
-              <button 
-                onClick={() => toggleForm('password')} 
+              <button
+                onClick={() => toggleForm('password')}
                 className={`w-full py-2 px-4 rounded ${!showProfileForm ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}
               >
                 Password
@@ -164,45 +203,45 @@ const PatientEditProfile = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-black">Name</label>
-                      <input type="text" name="name" value={formData.name} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black" />
+                      <input type="text" name="name" value={formData.name} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
                     </div>
                     <div>
                       <label className="block text-black">Email</label>
-                      <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black" />
+                      <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
                     </div>
                     <div>
                       <label className="block text-black">Date of Birth</label>
-                      <input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black" />
+                      <input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
                     </div>
                     <div>
                       <label className="block text-black">Gender</label>
-                      <input type="text" name="gender" value={formData.gender} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black" />
+                      <input type="text" name="gender" value={formData.gender} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
                     </div>
                     <div>
                       <label className="block text-black">Phone Number</label>
-                      <input type="text" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black" />
+                      <input type="text" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
                     </div>
                     <div>
                       <label className="block text-black">Identity Card Number</label>
-                      <input type="text" name="identityCardNumber" value={formData.identityCardNumber} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black" />
+                      <input type="text" name="identityCardNumber" value={formData.identityCardNumber} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
                     </div>
                     {userRole === 'doctor' && (
                       <>
                         <div>
                           <label className="block text-black">Specialization</label>
-                          <input type="text" name="specialization" value={formData.specialization} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black" />
+                          <input type="text" name="specialization" value={formData.specialization} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
                         </div>
                         <div>
                           <label className="block text-black">Clinic Address</label>
-                          <input type="text" name="clinicAddress" value={formData.clinicAddress} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black" />
+                          <input type="text" name="clinicAddress" value={formData.clinicAddress} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
                         </div>
                         <div>
                           <label className="block text-black">Qualifications</label>
-                          <input type="text" name="qualifications" value={formData.qualifications} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black" />
+                          <input type="text" name="qualifications" value={formData.qualifications} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
                         </div>
                         <div>
                           <label className="block text-black">Years of Experience</label>
-                          <input type="number" name="yearsOfExperience" value={formData.yearsOfExperience} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black" />
+                          <input type="number" name="yearsOfExperience" value={formData.yearsOfExperience} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
                         </div>
                       </>
                     )}
@@ -210,15 +249,15 @@ const PatientEditProfile = () => {
                       <>
                         <div>
                           <label className="block text-black">Qualifications</label>
-                          <input type="text" name="qualifications" value={formData.qualifications} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black" />
+                          <input type="text" name="qualifications" value={formData.qualifications} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
                         </div>
                         <div>
                           <label className="block text-black">Assigned Area</label>
-                          <input type="text" name="assignedArea" value={formData.assignedArea} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black" />
+                          <input type="text" name="assignedArea" value={formData.assignedArea} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
                         </div>
                         <div>
                           <label className="block text-black">Field Experience (Years)</label>
-                          <input type="number" name="fieldExperience" value={formData.fieldExperience} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black" />
+                          <input type="number" name="fieldExperience" value={formData.fieldExperience} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
                         </div>
                       </>
                     )}
@@ -232,15 +271,15 @@ const PatientEditProfile = () => {
                   <h2 className="text-xl font-bold mb-4 text-black">Changing Password</h2>
                   <div className="mb-4">
                     <label className="block text-black">Old Password</label>
-                    <input type="password" name="oldPassword" value={formData.oldPassword} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black" />
+                    <input type="password" name="oldPassword" value={formData.oldPassword} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
                   </div>
                   <div className="mb-4">
                     <label className="block text-black">New Password</label>
-                    <input type="password" name="newPassword" value={formData.newPassword} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black" />
+                    <input type="password" name="newPassword" value={formData.newPassword} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
                   </div>
                   <div className="mb-4">
                     <label className="block text-black">Confirm New Password</label>
-                    <input type="password" name="confirmNewPassword" value={formData.confirmNewPassword} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black" />
+                    <input type="password" name="confirmNewPassword" value={formData.confirmNewPassword} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
                   </div>
                   <div className="flex justify-end mt-4">
                     <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300">Update</button>

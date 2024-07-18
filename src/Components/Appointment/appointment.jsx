@@ -166,92 +166,94 @@ const Appointment = () => {
 
   return (
     <div className='flex flex-col h-screen'>
-    {/* Navigation Bar */}
-    <div className='w-full fixed top-0'>
-      <NavBar />
-    </div>
+      {/* Navigation Bar */}
+      <div className='w-full fixed top-0'>
+        <NavBar />
+      </div>
 
-    {/* Main Body part */}
-    <div className='flex flex-col md:flex-row h-full mt-16'>
-      {/* Appointment Sidebar */}
-      <div className='w-full md:w-[30%] p-4 border-r-2 border-black bg-[#F1F1F1] flex flex-col'>
-        <div className='sticky top-0 bg-[#F1F1F1] z-10 p-4'>
-          <div className='flex justify-between mb-4'>
-            <button className="boton-elegante" onClick={() => setSelectedStatus('Pending')}>Pending</button>
-            <button className="boton-elegante" onClick={() => setSelectedStatus('Accepted')}>Accepted</button>
-            <button className="boton-elegante" onClick={() => setSelectedStatus('Rejected')}>Rejected</button>
-            <button className="boton-elegante" onClick={() => setSelectedStatus('Pass')}>Pass</button>
-          </div>
-          <div className='flex flex-col md:flex-row justify-between mb-4 gap-1'>
-            <button type="button" className="add-button w-full md:w-auto mb-2 md:mb-0" onClick={() => setIsCreating(true)}>
-              <span className="add-text">Create Appointment</span>
-              <span className="add-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" fill="none">
-                  <line y2="19" y1="5" x2="12" x1="12"></line>
-                  <line y2="12" y1="12" x2="19" x1="5"></line>
-                </svg>
-              </span>
-            </button>
-            <input
-              type="text"
-              placeholder="Filter box"
-              className='p-2 border rounded-md text-black w-full md:w-40'
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value)}
-            />
-          </div>
-        </div>
-        <div className='overflow-y-auto flex-grow flex flex-col gap-3'>
-          {filteredAppointments.map(appointment => (
-            <div key={appointment.id} className='appointment-card bg-white p-4 rounded-lg shadow-md cursor-pointer hover:bg-gray-100 transform transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg w-full'
-              onClick={() => setSelectedAppointment(appointment)}
-            >
-              <div className='flex justify-between'>
-                <div>
-                  <h3 className='text-lg font-semibold text-black'>Appointment Type: {appointment.type}</h3>
-                </div>
-                <div className='text-right'>
-                  <p className='text-gray-600'>{appointment.date}</p>
-                  <p className='text-gray-600'>{appointment.time}</p>
-                </div>
-              </div>
-              <div className='mt-8 flex justify-between'>
-                <div>
-                  <p className='text-gray-600'>Patient Name: {appointment.patient?.username || appointment.patient_name}</p>
-                  <p className='text-gray-600'>Doctor: {appointment.doctor?.doctor_name || 'N/A'}</p>
-                </div>
-                <div>
-                  <div className='border border-gray-500 bg-[#FF6969] text-black text-lg px-4 py-2 rounded'>{appointment.status}</div>
-                </div>
-              </div>
+      {/* Main Body part */}
+      <div className='flex flex-col md:flex-row h-full'>
+        {/* Appointment Sidebar */}
+        <div className='w-full md:w-[30%] p-4 border-r-2 border-black bg-[#F1F1F1] h-full flex flex-col'>
+          <div className='sticky top-0 bg-[#F1F1F1] p-4 mt-12'>
+            <div className='flex justify-between mb-4'>
+              <button className="boton-elegante" onClick={() => setSelectedStatus('Pending')}>Pending</button>
+              <button className="boton-elegante" onClick={() => setSelectedStatus('Accepted')}>Accepted</button>
+              <button className="boton-elegante" onClick={() => setSelectedStatus('Rejected')}>Rejected</button>
+              <button className="boton-elegante" onClick={() => setSelectedStatus('Pass')}>Pass</button>
             </div>
-          ))}
+            <div className='flex flex-col md:flex-row justify-between mb-4 gap-1'>
+              <button type="button" className="add-button w-full md:w-auto mb-2 md:mb-0" onClick={() => setIsCreating(true)}>
+                <span className="add-text">Create Appointment</span>
+                <span className="add-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" fill="none">
+                    <line y2="19" y1="5" x2="12" x1="12"></line>
+                    <line y2="12" y1="12" x2="19" x1="5"></line>
+                  </svg>
+                </span>
+              </button>
+              <input
+                type="text"
+                placeholder="Filter box"
+                className='p-2 border rounded-md text-black w-full md:w-40'
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className='overflow-y-auto flex-grow flex flex-col gap-3'>
+            {filteredAppointments.map(appointment => (
+              <div key={appointment.id} className='mb-2 appointment-card bg-white p-4 rounded-lg shadow-md cursor-pointer hover:bg-gray-100 transform transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg w-full'
+                onClick={() => setSelectedAppointment(appointment)}
+              >
+                <div className='flex justify-between'>
+                  <div>
+                    <h3 className='text-lg font-semibold text-black'>Appointment Type: {appointment.type}</h3>
+                  </div>
+                  <div className='text-right'>
+                    <p className='text-gray-600'>{appointment.date}</p>
+                    <p className='text-gray-600'>{appointment.time}</p>
+                  </div>
+                </div>
+                <div className='mt-8 flex justify-between'>
+                  <div>
+                    <p className='text-gray-600'>Patient Name: {appointment.patient?.username || appointment.patient_name}</p>
+                    <p className='text-gray-600'>Doctor: {appointment.doctor?.doctor_name || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <div className='border border-gray-500 bg-[#FF6969] text-black text-lg px-4 py-2 rounded'>{appointment.status}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Appointment Detail/Create Form Section */}
+        <div className='w-full md:w-3/4 p-4 flex justify-center items-center'>
+          {selectedAppointment && (
+            <div className='flex justify-center items-center'>
+              <AppointmentDetails
+                appointment={selectedAppointment}
+                onChange={handleDetailsChange}
+                onSubmit={handleDetailsSubmit}
+              />
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Appointment Detail/Create Form Section */}
-      <div className='w-full md:w-3/4 p-4 flex justify-center'>
-        {selectedAppointment && (
-          <AppointmentDetails
-            appointment={selectedAppointment}
-            onChange={handleDetailsChange}
-            onSubmit={handleDetailsSubmit}
-          />
-        )}
-      </div>
+      {/* Create Appointment Modal */}
+      <AppointmentModal
+        show={isCreating}
+        onClose={() => setIsCreating(false)}
+        onChange={handleModalChange}
+        onSubmit={handleCreateAppointment}
+        appointment={newAppointment}
+        isForSelf={isForSelf}
+        onForSelfChange={setIsForSelf}
+      />
     </div>
-
-    {/* Create Appointment Modal */}
-    <AppointmentModal
-      show={isCreating}
-      onClose={() => setIsCreating(false)}
-      onChange={handleModalChange}
-      onSubmit={handleCreateAppointment}
-      appointment={newAppointment}
-      isForSelf={isForSelf}
-      onForSelfChange={setIsForSelf}
-    />
-  </div>
   );
 };
 

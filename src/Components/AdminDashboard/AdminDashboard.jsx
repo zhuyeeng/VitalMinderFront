@@ -4,12 +4,17 @@ import StaffDetail from '../StaffDetail/staffDetail';
 import RegisterForm from '../RegisterForm/RegisterForm';
 import StaffTable from '../StaffTable/StaffTable';
 import UpdateModal from '../UpdateModal/UpdateModal';
-import PatientDetail from '../PatientDetail/PatientDetail';
-import PatientTable from '../PatientTable/PatientTable';
+import AppointmentTypeChart from '../AppointmentTypeChart/AppointmentTypeChart';
+import AppointmentSummaryTable from '../AppointmentSummaryTable/AppointmentSummaryTable';
 
 const AdminDashboard = () => {
     const [selectedStaff, setSelectedStaff] = useState(null);
     const [showRegisterForm, setShowRegisterForm] = useState(false);
+    const [isToggled, setIsToggled] = useState(false);
+
+    const handleToggle = () => {
+        setIsToggled(!isToggled);
+    };
 
     const handleUpdateClick = (staff) => {
         setSelectedStaff(staff);
@@ -28,20 +33,20 @@ const AdminDashboard = () => {
     };
 
     return (
-        <div className="flex h-screen">
-            <div className="w-1/6">
-                <Sidebar onRegisterClick={handleRegisterClick} />
+        <div className="flex h-screen overflow-hidden">
+            <div className={`${isToggled ? 'w-1/6' : 'w-[5%]'} transition-all duration-500`}>
+                <Sidebar onRegisterClick={handleRegisterClick} onToggle={handleToggle} />
             </div>
-            <div className="w-5/6 flex flex-col gap-10 p-4">
+            <div className={`flex-1 flex flex-col gap-5 p-4 transition-all duration-500 overflow-y-auto ${isToggled ? '' : 'items-center'}`}>
                 {!showRegisterForm ? (
                     <>
-                        <div className="flex flex-col md:flex-row gap-10">
+                        <div className={`w-full flex flex-col md:flex-row gap-10 ${isToggled ? '' : 'items-center justify-center'}`}>
                             <StaffDetail />
                             <StaffTable onUpdateClick={handleUpdateClick} />
                         </div>
-                        <div className="flex flex-col md:flex-row gap-10">
-                            <PatientTable />
-                            <PatientDetail />
+                        <div className={`w-full flex flex-col md:flex-row gap-10 ${isToggled ? '' : 'items-center justify-center'}`}>
+                            <AppointmentSummaryTable />
+                            <AppointmentTypeChart />
                         </div>
                     </>
                 ) : (

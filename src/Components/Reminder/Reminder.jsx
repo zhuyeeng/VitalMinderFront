@@ -91,13 +91,13 @@ const Reminder = () => {
       <div className="w-full fixed top-0">
         <NavBar />
       </div>
-      <div className="flex flex-row mt-16">
-        <div className="w-[30%] md:w-1/4 p-4 border-r-2 border-black bg-gray-200 fixed h-full overflow-y-auto">
+      <div className="flex flex-col md:flex-row mt-16">
+        <div className="w-full md:w-1/4 p-4 border-r-2 border-black bg-gray-200 h-full overflow-y-auto">
           <div className="mb-4 flex items-center justify-between">
-              <button class="icon-btn add-btn" onClick={handleOpenModal}>
-                <div class="reminder-add-icon"></div>
-                <div class="btn-txt text-black">Add Reminder</div>
-              </button>
+            <button className="icon-btn add-btn" onClick={handleOpenModal}>
+              <div className="reminder-add-icon"></div>
+              <div className="btn-txt text-black">Add Reminder</div>
+            </button>
             <input type="text" placeholder="Search..." className="ml-4 p-2 rounded border border-gray-300" />
           </div>
           <div className='w-full h-full'>
@@ -119,9 +119,9 @@ const Reminder = () => {
             ))}
           </div>
         </div>
-        <div className="flex w-[70%] items-center justify-center overflow-auto p-4 md:p-8 ml-auto">
+        <div className="flex flex-col w-full md:w-3/4 mt-4 md:mt-0 p-4 md:p-8 ml-auto">
           {selectedReminder ? (
-            <div className="bg-gray-100 p-8 rounded-lg shadow-lg w-full md:w-3/4 text-black">
+            <div className="bg-gray-100 p-8 rounded-lg shadow-lg w-full text-black">
               {isCreator ? (
                 <div>
                   <div className="flex flex-col mb-4">
@@ -218,9 +218,7 @@ const Reminder = () => {
                   <p className="mb-2"><span className="font-semibold">Instructions:</span> {selectedReminder.instructions}</p>
                   <p className="mb-4"><span className="font-semibold">Side Effects:</span> {selectedReminder.side_effects}</p>
                   <div className="flex justify-end">
-                    <div className="flex justify-end">
-                      <button id="btn" onClick={() => handleDeleteReminder(editableReminder.id)}><span className="text">Delete</span><span className="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"></path></svg></span></button>
-                    </div>
+                    <button id="btn" onClick={() => handleDeleteReminder(editableReminder.id)}><span className="text">Delete</span><span className="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"></path></svg></span></button>
                   </div>
                 </div>
               )}

@@ -111,9 +111,14 @@ const LoginRegister = () => {
       setValidationErrors({}); 
       setError(''); 
       navigate('/'); 
+      window.alert('Registration successful! You can now log in.');
+      window.location.reload(); // Refresh the page
     } catch (err) {
       if (err.data) {
         setValidationErrors(err.data);
+        if (err.data.email && err.data.email.includes('The email has already been taken.')) {
+          window.alert('The account is already registered. Please use a different email.');
+        }
         setError('');
       } else {
         setError('Registration failed. Please try again.');
@@ -121,7 +126,7 @@ const LoginRegister = () => {
     }
   };
 
-  const handleLogin = async (e) => {
+const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const response = await loginUser({
