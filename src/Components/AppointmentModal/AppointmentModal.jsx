@@ -45,7 +45,7 @@ const AppointmentModal = ({ show, onClose, onChange, onSubmit, appointment, isFo
               <label className="block text-gray-700 text-xl">Patient Name</label>
               <input
                 type="text"
-                className="w-full p-2 border rounded-md"
+                className="w-full p-2 border rounded-md text-black"
                 value={appointment.patient_name}
                 onChange={(e) => onChange('patient_name', e.target.value)}
                 disabled={isForSelf}
@@ -55,7 +55,7 @@ const AppointmentModal = ({ show, onClose, onChange, onSubmit, appointment, isFo
               <label className="block text-gray-700 text-xl">Appointment Name</label>
               <input
                 type="text"
-                className="w-full p-2 border rounded-md"
+                className="w-full p-2 border rounded-md text-black"
                 value={appointment.name}
                 onChange={(e) => onChange('name', e.target.value)}
               />
@@ -66,7 +66,7 @@ const AppointmentModal = ({ show, onClose, onChange, onSubmit, appointment, isFo
               <label className="block text-gray-700 text-xl">Appointment Date</label>
               <input
                 type="date"
-                className="w-full p-2 border rounded-md"
+                className="w-full p-2 border rounded-md text-black"
                 value={appointment.date}
                 onChange={(e) => onChange('date', e.target.value)}
               />
@@ -75,7 +75,7 @@ const AppointmentModal = ({ show, onClose, onChange, onSubmit, appointment, isFo
               <label className="block text-gray-700 text-xl">Appointment Time</label>
               <input
                 type="time"
-                className="w-full p-2 border rounded-md"
+                className="w-full p-2 border rounded-md text-black"
                 value={appointment.time}
                 onChange={(e) => onChange('time', e.target.value)}
               />
@@ -85,7 +85,7 @@ const AppointmentModal = ({ show, onClose, onChange, onSubmit, appointment, isFo
             <div>
               <label className="block text-gray-700 text-xl">Appointment Type</label>
               <select
-                className="w-full p-2 border rounded-md"
+                className="w-full p-2 border rounded-md text-black"
                 value={appointment.type}
                 onChange={(e) => onChange('type', e.target.value)}
               >
@@ -100,7 +100,7 @@ const AppointmentModal = ({ show, onClose, onChange, onSubmit, appointment, isFo
             <div>
               <label className="block text-gray-700 text-xl">Blood Type</label>
               <select
-                className="w-full p-2 border rounded-md"
+                className="w-full p-2 border rounded-md text-black"
                 value={appointment.blood_type}
                 onChange={(e) => onChange('blood_type', e.target.value)}
               >
@@ -119,14 +119,14 @@ const AppointmentModal = ({ show, onClose, onChange, onSubmit, appointment, isFo
           <div className="mb-4">
             <label className="block text-gray-700 text-xl">Appointment Details</label>
             <textarea
-              className="w-full p-2 border rounded-md"
+              className="w-full p-2 border rounded-md text-black"
               value={appointment.details}
               onChange={(e) => onChange('details', e.target.value)}
             ></textarea>
           </div>
           <button
             type="submit"
-            className="relative px-8 py-2 rounded-md bg-white isolation-auto z-10 border-2 border-lime-500 before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-[#6EE7B7] before:-z-10 before:aspect-square before:hover:scale-150 overflow-hidden before:hover:duration-700"
+            className="relative text-black px-8 py-2 rounded-md bg-white isolation-auto z-10 border-2 border-lime-500 before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-[#6EE7B7] before:-z-10 before:aspect-square before:hover:scale-150 overflow-hidden before:hover:duration-700"
           >
             Create
           </button>

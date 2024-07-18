@@ -41,19 +41,19 @@ const AssignDoctorModal = ({ appointment, onSubmit, onCancel }) => {
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
       <div className="bg-white rounded-lg shadow p-6 w-full max-w-md">
-        <h2 className="text-xl font-bold mb-4">Assign Doctor</h2>
+        <h2 className="text-xl font-bold mb-4 text-black">Assign Doctor</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700">Doctor</label>
             <select
               value={selectedDoctor}
               onChange={(e) => setSelectedDoctor(e.target.value)}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded text-black"
               required
             >
               <option value="">Select a doctor</option>
               {doctors.map((doctor) => (
-                <option key={doctor.details.id} value={doctor.details.id}>
+                <option key={doctor.details.id} value={doctor.details.id} className='text-black'>
                   {doctor.username}
                 </option>
               ))}

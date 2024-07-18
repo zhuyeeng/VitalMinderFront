@@ -19,7 +19,8 @@ const RegisterForm = ({ onClose }) => {
         clinicAddress: '',
         assignedArea: '',
         fieldExperience: '',
-        identityCardNumber: ''
+        identityCardNumber: '',
+        certificate: null // Add certificate state
     });
     const [validationErrors, setValidationErrors] = useState({});
     const [error, setError] = useState('');
@@ -38,9 +39,10 @@ const RegisterForm = ({ onClose }) => {
     };
 
     const handleChange = (e) => {
+        const { id, value, files } = e.target;
         setFormData({
             ...formData,
-            [e.target.id]: e.target.value
+            [id]: files ? files[0] : value // Handle file input
         });
     };
 
@@ -51,26 +53,26 @@ const RegisterForm = ({ onClose }) => {
             return;
         }
     
-        const payload = {
-            name: formData.name,
-            email: formData.email,
-            password: formData.password,
-            date_of_birth: formData.dateOfBirth,
-            gender: formData.gender,
-            phone_number: formData.phoneNumber,
-            qualifications: formData.qualifications, // Ensure this is included
-            user_role: userType,
-            identity_card_number: formData.identityCardNumber,
-            ...(userType === 'doctor' && {
-                specialization: formData.specialization,
-                years_of_experience: formData.yearsOfExperience,
-                clinic_address: formData.clinicAddress
-            }),
-            ...(userType === 'paramedic' && {
-                assigned_area: formData.assignedArea,
-                field_experience: formData.fieldExperience
-            })
-        };
+        const payload = new FormData(); // Use FormData for file upload
+        payload.append('name', formData.name);
+        payload.append('email', formData.email);
+        payload.append('password', formData.password);
+        payload.append('date_of_birth', formData.dateOfBirth);
+        payload.append('gender', formData.gender);
+        payload.append('phone_number', formData.phoneNumber);
+        payload.append('qualifications', formData.qualifications);
+        payload.append('user_role', userType);
+        payload.append('identity_card_number', formData.identityCardNumber);
+        payload.append('certificate', formData.certificate); // Append certificate
+    
+        if (userType === 'doctor') {
+            payload.append('specialization', formData.specialization);
+            payload.append('years_of_experience', formData.yearsOfExperience);
+            payload.append('clinic_address', formData.clinicAddress);
+        } else if (userType === 'paramedic') {
+            payload.append('assigned_area', formData.assignedArea);
+            payload.append('field_experience', formData.fieldExperience);
+        }
     
         console.log('Payload:', payload); // Debug: Ensure qualifications is included
     
@@ -229,6 +231,16 @@ const RegisterForm = ({ onClose }) => {
                             type="text"
                             placeholder="Enter your qualifications"
                             value={formData.qualifications}
+                            onChange={handleChange}
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label className="block text-gray-700" htmlFor="certificate">Upload Certificate</label>
+                        <input
+                            id="certificate"
+                            type="file"
+                            accept=".pdf"
                             onChange={handleChange}
                             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                         />

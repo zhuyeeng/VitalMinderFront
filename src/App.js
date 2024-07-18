@@ -8,9 +8,12 @@ import AdminDashboard from './Components/AdminDashboard/AdminDashboard.jsx';
 import Paramedic_Staff_Dashboard from './Components/Paramedic_Staff_Dashboard/Paramedic_Staff_Dashboard.jsx';
 import DoctorDashboard from './Components/DoctorDashboard/DoctorDashboard.jsx';
 import Reminder from './Components/Reminder/Reminder.jsx';
-import EditProfile from './Components/PatientEditProfile/PatientEditProfile.jsx';
+import EditProfile from './Components/EditProfile/EditProfile.jsx';
 import { setAuthToken } from './lib/axios'; // Adjust the import path as needed
 import { ReminderProvider } from './contexts/ReminderContext'; 
+import ReleaseReport from './Components/ReleaseReport/ReleaseReport.jsx';
+import DoctorList from './Components/DoctorList/DoctorList.jsx';
+import CheckPatient from './Components/CheckPatient/CheckPatient.jsx';
 
 const App = () => {
   const navigate = useNavigate();
@@ -64,7 +67,10 @@ const App = () => {
           <Route path="/reminder" element={<ProtectedRoute component={Reminder} />} />
           <Route path="/editProfile" element={<ProtectedRoute component={EditProfile} />} />
           <Route path="/paramedic_staff_dashboard" element={<ProtectedRoute component={Paramedic_Staff_Dashboard} />} />
+          <Route path="/releaseReport" element={<ProtectedRoute component={ReleaseReport} />} />
           <Route path="/doctordashboard" element={<ProtectedRoute component={DoctorDashboard} />} />
+          <Route path="/doctorlist" element={<ProtectedRoute component={DoctorList} />} />
+          <Route path="/checkpatient" element={<ProtectedRoute component={CheckPatient} />} />
         </Routes>
       </div>
     </ReminderProvider>

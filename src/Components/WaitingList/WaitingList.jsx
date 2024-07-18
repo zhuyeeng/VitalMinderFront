@@ -7,6 +7,9 @@ const WaitingListTable = ({ refreshFlag }) => {
 
   useEffect(() => {
     fetchWaitingList();
+    const intervalId = setInterval(fetchWaitingList, 5000); // Fetch data every 5 seconds
+
+    return () => clearInterval(intervalId); // Clean up the interval on component unmount
   }, [refreshFlag]); // Refresh the list when refreshFlag changes
 
   const fetchWaitingList = async () => {
@@ -20,13 +23,13 @@ const WaitingListTable = ({ refreshFlag }) => {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 w-full">
       {error && (
         <div className="text-red-500 mb-4">
           Error: {error.message || 'An error occurred while fetching the waiting list.'}
         </div>
       )}
-      <table className="min-w-full bg-white border border-gray-300 rounded-md shadow-md">
+      <table className="min-w-full bg-white border border-gray-300 rounded-md shadow-md z-10 md:z-0">
         <thead>
           <tr className="bg-gray-200">
             <th colSpan="3" className="py-2 px-4 text-center text-gray-700 font-bold">Waiting List</th>
@@ -40,14 +43,15 @@ const WaitingListTable = ({ refreshFlag }) => {
         <tbody>
           {waitingList.length === 0 ? (
             <tr>
-              <td colSpan="3" className="text-center py-10 bg-gray-100">No waiting list items</td>
+              <td colSpan="3" className="text-center py-10 bg-gray-100 text-black">No waiting list items</td>
             </tr>
           ) : (
             waitingList.map((item) => (
-              <tr key={item.id} className="border-b border-gray-300">
-                <td className="py-2 px-4">{item.patient_name || 'N/A'}</td>
-                <td className="py-2 px-4">{item.doctor.doctor_name || 'N/A'}</td>
-                <td className="py-2 px-4">{item.waiting_number}</td>
+              <tr
+                key={item.id} className="border-b border-gray-300 hover:bg-gray-50 transition duration-300">
+                <td className="py-2 px-4 text-black">{item.patient_name || 'N/A'}</td>
+                <td className="py-2 px-4 text-black">{item.doctor.doctor_name || 'N/A'}</td>
+                <td className="py-2 px-4 text-black">{item.waiting_number}</td>
               </tr>
             ))
           )}

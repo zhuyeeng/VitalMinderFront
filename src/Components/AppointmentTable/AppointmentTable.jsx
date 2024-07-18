@@ -134,7 +134,7 @@ const AppointmentTable = () => {
   }
 
   return (
-    <div className="flex p-4 space-x-4">
+    <div className="flex flex-col lg:flex-row p-4 space-x-4">
       {showRejectModal && (
         <RejectFormModal
           appointment={selectedAppointment}
@@ -149,8 +149,8 @@ const AppointmentTable = () => {
           onCancel={handleAssignCancel}
         />
       )}
-      <div className="w-2/3 h-[400px] flex flex-col justify-between bg-white border border-gray-200 rounded-lg shadow-lg">
-        <table className="min-w-full h-full">
+      <div className="w-full lg:w-2/3 flex flex-col justify-between bg-white border border-gray-200 rounded-lg shadow-lg min-h-[400px] max-h-[600px] overflow-y-auto">
+        <table className="min-w-full">
           <thead className="bg-gray-100">
             <tr>
               <th className="py-3 px-4 text-left text-gray-600 font-semibold">Appointment Type</th>
@@ -160,7 +160,7 @@ const AppointmentTable = () => {
               <th className="py-3 px-4 text-left text-gray-600 font-semibold">Actions</th>
             </tr>
           </thead>
-          <tbody className="flex-1">
+          <tbody>
             {appointments.length === 0 ? (
               <tr>
                 <td colSpan="5" className="text-center py-10 bg-gray-100">No appointments available</td>
@@ -168,10 +168,10 @@ const AppointmentTable = () => {
             ) : (
               appointments.map((appointment, index) => (
                 <tr key={appointment.id} className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100`}>
-                  <td className="py-3 px-4 border-b">{appointment.type}</td>
-                  <td className="py-3 px-4 border-b">{appointment.patient_name}</td>
-                  <td className="py-3 px-4 border-b">{appointment.date}, {appointment.time}</td>
-                  <td className="py-3 px-4 border-b">{appointment.status}</td>
+                  <td className="py-3 px-4 border-b text-black">{appointment.type}</td>
+                  <td className="py-3 px-4 border-b text-black">{appointment.patient_name}</td>
+                  <td className="py-3 px-4 border-b text-black">{appointment.date}, {appointment.time}</td>
+                  <td className="py-3 px-4 border-b text-black">{appointment.status}</td>
                   <td className="py-3 px-4 border-b flex">
                     <button className="bg-green-500 text-white px-4 py-2 rounded mr-2 hover:bg-green-600" onClick={() => handleAccept(appointment)}>
                       Accept
@@ -186,8 +186,8 @@ const AppointmentTable = () => {
           </tbody>
         </table>
       </div>
-      <div className="w-1/3">
-        <Calendar onChange={setDate} value={date} tileContent={tileContent} className="border border-gray-200 rounded-lg shadow-lg" />
+      <div className="w-full lg:w-1/3 mt-4 lg:mt-0 min-h-[400px]">
+        <Calendar onChange={setDate} value={date} tileContent={tileContent} className="border border-gray-200 rounded-lg shadow-lg text-black" />
       </div>
     </div>
   );

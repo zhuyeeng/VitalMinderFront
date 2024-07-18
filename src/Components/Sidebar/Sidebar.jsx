@@ -6,6 +6,9 @@ import axiosInstance from './../../lib/axios'; // Adjust the import path as need
 import { FaUserDoctor } from "react-icons/fa6";
 import PatientRegisterForm from '../PatientRegisterForm/PatientRegisterForm'; // Import the PatientRegisterForm
 import RegisterForm from '../RegisterForm/RegisterForm'; // Import the RegisterForm
+import { ImProfile } from "react-icons/im";
+import { TbReportAnalytics } from "react-icons/tb";
+import { MdPersonSearch } from "react-icons/md";
 
 const Sidebar = ({ onToggle, onRegisterClick }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -29,7 +32,9 @@ const Sidebar = ({ onToggle, onRegisterClick }) => {
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
-    onToggle();
+    if (onToggle) {
+      onToggle();
+    }
   };
 
   const handleRegisterClick = () => {
@@ -130,6 +135,14 @@ const Sidebar = ({ onToggle, onRegisterClick }) => {
                   </svg>
                   <Link to="/doctordashboard">Home</Link>
                 </div>
+                <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+                  <MdPersonSearch />
+                  <Link to="/checkpatient">Check Patient</Link>
+                </div>
+                <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+                  <ImProfile />
+                  <Link to="/editProfile">Edit Profile</Link>
+                </div>
               </>
             )}
             {userRole === 'paramedic' && (
@@ -147,7 +160,16 @@ const Sidebar = ({ onToggle, onRegisterClick }) => {
                   <button onClick={handleRegisterClick}>Register Patient</button>
                 </div>
                 <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
-                  <FaUserDoctor />
+                  <FaUserDoctor className='cursor-pointer' />
+                  <Link to="/doctorlist">Doctor List</Link>
+                </div>
+                <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+                  <TbReportAnalytics  className='cursor-pointer' />
+                  <Link to="/releaseReport">Release Report</Link>
+                </div>
+                <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+                  <ImProfile className='cursor-pointer' />
+                  <Link to="/editProfile">Edit Profile</Link>
                 </div>
               </>
             )}
@@ -189,11 +211,7 @@ const Sidebar = ({ onToggle, onRegisterClick }) => {
                   </Link>
                 </div>
                 <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
-                  <button onClick={handleRegisterClick}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 cursor-pointer">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5" />
-                    </svg>
-                  </button>
+                  <ImProfile className='cursor-pointer'/>
                 </div>
               </>
             )}

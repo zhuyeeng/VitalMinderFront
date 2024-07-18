@@ -25,6 +25,7 @@ const PatientEditProfile = () => {
   const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
   const [showProfileForm, setShowProfileForm] = useState(true);
   const [userRole, setUserRole] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     const fetchAndSetUserData = async () => {
@@ -60,6 +61,10 @@ const PatientEditProfile = () => {
 
     fetchAndSetUserData();
   }, []);
+
+  const handleToggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   const handleChange = (e) => {
     setFormData({
@@ -249,15 +254,15 @@ const PatientEditProfile = () => {
                       <>
                         <div>
                           <label className="block text-black">Qualifications</label>
-                          <input type="text" name="qualifications" value={formData.qualifications} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
+                          <input type="text" name="qualifications" value={formData.qualifications} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" readOnly />
                         </div>
                         <div>
                           <label className="block text-black">Assigned Area</label>
-                          <input type="text" name="assignedArea" value={formData.assignedArea} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
+                          <input type="text" name="assignedArea" value={formData.assignedArea} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" readOnly />
                         </div>
                         <div>
                           <label className="block text-black">Field Experience (Years)</label>
-                          <input type="number" name="fieldExperience" value={formData.fieldExperience} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
+                          <input type="number" name="fieldExperience" value={formData.fieldExperience} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" readOnly />
                         </div>
                       </>
                     )}

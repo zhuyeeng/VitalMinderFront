@@ -23,13 +23,18 @@ export const setAuthToken = (token) => {
 // Function to register a user
 export const registerUser = async (userData) => {
   try {
-    const response = await axiosInstance.post('/registeruser', userData);
-    return response.data;
+      const response = await axiosInstance.post('/registeruser', userData, {
+          headers: {
+              'Content-Type': 'multipart/form-data'
+          }
+      });
+      return response.data;
   } catch (error) {
-    console.error('Error during registration:', error.response?.data || error.message);
-    throw error.response?.data || error.message;
+      console.error('Error during registration:', error.response?.data || error.message);
+      throw error.response?.data || error.message;
   }
 };
+
 
 // Function to log in a user
 export const loginUser = async (userData) => {
@@ -75,7 +80,6 @@ export const fetchAppointmentsSummary = async () => {
   }
 };
 
-
 // Function to fetch staff information by user ID
 export const fetchStaffByUserId = async (userId) => {
   try {
@@ -83,6 +87,17 @@ export const fetchStaffByUserId = async (userId) => {
     return response.data;
   } catch (error) {
     console.error('Error fetching staff information:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
+// Fetch all the patient information
+export const fetchPatients = async () => {
+  try {
+    const response = await axiosInstance.get('/patients');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching patients:', error.response?.data || error.message);
     throw error.response?.data || error.message;
   }
 };
@@ -308,4 +323,97 @@ export const updatePassword = async (passwordData) => {
   }
 };
 
+// Function to get doctor ID by user ID
+export const fetchDoctorId = async (userId) => {
+  try {
+    const response = await axiosInstance.get(`/doctor-id/${userId}`);
+    return response.data.doctor_id;
+  } catch (error) {
+    console.error('Error fetching doctor ID:', error);
+    throw error;
+  }
+};
+
+// Function to get appointments by doctor ID
+export const fetchAppointmentsByDoctorId = async (doctorId) => {
+  try {
+    const response = await axiosInstance.get(`/appointments/doctor/${doctorId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching appointments:', error);
+    throw error;
+  }
+};
+
+// Function to upload a report
+export const uploadReport = async (formData) => {
+  try {
+    const response = await axiosInstance.post('/patient-reports', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error uploading report:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
+// Function to fetch paramedic staff ID by user ID
+export const fetchParamedicIdByUserId = async (userId) => {
+  try {
+    const response = await axiosInstance.get(`/paramedic-id/${userId}`);
+    return response.data.paramedic_id;
+  } catch (error) {
+    console.error('Error fetching paramedic ID:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
+// Function to store a new medication report
+export const storeMedicationReport = async (reportData) => {
+  try {
+    const response = await axiosInstance.post('/medication-reports', reportData);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating medication report:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
+// Function to update the report status to ended
+export const updateReportStatus = async (reportId, status) => {
+  try {
+    const response = await axiosInstance.patch(`/medication-reports/${reportId}/status`, { report_status: status });
+    return response.data;
+  } catch (error) {
+    console.error('Error updating report status:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
+// Function to fetch a single medication report
+export const fetchMedicationReport = async (reportId) => {
+  try {
+    const response = await axiosInstance.get(`/medication-reports/${reportId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching medication report:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
+// Function to fetch all medication reports
+export const fetchAllMedicationReports = async () => {
+  try {
+    const response = await axiosInstance.get('/medication-reports');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching medication reports:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
 export default axiosInstance;
+  
