@@ -1,105 +1,143 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from '../Sidebar/Sidebar';
+import {
+  searchPatientByName,
+  getPatientIdByUserId,
+  getPatientReportsByPatientId,
+  getMedicationReportsByPatientId,
+} from '../../lib/axios';
+import ReportModal from '../ReportModal/ReportModal';
+import MedicationReportModal from '../MedicationReportModal/MedicationReportModal';
 
-const CheckPatient = () => {
-  const [view, setView] = useState('appointments');
-  const appointments = [
-    { name: 'Appointment 1', type: 'Type 1', dateTime: 'Date & Time' },
-    { name: 'Appointment 2', type: 'Type 2', dateTime: 'Date & Time' },
-    { name: 'Appointment 3', type: 'Type 3', dateTime: 'Date & Time' },
-    // Add more appointments as needed
-  ];
+const CheckPatientPage = () => {
+  const [patientName, setPatientName] = useState('');
+  const [patientReports, setPatientReports] = useState([]);
+  const [medicationReports, setMedicationReports] = useState([]);
+  const [selectedReport, setSelectedReport] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [reportType, setReportType] = useState('patient');
+  const [patientId, setPatientId] = useState(null);
 
-  const reports = [
-    { name: 'Report 1', type: 'Type A', date: 'Date' },
-    { name: 'Report 2', type: 'Type B', date: 'Date' },
-    { name: 'Report 3', type: 'Type C', date: 'Date' },
-    // Add more reports as needed
-  ];
+  useEffect(() => {
+    if (patientId) {
+      fetchReports(patientId);
+    }
+  }, [patientId, reportType]);
+
+  const handleSearch = async () => {
+    try {
+      const userId = await searchPatientByName(patientName);
+      const patientId = await getPatientIdByUserId(userId);
+      setPatientId(patientId);
+    } catch (error) {
+      console.error('Error fetching patient ID:', error);
+      setPatientId(null); // Ensure patientId is reset on error
+    }
+  };
+
+  const fetchReports = async (patientId) => {
+    try {
+      if (reportType === 'patient') {
+        const reports = await getPatientReportsByPatientId(patientId);
+        setPatientReports(reports);
+        setMedicationReports([]); // Clear medication reports when patient reports are fetched
+      } else {
+        const reports = await getMedicationReportsByPatientId(patientId);
+        setMedicationReports(reports);
+        setPatientReports([]); // Clear patient reports when medication reports are fetched
+      }
+    } catch (error) {
+      console.error('Error fetching reports:', error);
+      setPatientReports([]); // Reset to empty array on error
+      setMedicationReports([]); // Reset to empty array on error
+    }
+  };
+
+  const openModal = (report) => {
+    setSelectedReport(report);
+    setShowModal(true);
+  };
 
   return (
     <div className="flex">
       <Sidebar />
-      <div className="flex-1 p-8">
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold">Patient Name: [Patient Name]</h1>
-        </div>
-        <div className="flex justify-end mb-4">
-          <div className="flex items-center">
+      <div className="container mx-auto p-4">
+        <div className="flex justify-between items-center mb-4">
+          <div>
+            <label className="font-bold mr-2">Patient Name:</label>
             <input
-              type="radio"
-              id="appointments"
-              name="view"
-              value="appointments"
-              checked={view === 'appointments'}
-              onChange={() => setView('appointments')}
-              className="mr-2"
+              type="text"
+              value={patientName}
+              onChange={(e) => setPatientName(e.target.value)}
+              className="border rounded p-2"
             />
-            <label htmlFor="appointments" className="mr-4">Appointments</label>
-            <input
-              type="radio"
-              id="reports"
-              name="view"
-              value="reports"
-              checked={view === 'reports'}
-              onChange={() => setView('reports')}
-              className="mr-2"
-            />
-            <label htmlFor="reports">Reports</label>
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded ml-2"
+              onClick={handleSearch}
+            >
+              Search
+            </button>
+          </div>
+          <div className="flex">
+            <button
+              className={`bg-blue-500 text-white px-4 py-2 rounded mr-2 ${reportType === 'patient' ? 'bg-blue-700' : ''}`}
+              onClick={() => setReportType('patient')}
+            >
+              Patient Reports
+            </button>
+            <button
+              className={`bg-green-500 text-white px-4 py-2 rounded ${reportType === 'medication' ? 'bg-green-700' : ''}`}
+              onClick={() => setReportType('medication')}
+            >
+              Medication Reports
+            </button>
           </div>
         </div>
-        <div className="overflow-x-auto">
-          {view === 'appointments' ? (
-            <table className="min-w-full bg-white">
-              <thead>
-                <tr className="w-full bg-gray-200">
-                  <th className="py-2 px-4">Appointment Name</th>
-                  <th className="py-2 px-4">Appointment Type</th>
-                  <th className="py-2 px-4">Date & Time</th>
-                  <th className="py-2 px-4">Action</th>
+
+        <table className="min-w-full bg-white">
+          <thead>
+            <tr>
+              <th className="py-2 px-4 border-b border-gray-300">Report Title</th>
+              <th className="py-2 px-4 border-b border-gray-300">Report Type</th>
+              <th className="py-2 px-4 border-b border-gray-300">Date & Time</th>
+              <th className="py-2 px-4 border-b border-gray-300">View</th>
+            </tr>
+          </thead>
+          <tbody>
+            {(reportType === 'patient' ? patientReports : medicationReports).length > 0 ? (
+              (reportType === 'patient' ? patientReports : medicationReports).map((report) => (
+                <tr key={report.id}>
+                  <td className="py-2 px-4 border-b border-gray-300">{report.report_title || 'N/A'}</td>
+                  <td className="py-2 px-4 border-b border-gray-300">{reportType === 'patient' ? 'Patient Report' : 'Medication Report'}</td>
+                  <td className="py-2 px-4 border-b border-gray-300">{report.report_created_date}</td>
+                  <td className="py-2 px-4 border-b border-gray-300">
+                    <button
+                      className="bg-blue-500 text-white px-4 py-2 rounded"
+                      onClick={() => openModal(report)}
+                    >
+                      View
+                    </button>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {appointments.map((appointment, index) => (
-                  <tr key={index} className="border-b">
-                    <td className="py-2 px-4">{appointment.name}</td>
-                    <td className="py-2 px-4">{appointment.type}</td>
-                    <td className="py-2 px-4">{appointment.dateTime}</td>
-                    <td className="py-2 px-4">
-                      <button className="bg-blue-500 text-white py-1 px-3 rounded">View</button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <table className="min-w-full bg-white">
-              <thead>
-                <tr className="w-full bg-gray-200">
-                  <th className="py-2 px-4">Report Name</th>
-                  <th className="py-2 px-4">Report Type</th>
-                  <th className="py-2 px-4">Date</th>
-                  <th className="py-2 px-4">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {reports.map((report, index) => (
-                  <tr key={index} className="border-b">
-                    <td className="py-2 px-4">{report.name}</td>
-                    <td className="py-2 px-4">{report.type}</td>
-                    <td className="py-2 px-4">{report.date}</td>
-                    <td className="py-2 px-4">
-                      <button className="bg-blue-500 text-white py-1 px-3 rounded">View</button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4" className="py-2 px-4 border-b border-gray-300 text-center">No reports available</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+
+        {showModal && selectedReport && reportType === 'patient' && (
+          <ReportModal report={selectedReport} onClose={() => setShowModal(false)} />
+        )}
+
+        {showModal && selectedReport && reportType === 'medication' && (
+          <MedicationReportModal report={selectedReport} onClose={() => setShowModal(false)} />
+        )}
       </div>
     </div>
   );
 };
 
-export default CheckPatient;
+export default CheckPatientPage;

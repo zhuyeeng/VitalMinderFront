@@ -164,6 +164,10 @@ const Sidebar = ({ onToggle, onRegisterClick }) => {
                   <Link to="/doctorlist">Doctor List</Link>
                 </div>
                 <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+                  <FaUserDoctor className='cursor-pointer' />
+                  <Link to="/staffschedule">Staff Schedule</Link>
+                </div>
+                <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
                   <TbReportAnalytics  className='cursor-pointer' />
                   <Link to="/releaseReport">Release Report</Link>
                 </div>

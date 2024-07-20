@@ -91,7 +91,7 @@ const Reminder = () => {
       <div className="w-full fixed top-0">
         <NavBar />
       </div>
-      <div className="flex flex-col md:flex-row mt-16">
+      <div className="flex flex-col md:flex-row mt-16 h-full">
         <div className="w-full md:w-1/4 p-4 border-r-2 border-black bg-gray-200 h-full overflow-y-auto">
           <div className="mb-4 flex items-center justify-between">
             <button className="icon-btn add-btn" onClick={handleOpenModal}>

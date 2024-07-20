@@ -1,8 +1,10 @@
+// components/DoctorAppointment/DoctorAppointment.js
+
 import React, { useState, useEffect } from 'react';
-import Calendar from 'react-calendar'; 
-import { setAuthToken, fetchDoctorId, fetchAppointmentsByDoctorId, storeMedicationReport } from '../../lib/axios'; 
+import Calendar from 'react-calendar';
+import { setAuthToken, fetchDoctorId, fetchDoctorWaitingList, storeMedicationReport } from '../../lib/axios';
 import DoctorProgressNoteModal from '../DoctorProgressNote/DoctorProgressNote';
-import 'react-calendar/dist/Calendar.css'; 
+import 'react-calendar/dist/Calendar.css';
 
 const DoctorAppointment = () => {
   const [appointments, setAppointments] = useState([]);
@@ -14,37 +16,37 @@ const DoctorAppointment = () => {
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'));
     if (user) {
-      setAuthToken(localStorage.getItem('token')); 
+      setAuthToken(localStorage.getItem('token'));
       initializeDoctorData(user.id);
     }
 
     const intervalId = setInterval(() => {
       if (doctorId) {
-        fetchAppointments();
+        fetchWaitingList();
       }
-    }, 10000); 
+    }, 10000);
 
-    return () => clearInterval(intervalId); 
+    return () => clearInterval(intervalId);
   }, [doctorId]);
 
   const initializeDoctorData = async (userId) => {
     try {
       const doctorId = await fetchDoctorId(userId);
       setDoctorId(doctorId);
-      fetchAppointments(doctorId);
+      fetchWaitingList(doctorId);
     } catch (error) {
       console.error('Error initializing doctor data:', error);
       setError('Error initializing doctor data. Please try again.');
     }
   };
 
-  const fetchAppointments = async () => {
+  const fetchWaitingList = async () => {
     try {
-      const appointments = await fetchAppointmentsByDoctorId(doctorId);
-      setAppointments(appointments);
+      const waitingList = await fetchDoctorWaitingList();
+      setAppointments(waitingList);
     } catch (error) {
-      console.error('Error fetching appointments:', error);
-      setError('Error fetching appointments. Please try again.');
+      console.error('Error fetching waiting list:', error);
+      setError('Error fetching waiting list. Please try again.');
     }
   };
 
@@ -61,7 +63,7 @@ const DoctorAppointment = () => {
   const handleSaveReport = async (reportData) => {
     try {
       await storeMedicationReport(reportData);
-      setAppointments(appointments.filter(appointment => appointment.id !== reportData.appointment_id));
+      setAppointments(appointments.filter(appointment => appointment.appointment.id !== reportData.appointment_id));
     } catch (error) {
       console.error('Error saving medication report:', error);
       setError('Error saving medication report. Please try again.');
@@ -83,14 +85,14 @@ const DoctorAppointment = () => {
               </tr>
             </thead>
             <tbody className="bg-gray-100 divide-y divide-gray-200">
-              {appointments.map((appointment) => (
-                <tr key={appointment.id}>
-                  <td className="px-4 py-2 text-gray-900">{appointment.type}</td>
-                  <td className="px-4 py-2 text-gray-900">{appointment.patient_name}</td>
-                  <td className="px-4 py-2 text-gray-900">{appointment.date} {appointment.time}</td>
+              {appointments.map((waitingListItem) => (
+                <tr key={waitingListItem.id}>
+                  <td className="px-4 py-2 text-gray-900">{waitingListItem.appointment.type}</td>
+                  <td className="px-4 py-2 text-gray-900">{waitingListItem.patient_name}</td>
+                  <td className="px-4 py-2 text-gray-900">{waitingListItem.appointment.date} {waitingListItem.appointment.time}</td>
                   <td className="px-4 py-2">
                     <button 
-                      onClick={() => handleOpenModal(appointment)}
+                      onClick={() => handleOpenModal(waitingListItem.appointment)}
                       className="bg-blue-500 text-white py-1 px-3 rounded">
                       Write Progress Note
                     </button>
@@ -108,7 +110,7 @@ const DoctorAppointment = () => {
           <Calendar
             className="text-black"
             tileContent={({ date, view }) => {
-              const appointmentDates = appointments.map((appt) => new Date(appt.date).toDateString());
+              const appointmentDates = appointments.map((appt) => new Date(appt.appointment.date).toDateString());
               if (appointmentDates.includes(date.toDateString())) {
                 return <div className="dot"></div>;
               }
@@ -121,6 +123,7 @@ const DoctorAppointment = () => {
         onClose={handleCloseModal} 
         appointmentId={selectedAppointment?.id} 
         patientId={selectedAppointment?.patient_id} 
+        patient_name={selectedAppointment?.patient_name}
         doctorId={doctorId} 
         onSave={handleSaveReport}
       />

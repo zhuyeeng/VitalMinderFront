@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { setAuthToken } from '../../lib/axios';
 
-const DoctorProgressNoteModal = ({ isOpen, onClose, appointmentId, patientId, doctorId, onSave }) => {
+const DoctorProgressNoteModal = ({ isOpen, onClose, appointmentId, patientId, patient_name, doctorId, onSave }) => {
   const [reportTitle, setReportTitle] = useState('');
   const [physicalExaminationNote, setPhysicalExaminationNote] = useState('');
   const [treatmentPlanInstruction, setTreatmentPlanInstruction] = useState('');
   const [diagnosticTestsResults, setDiagnosticTestsResults] = useState('');
+  const [doctorNote, setDoctorNote] = useState('');
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -20,15 +21,16 @@ const DoctorProgressNoteModal = ({ isOpen, onClose, appointmentId, patientId, do
     try {
       const reportData = {
         patient_id: patientId,
+        patient_name: patient_name,
         appointment_id: appointmentId,
         created_by: doctorId,
-        paramedic_staff_id: null, // Initial value is null
+        paramedic_staff_id: null,
         report_title: reportTitle,
         report_created_date: new Date().toISOString().slice(0, 19).replace('T', ' '),
         physical_examination_note: physicalExaminationNote,
         diagnostic_tests_results: diagnosticTestsResults,
         treatment_plan_instruction: treatmentPlanInstruction,
-        doctor_note: '',
+        doctor_note: doctorNote,
         report_status: 'pending'
       };
       await onSave(reportData);
@@ -79,6 +81,14 @@ const DoctorProgressNoteModal = ({ isOpen, onClose, appointmentId, patientId, do
               onChange={(e) => setTreatmentPlanInstruction(e.target.value)}
               className="w-full px-3 py-2 border rounded text-black"
               required
+            ></textarea>
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700">Doctor Note</label>
+            <textarea
+              value={doctorNote}
+              onChange={(e) => setDoctorNote(e.target.value)}
+              className="w-full px-3 py-2 border rounded text-black"
             ></textarea>
           </div>
           {error && <div className="text-red-500 mb-4">{error}</div>}

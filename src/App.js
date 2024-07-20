@@ -14,6 +14,8 @@ import { ReminderProvider } from './contexts/ReminderContext';
 import ReleaseReport from './Components/ReleaseReport/ReleaseReport.jsx';
 import DoctorList from './Components/DoctorList/DoctorList.jsx';
 import CheckPatient from './Components/CheckPatient/CheckPatient.jsx';
+import ChatBot from './Components/ChatBot/ChatBot.jsx';
+import StaffSchedule from './Components/StaffSchedule/StaffSchedule';
 
 const App = () => {
   const navigate = useNavigate();
@@ -71,6 +73,8 @@ const App = () => {
           <Route path="/doctordashboard" element={<ProtectedRoute component={DoctorDashboard} />} />
           <Route path="/doctorlist" element={<ProtectedRoute component={DoctorList} />} />
           <Route path="/checkpatient" element={<ProtectedRoute component={CheckPatient} />} />
+          <Route path="/chatbot" element={<ProtectedRoute component={ChatBot} />} />
+          <Route path="/staffschedule" element={<ProtectedRoute component={StaffSchedule} />} />
         </Routes>
       </div>
     </ReminderProvider>

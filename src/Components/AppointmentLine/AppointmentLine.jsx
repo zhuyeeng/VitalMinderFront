@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axiosInstance from './../../lib/axios';
+import axiosInstance, { addToWaitingList } from './../../lib/axios';
 
 const AppointmentLine = ({ refreshFlag }) => {
   const [appointments, setAppointments] = useState([]);
@@ -17,6 +17,7 @@ const AppointmentLine = ({ refreshFlag }) => {
       setAppointments(response.data);
     } catch (error) {
       console.error('Error fetching accepted appointments:', error);
+      alert('Failed to fetch accepted appointments.');
     }
   };
 
@@ -28,9 +29,14 @@ const AppointmentLine = ({ refreshFlag }) => {
         patient_name: appointment.patient_name,
         patient_id: appointment.patient_id || null,
       };
-      await axiosInstance.post('/waiting-list', data);
+      console.log(data);
+      const response = await addToWaitingList(data);
+      // console.log('Data pushed into the waiting list:', response);
       alert('Appointment added to the waiting list successfully!');
-      fetchAcceptedAppointments(); // Refresh the list of appointments after adding to the waiting list
+      // Remove the appointment from the list after successful addition to the waiting list
+      setAppointments((prevAppointments) =>
+        prevAppointments.filter((item) => item.id !== appointment.id)
+      );
     } catch (error) {
       console.error('Error adding to waiting list:', error);
       alert('Failed to add to waiting list. Please try again.');

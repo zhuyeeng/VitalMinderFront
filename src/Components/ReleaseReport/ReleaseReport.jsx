@@ -62,6 +62,7 @@ const ReleaseReport = () => {
 
       const formData = new FormData();
       formData.append('patient_id', selectedPatient.id);
+      formData.append('patient_name', selectedPatient.username); // Add this line
       formData.append('report', reportFile);
       formData.append('paramedic_staff_id', paramedicStaffId);
 
@@ -124,7 +125,7 @@ const ReleaseReport = () => {
               <div className="flex justify-end">
                 <button className="text-gray-500 hover:text-gray-700" onClick={handleCloseModal}>&times;</button>
               </div>
-              <h2 className="text-xl font-semibold mb-4 text-black">Upload Report for {selectedPatient?.name}</h2>
+              <h2 className="text-xl font-semibold mb-4 text-black">Upload Report for {selectedPatient?.username}</h2>
               <form>
                 <div className="mb-4">
                   <label htmlFor="report" className="block text-sm font-medium text-black">Upload PDF</label>
