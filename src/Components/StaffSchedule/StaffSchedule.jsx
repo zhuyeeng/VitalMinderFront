@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { fetchAllStaffSchedules } from '../../lib/axios';
-import ScheduleModal from '../ScheduleModal/ScheduleModal';
+import { fetchAllStaffSchedules, fetchUsers } from '../../lib/axios';
 import Sidebar from '../Sidebar/Sidebar';
+import ScheduleTimeModal from '../ViewStaffScheduleTime/ViewStaffScheduleTime';
 
 const StaffScheduleList = () => {
   const [schedules, setSchedules] = useState([]);
   const [selectedStaff, setSelectedStaff] = useState(null);
-  const [isDoctor, setIsDoctor] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [role, setRole] = useState('');
+  const [isTimeModalOpen, setIsTimeModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [staffDetails, setStaffDetails] = useState([]);
 
   useEffect(() => {
     const getAllSchedules = async () => {
@@ -19,71 +21,96 @@ const StaffScheduleList = () => {
         console.error('Error fetching all schedules:', error);
       }
     };
+
+    const getStaffInformation = async () => {
+      try {
+        const staffInformation = await fetchUsers();
+        if (staffInformation.doctors && staffInformation.paramedics) {
+          const combinedStaffDetails = [
+            ...staffInformation.doctors.map((doctor) => ({ ...doctor, role: 'doctor' })),
+            ...staffInformation.paramedics.map((paramedic) => ({ ...paramedic, role: 'paramedic' })),
+          ];
+          setStaffDetails(combinedStaffDetails);
+        } else {
+          console.error('Unexpected format for staff information:', staffInformation);
+        }
+      } catch (error) {
+        console.error("Error on fetching staff information: ", error);
+      }
+    };
+
+    getStaffInformation();
     getAllSchedules();
   }, []);
 
-  const openModal = (staffId, isDoctor) => {
-    setSelectedStaff(staffId);
-    setIsDoctor(isDoctor);
-    setIsModalOpen(true);
+  const openTimeModal = (staff) => {
+    setSelectedStaff(staff);
+    setRole(staff.role); // Ensure this is set before opening the modal
+    setIsTimeModalOpen(true);
   };
 
-  const filteredSchedules = schedules.filter(schedule =>
-    (schedule.doctor ? schedule.doctor.name : schedule.paramedicStaff.name)
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase())
+  const filteredStaff = staffDetails.filter(staff =>
+    (staff.details.doctor_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      staff.details.paramedic_staff_name?.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
+  const handleSidebarToggle = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
-    <div className="flex">
-      <Sidebar />
-      <div className="p-6 flex-1">
-        <h1 className="text-2xl font-bold mb-4">All Staff Schedules</h1>
-        <div className="flex justify-between mb-4">
-          <button className="py-2 px-4 bg-blue-500 text-white rounded">
-            Schedule
-          </button>
+    <div className="flex h-screen overflow-hidden">
+      <div className={`${isSidebarOpen ? 'w-1/6' : 'w-20'} transition-all duration-500`}>
+        <Sidebar onToggle={handleSidebarToggle} />
+      </div>
+      <div className={`flex-1 flex flex-col gap-10 p-4 transition-all duration-500 overflow-y-auto ${isSidebarOpen ? '' : 'items-center justify-center'}`}>
+        <h1 className="text-2xl font-bold mb-4 text-center">All Staff Schedules</h1>
+        <div className={`flex justify-between mb-4 ${isSidebarOpen ? 'w-full' : 'w-2/3'}`}>
           <input
             type="text"
-            placeholder="Search Doctor"
+            placeholder="Search Staff"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="py-2 px-4 border border-gray-300 rounded"
+            className="py-2 px-4 border border-gray-300 rounded w-72"
           />
         </div>
-        <table className="min-w-full bg-white border border-gray-200">
-          <thead>
-            <tr>
-              <th className="py-2 px-4 border-b">Doctor Name</th>
-              <th className="py-2 px-4 border-b">Doctor Email</th>
-              <th className="py-2 px-4 border-b">Doctor Phone Number</th>
-              <th className="py-2 px-4 border-b">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredSchedules.map((schedule) => (
-              <tr key={schedule.id}>
-                <td className="py-2 px-4 border-b">{schedule.doctor ? schedule.doctor.name : schedule.paramedicStaff.name}</td>
-                <td className="py-2 px-4 border-b">{schedule.doctor ? schedule.doctor.email : schedule.paramedicStaff.email}</td>
-                <td className="py-2 px-4 border-b">{schedule.doctor ? schedule.doctor.phone_number : schedule.paramedicStaff.phone_number}</td>
-                <td className="py-2 px-4 border-b">
-                  <button
-                    className="py-2 px-4 bg-blue-500 text-white rounded"
-                    onClick={() => openModal(schedule.doctor ? schedule.doctor.id : schedule.paramedicStaff.id, !!schedule.doctor)}
-                  >
-                    View Schedule
-                  </button>
-                </td>
+        <div className={`overflow-x-auto ${isSidebarOpen ? 'w-full lg:w-3/4' : 'w-3/4'}`}>
+          <table className="min-w-full bg-white border border-gray-200">
+            <thead>
+              <tr>
+                <th className="py-2 px-4 border-b">Name</th>
+                <th className="py-2 px-4 border-b">Email</th>
+                <th className="py-2 px-4 border-b">Phone Number</th>
+                <th className="py-2 px-4 border-b">Role</th>
+                <th className="py-2 px-4 border-b">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-        {isModalOpen && (
-          <ScheduleModal
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            staffId={selectedStaff}
-            isDoctor={isDoctor}
+            </thead>
+            <tbody>
+              {filteredStaff.map((staff) => (
+                <tr key={`${staff.details.id}-${staff.role}`}>
+                  <td className="py-2 px-4 border-b">{staff.details.doctor_name || staff.details.paramedic_staff_name}</td>
+                  <td className="py-2 px-4 border-b">{staff.details.doctor_email || staff.details.paramedic_staff_email}</td>
+                  <td className="py-2 px-4 border-b">{staff.details.doctor_phone_number || staff.details.paramedic_staff_phone_number}</td>
+                  <td className="py-2 px-4 border-b">{staff.role}</td>
+                  <td className="py-2 px-4 border-b">
+                    <button
+                      className="py-2 px-4 bg-blue-500 text-white rounded"
+                      onClick={() => openTimeModal(staff)}
+                    >
+                      View Schedule
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {isTimeModalOpen && (
+          <ScheduleTimeModal
+            isOpen={isTimeModalOpen}
+            onClose={() => setIsTimeModalOpen(false)}
+            selectedStaff={selectedStaff}
+            role={role} // Ensure role is passed here
           />
         )}
       </div>

@@ -1,8 +1,6 @@
-// components/DoctorAppointment/DoctorAppointment.js
-
 import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
-import { setAuthToken, fetchDoctorId, fetchDoctorWaitingList, storeMedicationReport } from '../../lib/axios';
+import { setAuthToken, fetchStaffByUserId, fetchDoctorWaitingList, storeMedicationReport, updateWaitingListStatus } from '../../lib/axios';
 import DoctorProgressNoteModal from '../DoctorProgressNote/DoctorProgressNote';
 import 'react-calendar/dist/Calendar.css';
 
@@ -31,9 +29,9 @@ const DoctorAppointment = () => {
 
   const initializeDoctorData = async (userId) => {
     try {
-      const doctorId = await fetchDoctorId(userId);
-      setDoctorId(doctorId);
-      fetchWaitingList(doctorId);
+      const doctorData = await fetchStaffByUserId(userId);
+      const doctor = doctorData.details.id;
+      setDoctorId(doctor);
     } catch (error) {
       console.error('Error initializing doctor data:', error);
       setError('Error initializing doctor data. Please try again.');
@@ -42,8 +40,9 @@ const DoctorAppointment = () => {
 
   const fetchWaitingList = async () => {
     try {
-      const waitingList = await fetchDoctorWaitingList();
+      const waitingList = await fetchDoctorWaitingList(doctorId);
       setAppointments(waitingList);
+      console.log(waitingList);
     } catch (error) {
       console.error('Error fetching waiting list:', error);
       setError('Error fetching waiting list. Please try again.');
@@ -63,6 +62,7 @@ const DoctorAppointment = () => {
   const handleSaveReport = async (reportData) => {
     try {
       await storeMedicationReport(reportData);
+      await updateWaitingListStatus(reportData.appointment_id, 'pending');
       setAppointments(appointments.filter(appointment => appointment.appointment.id !== reportData.appointment_id));
     } catch (error) {
       console.error('Error saving medication report:', error);

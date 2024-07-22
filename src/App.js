@@ -16,6 +16,7 @@ import DoctorList from './Components/DoctorList/DoctorList.jsx';
 import CheckPatient from './Components/CheckPatient/CheckPatient.jsx';
 import ChatBot from './Components/ChatBot/ChatBot.jsx';
 import StaffSchedule from './Components/StaffSchedule/StaffSchedule';
+import PatientViewReport from './Components/PatientViewReport/PatientViewReport.jsx';
 
 const App = () => {
   const navigate = useNavigate();
@@ -67,6 +68,7 @@ const App = () => {
           <Route path="/admindashboard" element={<ProtectedRoute component={AdminDashboard} />} />
           <Route path="/appointment" element={<ProtectedRoute component={Appointment} />} />
           <Route path="/reminder" element={<ProtectedRoute component={Reminder} />} />
+          <Route path="/patientViewReport" element={<ProtectedRoute component={PatientViewReport} />} />
           <Route path="/editProfile" element={<ProtectedRoute component={EditProfile} />} />
           <Route path="/paramedic_staff_dashboard" element={<ProtectedRoute component={Paramedic_Staff_Dashboard} />} />
           <Route path="/releaseReport" element={<ProtectedRoute component={ReleaseReport} />} />

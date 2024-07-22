@@ -1,3 +1,5 @@
+/* Appointment.css */
+
 .boton-elegante {
     padding: 8px 15px;
     border: 2px solid #2c2c2c;
@@ -8,7 +10,7 @@
     border-radius: 30px;
     transition: all 0.4s ease;
     outline: none;
-    position: relative;
+    /* position: relative; */
     overflow: hidden;
     font-weight: bold;
     margin: 0 5px;
@@ -17,7 +19,7 @@
 
 .boton-elegante::after {
     content: "";
-    position: absolute;
+    /* position: absolute; */
     top: 0;
     left: 0;
     width: 100%;
@@ -38,7 +40,7 @@
 }
 
 .add-button {
-    position: relative;
+    /* position: relative; */
     width: 200px;
     height: 40px;
     cursor: pointer;
@@ -60,7 +62,7 @@
   }
   
   .add-button .add-icon {
-    position: absolute;
+    /* position: absolute; */
     right: 0; /* Align the icon to the right */
     height: 100%;
     width: 39px;
@@ -99,4 +101,10 @@
   
 .add-icon::before, .add-icon::after{
     display: none;
+}
+
+@media screen and (min-width: 765px) {
+  .boton-elegante{
+    padding: 8px 10px;
+  }
 }

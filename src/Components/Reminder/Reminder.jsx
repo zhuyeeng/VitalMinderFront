@@ -119,7 +119,7 @@ const Reminder = () => {
             ))}
           </div>
         </div>
-        <div className="flex flex-col w-full md:w-3/4 mt-4 md:mt-0 p-4 md:p-8 ml-auto">
+        <div className="flex flex-col w-full md:w-3/4 mt-4 md:mt-0 p-4 md:p-8 ml-auto items-center justify-center">
           {selectedReminder ? (
             <div className="bg-gray-100 p-8 rounded-lg shadow-lg w-full text-black">
               {isCreator ? (

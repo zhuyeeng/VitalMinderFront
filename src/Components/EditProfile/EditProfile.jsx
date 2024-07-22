@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { updateProfile, updatePassword, setAuthToken, fetchStaffByUserId } from '../../lib/axios'; // Adjust the path based on your project structure
 import NavBar from '../NavBar/NavBar';
 import Sidebar from '../Sidebar/Sidebar';
+import ScheduleModal from '../ArrangeScheduleModal/ArrangeScheduleModal';
 
 const PatientEditProfile = () => {
   const [formData, setFormData] = useState({
@@ -26,29 +27,33 @@ const PatientEditProfile = () => {
   const [showProfileForm, setShowProfileForm] = useState(true);
   const [userRole, setUserRole] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [staffInfo, setStaffInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchAndSetUserData = async () => {
       try {
         const userId = JSON.parse(localStorage.getItem('user')).id; // Assume user ID is stored in local storage
         const userData = await fetchStaffByUserId(userId);
+        setStaffInfo(userData);
         localStorage.setItem('user', JSON.stringify(userData.user));
 
-        setFormData({
-          ...formData,
+        setFormData((prevFormData) => ({
+          ...prevFormData,
           name: userData.user.username,
           email: userData.user.email,
           dateOfBirth: userData.user.date_of_birth,
           gender: userData.user.gender,
           phoneNumber: userData.user.phone_number,
           identityCardNumber: userData.user.identity_card_number,
-          specialization: userData.details.specialization || '',
-          clinicAddress: userData.details.clinic_address || '',
-          qualifications: userData.details.qualifications || '',
-          yearsOfExperience: userData.details.years_of_experience || '',
-          assignedArea: userData.details.assigned_area || '',
-          fieldExperience: userData.details.field_experience || ''
-        });
+          specialization: userData.details?.specialization || '',
+          clinicAddress: userData.details?.clinic_address || '',
+          qualifications: userData.details?.qualifications || '',
+          yearsOfExperience: userData.details?.years_of_experience || '',
+          assignedArea: userData.details?.assigned_area || '',
+          fieldExperience: userData.details?.field_experience || ''
+        }));
         setUserRole(userData.user.user_role);
 
         if (userData.user.profile_picture) {
@@ -56,6 +61,8 @@ const PatientEditProfile = () => {
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -122,21 +129,21 @@ const PatientEditProfile = () => {
       localStorage.setItem('user', JSON.stringify(userData.user));
 
       // Update the formData and image preview URL
-      setFormData({
-        ...formData,
+      setFormData((prevFormData) => ({
+        ...prevFormData,
         name: userData.user.username,
         email: userData.user.email,
         dateOfBirth: userData.user.date_of_birth,
         gender: userData.user.gender,
         phoneNumber: userData.user.phone_number,
         identityCardNumber: userData.user.identity_card_number,
-        specialization: userData.details.specialization || '',
-        clinicAddress: userData.details.clinic_address || '',
-        qualifications: userData.details.qualifications || '',
-        yearsOfExperience: userData.details.years_of_experience || '',
-        assignedArea: userData.details.assigned_area || '',
-        fieldExperience: userData.details.field_experience || ''
-      });
+        specialization: userData.details?.specialization || '',
+        clinicAddress: userData.details?.clinic_address || '',
+        qualifications: userData.details?.qualifications || '',
+        yearsOfExperience: userData.details?.years_of_experience || '',
+        assignedArea: userData.details?.assigned_area || '',
+        fieldExperience: userData.details?.field_experience || ''
+      }));
       setUserRole(userData.user.user_role);
       if (userData.user.profile_picture) {
         setImagePreviewUrl(`http://localhost:8000/storage/${userData.user.profile_picture}`);
@@ -169,7 +176,13 @@ const PatientEditProfile = () => {
     setShowProfileForm(form === 'profile');
   };
 
-  console.log(formData);
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!staffInfo) {
+    return <div>Error loading data</div>;
+  }
 
   return (
     <div className="min-h-screen flex flex-col my-auto mx-auto">
@@ -191,6 +204,12 @@ const PatientEditProfile = () => {
               >
                 Password
               </button>
+              {/* <button
+                onClick={() => setIsScheduleModalOpen(true)}
+                className="w-full py-2 px-4 rounded bg-gray-200 text-black"
+              >
+                Schedule
+              </button> */}
             </div>
             <div className="w-full lg:w-3/4 p-4">
               {showProfileForm ? (
@@ -254,15 +273,15 @@ const PatientEditProfile = () => {
                       <>
                         <div>
                           <label className="block text-black">Qualifications</label>
-                          <input type="text" name="qualifications" value={formData.qualifications} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" readOnly />
+                          <input type="text" name="qualifications" value={formData.qualifications} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
                         </div>
                         <div>
                           <label className="block text-black">Assigned Area</label>
-                          <input type="text" name="assignedArea" value={formData.assignedArea} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" readOnly />
+                          <input type="text" name="assignedArea" value={formData.assignedArea} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
                         </div>
                         <div>
                           <label className="block text-black">Field Experience (Years)</label>
-                          <input type="number" name="fieldExperience" value={formData.fieldExperience} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" readOnly />
+                          <input type="number" name="fieldExperience" value={formData.fieldExperience} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
                         </div>
                       </>
                     )}
@@ -295,6 +314,7 @@ const PatientEditProfile = () => {
           </div>
         </div>
       </div>
+      {/* <ScheduleModal isOpen={isScheduleModalOpen} onClose={() => setIsScheduleModalOpen(false)} staffId={staffInfo?.details?.id} userRole={staffInfo?.user?.user_role} /> */}
     </div>
   );
 };

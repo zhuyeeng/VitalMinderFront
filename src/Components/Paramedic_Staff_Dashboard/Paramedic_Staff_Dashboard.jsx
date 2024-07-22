@@ -8,6 +8,9 @@ const Paramedic_Staff_Dashboard = () => {
   const [refreshFlag, setRefreshFlag] = useState(false);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
+  // Assuming you have a user object that contains the role of the user
+  const user = { role: 'paramedic' }; // Replace with your actual user role logic
+
   const handleRefresh = () => {
     setRefreshFlag(!refreshFlag);
   };
@@ -25,7 +28,7 @@ const Paramedic_Staff_Dashboard = () => {
         <AppointmentTable refreshFlag={refreshFlag} />
         <div className="flex flex-col lg:flex-row justify-around items-stretch h-full">
           <AppointmentLine refreshFlag={refreshFlag} />
-          <WaitingListTable refreshFlag={refreshFlag} />
+          <WaitingListTable refreshFlag={refreshFlag} isParamedic={user.role === 'paramedic'} />
         </div>
       </div>
     </div>

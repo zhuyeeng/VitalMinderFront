@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../Sidebar/Sidebar';
-import axiosInstance, { fetchPatients, uploadReport, fetchParamedicIdByUserId } from '../../lib/axios'; // Adjust the import path as necessary
+import { fetchPatients, uploadReport, fetchStaffByUserId } from '../../lib/axios'; // Adjust the import path as necessary
 
 const ReleaseReport = () => {
   const [patients, setPatients] = useState([]);
@@ -9,10 +9,19 @@ const ReleaseReport = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [reportFile, setReportFile] = useState(null);
+  const [reportTitle, setReportTitle] = useState(''); // Added state for report title
   const [isToggled, setIsToggled] = useState(false);
+  const [paramedicId, setParamedicId] = useState(null);
 
   useEffect(() => {
     fetchAllPatients();
+
+    const testingFetchingStaff = async() => {
+      const user = JSON.parse(localStorage.getItem('user'));
+      const staffDetail = await fetchStaffByUserId(user.id);
+      setParamedicId(staffDetail.details.id);
+    }
+    testingFetchingStaff();
   }, []);
 
   const fetchAllPatients = async () => {
@@ -44,27 +53,27 @@ const ReleaseReport = () => {
     setShowModal(false);
     setSelectedPatient(null);
     setReportFile(null);
+    setReportTitle(''); // Reset report title
   };
 
   const handleFileChange = (e) => {
     setReportFile(e.target.files[0]);
   };
 
-  const handleUploadReport = async () => {
-    if (!reportFile || !selectedPatient) return;
+  const handleTitleChange = (e) => {
+    setReportTitle(e.target.value);
+  };
 
-    const paramedicUser = JSON.parse(localStorage.getItem('user'));
-    const paramedicUserId = paramedicUser.id;
+  const handleUploadReport = async () => {
+    if (!reportFile || !selectedPatient || !reportTitle) return;
     
     try {
-      // Fetch the paramedic staff ID based on the user ID from local storage
-      const paramedicStaffId = await fetchParamedicIdByUserId(paramedicUserId);
-
       const formData = new FormData();
       formData.append('patient_id', selectedPatient.id);
       formData.append('patient_name', selectedPatient.username); // Add this line
       formData.append('report', reportFile);
-      formData.append('paramedic_staff_id', paramedicStaffId);
+      formData.append('report_title', reportTitle); // Add report title
+      formData.append('paramedic_staff_id', paramedicId);
 
       await uploadReport(formData);
       handleCloseModal();
@@ -135,6 +144,16 @@ const ReleaseReport = () => {
                     id="report" 
                     accept=".pdf" 
                     onChange={handleFileChange} 
+                  />
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="reportTitle" className="block text-sm font-medium text-black">Report Title</label>
+                  <input 
+                    type="text" 
+                    className="mt-1 text-black block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" 
+                    id="reportTitle" 
+                    value={reportTitle}
+                    onChange={handleTitleChange}
                   />
                 </div>
                 <button 

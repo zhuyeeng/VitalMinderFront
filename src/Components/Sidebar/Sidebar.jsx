@@ -9,13 +9,18 @@ import RegisterForm from '../RegisterForm/RegisterForm'; // Import the RegisterF
 import { ImProfile } from "react-icons/im";
 import { TbReportAnalytics } from "react-icons/tb";
 import { MdPersonSearch } from "react-icons/md";
+import { AiOutlineSchedule } from "react-icons/ai";
+import AppointmentModal from '../AppointmentModal/AppointmentModal'; // Import the AppointmentModal
+import { MdAccountBox } from "react-icons/md";
 
-const Sidebar = ({ onToggle, onRegisterClick }) => {
+const Sidebar = ({ onToggle }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [userRole, setUserRole] = useState(null);
   const [isPatientRegisterModalOpen, setIsPatientRegisterModalOpen] = useState(false); // State for patient register modal
   const [isRegisterFormModalOpen, setIsRegisterFormModalOpen] = useState(false); // State for admin register modal
+  const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false); // State for appointment modal
+  const [patients, setPatients] = useState([]); // State for patient names
   const navigate = useNavigate();
   
   useEffect(() => {
@@ -28,7 +33,19 @@ const Sidebar = ({ onToggle, onRegisterClick }) => {
     if (user && user.user_role) {
       setUserRole(user.user_role);
     }
+
+    // Fetch all patients when the sidebar is loaded
+    fetchPatients();
   }, []);
+
+  const fetchPatients = async () => {
+    try {
+      const response = await axiosInstance.get('/patients');
+      setPatients(response.data);
+    } catch (error) {
+      console.error('Error fetching patients:', error.response?.data || error.message);
+    }
+  };
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
@@ -39,7 +56,7 @@ const Sidebar = ({ onToggle, onRegisterClick }) => {
 
   const handleRegisterClick = () => {
     if (userRole === 'admin') {
-      onRegisterClick(); // Open the admin register modal
+      setIsRegisterFormModalOpen(true); // Open the admin register modal
     } else if (userRole === 'paramedic') {
       setIsPatientRegisterModalOpen(true); // Open the patient register modal
     }
@@ -51,6 +68,10 @@ const Sidebar = ({ onToggle, onRegisterClick }) => {
 
   const closeRegisterFormModal = () => {
     setIsRegisterFormModalOpen(false); // Close the admin register modal
+  };
+
+  const closeAppointmentModal = () => {
+    setIsAppointmentModalOpen(false); // Close the appointment modal
   };
 
   const handleLogout = async () => {
@@ -76,9 +97,19 @@ const Sidebar = ({ onToggle, onRegisterClick }) => {
     document.documentElement.classList.toggle('dark', !isDarkMode);
   };
 
+  const handleAppointmentSubmit = async (appointment) => {
+    try {
+      const response = await axiosInstance.post('/appointments', appointment);
+      console.log('Appointment created successfully:', response.data);
+      setIsAppointmentModalOpen(false);
+    } catch (error) {
+      console.error('Error creating appointment:', error.response?.data || error.message);
+    }
+  };
+
   return (
     <>
-      <aside className={`w-60 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-48'} fixed transition transform ease-in-out duration-1000 z-50 flex h-screen bg-gray-800 dark:bg-gray-900`}>
+      <aside className={`w-60 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-48'} fixed transition transform ease-in-out duration-1000 z-40 flex h-screen bg-gray-800 dark:bg-gray-900`}>
         {/* Open sidebar button */}
         <div className={`max-toolbar ${isSidebarOpen ? 'translate-x-0' : 'translate-x-24 scale-x-0'} w-full -right-6 transition transform ease-in duration-300 flex items-center justify-between border-4 border-white dark:border-gray-800 bg-gray-800 dark:bg-gray-900 absolute top-2 rounded-full h-12`}>
           <div className="flex pl-4 items-center space-x-2">
@@ -92,11 +123,6 @@ const Sidebar = ({ onToggle, onRegisterClick }) => {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
               </svg>
             </div>
-          </div>
-          <div className="text-white hover:text-blue-500 dark:hover:text-blue-400">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-4 h-4">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-            </svg>
           </div>
           <div className="flex items-center space-x-3 group bg-gradient-to-r dark:from-cyan-500 dark:to-blue-500 from-indigo-500 via-purple-500 to-purple-500 pl-10 pr-2 py-1 rounded-full text-white">
             <div className="transform ease-in-out duration-300 mr-12">
@@ -140,6 +166,10 @@ const Sidebar = ({ onToggle, onRegisterClick }) => {
                   <Link to="/checkpatient">Check Patient</Link>
                 </div>
                 <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+                  <AiOutlineSchedule />
+                  <Link to="/staffschedule">View Staff Schedule</Link>
+                </div>
+                <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
                   <ImProfile />
                   <Link to="/editProfile">Edit Profile</Link>
                 </div>
@@ -174,6 +204,10 @@ const Sidebar = ({ onToggle, onRegisterClick }) => {
                 <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
                   <ImProfile className='cursor-pointer' />
                   <Link to="/editProfile">Edit Profile</Link>
+                </div>
+                <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+                  <MdAccountBox/>
+                  <button onClick={() => setIsAppointmentModalOpen(true)}>Create Appointment</button>
                 </div>
               </>
             )}
@@ -215,7 +249,19 @@ const Sidebar = ({ onToggle, onRegisterClick }) => {
                   </Link>
                 </div>
                 <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
-                  <ImProfile className='cursor-pointer'/>
+                  <Link to="/checkpatient">
+                    <MdPersonSearch className='cursor-pointer'/>
+                  </Link>
+                </div>
+                <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
+                  <Link to="/staffschedule">
+                    <AiOutlineSchedule className='cursor-pointer'/>
+                  </Link>  
+                </div>
+                <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
+                  <Link to="/editProfile">
+                    <ImProfile className='cursor-pointer'/>
+                  </Link>
                 </div>
               </>
             )}
@@ -235,6 +281,30 @@ const Sidebar = ({ onToggle, onRegisterClick }) => {
                     </svg>
                   </button>
                 </div>
+                <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
+                  <Link to="/doctorlist">
+                    <FaUserDoctor className='cursor-pointer'/>
+                  </Link>
+                </div>
+                <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
+                <Link to="/staffschedule">
+                    <FaUserDoctor className='cursor-pointer'/>
+                  </Link>
+                </div>
+                <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
+                  <Link to="/releaseReport">
+                    <TbReportAnalytics className='cursor-pointer'/>
+                  </Link>  
+                </div>
+                <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
+                  <Link to="/editProfile">
+                    <ImProfile className='cursor-pointer'/>
+                  </Link>
+                </div>
+                <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
+                  
+                  <button onClick={() => setIsAppointmentModalOpen(true)}><MdAccountBox/></button>
+                </div>
               </>
             )}
             <div 
@@ -247,6 +317,7 @@ const Sidebar = ({ onToggle, onRegisterClick }) => {
         </aside>
         {isPatientRegisterModalOpen && <PatientRegisterForm onClose={closePatientRegisterModal} />}
         {isRegisterFormModalOpen && <RegisterForm onClose={closeRegisterFormModal} />}
+        {isAppointmentModalOpen && <AppointmentModal show={isAppointmentModalOpen} onClose={closeAppointmentModal} patients={patients} onSubmit={handleAppointmentSubmit} userRole={userRole} />}
       </>
     );
   };

@@ -58,6 +58,16 @@ export const fetchUsers = async () => {
   }
 };
 
+// export const fetchUserById = async (userId) => {
+//   try {
+//     const response = await axios.get(`/user/${userId}`);
+//     return response.data;
+//   } catch (error) {
+//     console.error('Error fetching user by ID:', error);
+//     throw error;
+//   }
+// };
+
 // Function to fetch doctors
 export const fetchDoctors = async () => {
   try {
@@ -80,6 +90,22 @@ export const fetchAppointmentsSummary = async () => {
   }
 };
 
+export const fetchPatientIdByUserId = async (userId) => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axiosInstance.get(`/appointments/patient-id/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const patientId = response.data.patient_id;
+    return patientId;
+  } catch (error) {
+    console.error('Error fetching patient ID:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
 // Function to fetch staff information by user ID
 export const fetchStaffByUserId = async (userId) => {
   try {
@@ -88,6 +114,16 @@ export const fetchStaffByUserId = async (userId) => {
   } catch (error) {
     console.error('Error fetching staff information:', error.response?.data || error.message);
     throw error.response?.data || error.message;
+  }
+};
+
+//fetching all the medical staff along with some additional details
+export const fetchMedicalStaff = async () => {
+  try {
+      const response = await axiosInstance.get('/medical-staff');
+      return response.data;
+  } catch (error) {
+      throw error;
   }
 };
 
@@ -286,6 +322,26 @@ export const addToWaitingList = async (data) => {
   }
 };
 
+export const fetchWaitingList = async () => {
+  try {
+    const response = await axiosInstance.get('/waiting-list');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching waiting list:', error);
+    throw error; // Re-throw the error to handle it in the component
+  }
+};
+
+export const fetchMedicationReport = async (appointmentId) => {
+  try {
+    const response = await axiosInstance.get(`/medication-reports/${appointmentId}`);
+    return response.data.data; // Assuming the API response has the report data in `data`
+  } catch (error) {
+    console.error('Error fetching medication report:', error);
+    throw error; // Re-throw the error to handle it in the component
+  }
+};
+
 // Function to fetch pending and accepted appointments
 export const fetchPendingAndAcceptedAppointments = async () => {
   try {
@@ -294,6 +350,18 @@ export const fetchPendingAndAcceptedAppointments = async () => {
   } catch (error) {
     console.error('Error fetching pending and accepted appointments:', error.response?.data || error.message);
     throw error.response?.data || error.message;
+  }
+};
+
+// Function to fetch a medication report by appointment ID
+export const fetchMedicationReportByAppointmentId = async (appointmentId) => {
+  try {
+    const response = await axiosInstance.get(`/medication-reports/appointment/${appointmentId}`);
+    console.log('Fetched medication report data:', response.data.data); // Debug log
+    return response.data.data;
+  } catch (error) {
+    console.error('Error fetching medication report:', error);
+    throw error; // Re-throw the error to handle it in the component
   }
 };
 
@@ -323,19 +391,9 @@ export const updatePassword = async (passwordData) => {
   }
 };
 
-export const fetchDoctorId = async (userId) => {
+export const fetchDoctorWaitingList = async (doctorId) => {
   try {
-    const response = await axiosInstance.get(`/doctor-id/${userId}`);
-    return response.data.doctor_id;
-  } catch (error) {
-    console.error('Error fetching doctor ID:', error);
-    throw error;
-  }
-};
-
-export const fetchDoctorWaitingList = async () => {
-  try {
-    const response = await axiosInstance.get('/waiting-list/doctor');
+    const response = await axiosInstance.get(`/waiting-list/doctor/${doctorId}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching doctor waiting list:', error);
@@ -358,17 +416,6 @@ export const uploadReport = async (formData) => {
   }
 };
 
-// Function to fetch paramedic staff ID by user ID
-export const fetchParamedicIdByUserId = async (userId) => {
-  try {
-    const response = await axiosInstance.get(`/paramedic-id/${userId}`);
-    return response.data.paramedic_id;
-  } catch (error) {
-    console.error('Error fetching paramedic ID:', error.response?.data || error.message);
-    throw error.response?.data || error.message;
-  }
-};
-
 // Function to store a new medication report
 export const storeMedicationReport = async (reportData) => {
   try {
@@ -380,27 +427,37 @@ export const storeMedicationReport = async (reportData) => {
   }
 };
 
+// Function to update the waiting list status
+export const updateWaitingListStatus = async (appointmentId, status) => {
+  try {
+    const response = await axiosInstance.put(`/waiting-lists/${appointmentId}/status`, { status });
+    return response.data;
+  } catch (error) {
+    console.error('Error updating waiting list status:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
 // Function to update the report status to ended
 export const updateReportStatus = async (reportId, status) => {
   try {
-    const response = await axiosInstance.patch(`/medication-reports/${reportId}/status`, { report_status: status });
+    const response = await axiosInstance.put(`/medication-reports/${reportId}/status`, { report_status: status });
     return response.data;
   } catch (error) {
     console.error('Error updating report status:', error.response?.data || error.message);
     throw error.response?.data || error.message;
   }
 };
-
 // Fetch medication report for a specific patient
-export const fetchMedicationReport = async (patientId) => {
-  try {
-    const response = await axiosInstance.get(`/medication-reports/${patientId}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching medication report:', error.response?.data || error.message);
-    throw error.response?.data || error.message;
-  }
-};
+// export const fetchMedicationReport = async (patientId) => {
+//   try {
+//     const response = await axiosInstance.get(`/medication-reports/${patientId}`);
+//     return response.data;
+//   } catch (error) {
+//     console.error('Error fetching medication report:', error.response?.data || error.message);
+//     throw error.response?.data || error.message;
+//   }
+// };
 
 // Fetch all medication reports
 // export const fetchAllMedicationReports = async (patientId) => {
@@ -427,7 +484,7 @@ export const sendChatMessage = async ({ message, user_id }) => {
 // Function to search patient by name
 export const searchPatientByName = async (patientName) => {
   const response = await axiosInstance.get(`/patients/search/${patientName}`);
-  return response.data[0]?.user_id;
+  return response.data;
 };
 
 // Function to get patient ID by user ID
@@ -444,31 +501,22 @@ export const getPatientReportsByPatientId = async (patientId) => {
 
 // Function to get medication reports by patient ID
 export const getMedicationReportsByPatientId = async (patientId) => {
-  const response = await axiosInstance.get(`/medication-reports/${patientId}`);
-  return response.data.data;
-};
-
-// Function to set the staff's schedule
-export const setStaffSchedule = async (staffId, isDoctor, schedule) => {
   try {
-    const url = isDoctor ? `/doctors/${staffId}/schedule` : `/paramedic_staff/${staffId}/schedule`;
-    const response = await axiosInstance.post(url, schedule);
-    return response.data;
+    const response = await axiosInstance.get(`/medication-reports/${patientId}`);
+    return response.data.data;
   } catch (error) {
-    console.error('Error setting schedule:', error.response?.data || error.message);
-    throw error.response?.data || error.message;
+    console.error('Error fetching medication reports:', error);
+    throw error;
   }
 };
 
-// Function to fetch the staff's schedule
-export const fetchStaffSchedule = async (staffId, isDoctor) => {
+export const fetchStaffSchedule = async (staffId, role) => {
   try {
-    const url = isDoctor ? `/doctors/${staffId}/schedule` : `/paramedic_staff/${staffId}/schedule`;
-    const response = await axiosInstance.get(url);
+    const response = await axiosInstance.get(`/schedule/latest/${staffId}/${role}`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching schedule:', error.response?.data || error.message);
-    throw error.response?.data || error.message;
+    console.error('Error fetching staff schedule:', error);
+    throw error;
   }
 };
 
@@ -479,6 +527,26 @@ export const fetchAllStaffSchedules = async () => {
     return response.data;
   } catch (error) {
     console.error('Error fetching all schedules:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
+export const saveSchedule = async (role, staffId, schedule) => {
+  try {
+    const response = await axiosInstance.post('/save-schedule', {
+      role: role,
+      staff_id: staffId,
+      ...schedule,
+    });
+
+    if (response.status === 201) {
+      console.log('Schedule saved successfully:', response.data);
+      return response.data;
+    } else {
+      console.error('Failed to save schedule');
+    }
+  } catch (error) {
+    console.error('Error:', error.response?.data || error.message);
     throw error.response?.data || error.message;
   }
 };

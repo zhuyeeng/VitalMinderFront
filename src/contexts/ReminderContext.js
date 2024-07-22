@@ -15,11 +15,13 @@ export const ReminderProvider = ({ children }) => {
   useEffect(() => {
     const checkReminders = () => {
       const now = new Date();
-      const currentHour = now.getHours();
-      const currentMinute = now.getMinutes();
       reminders.forEach(reminder => {
-        const [reminderHour, reminderMinute] = reminder.time.split(':').map(Number);
-        if (reminderHour === currentHour && reminderMinute === currentMinute) {
+        const reminderDate = new Date(reminder.date);
+        const reminderTime = reminder.time.split(':').map(Number);
+        reminderDate.setHours(reminderTime[0]);
+        reminderDate.setMinutes(reminderTime[1]);
+
+        if (reminderDate <= now && reminderDate > new Date(now - 60000)) {
           showNotification(reminder);
         }
       });
@@ -46,9 +48,9 @@ export const ReminderProvider = ({ children }) => {
 
   const showNotification = (reminder) => {
     if (Notification.permission === 'granted') {
-      new Notification('Medication Reminder', {
-        body: `It's time to take your medication: ${reminder.medication_types}`,
-        icon: '/path-to-icon/icon.png' // Adjust the path to your icon if you have one
+      new Notification('Appointment Reminder', {
+        body: `You have an appointment: ${reminder.type} at ${reminder.time}`,
+        icon: '/path-to-icon/icon.png', // Adjust the path to your icon if you have one
       });
     }
   };

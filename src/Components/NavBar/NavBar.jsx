@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import './NavBar.css';
 import { setAuthToken } from './../../lib/axios'; // Adjust the import path as needed
 import axiosInstance from './../../lib/axios'; // Adjust the import path as needed
+import { CiLight } from 'react-icons/ci';
+import { MdNightlightRound } from 'react-icons/md';
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -81,7 +83,7 @@ const NavBar = () => {
                 <Link to="/reminder" className="nav-btn">
                   <span className="box">Reminder</span>
                 </Link>
-                <Link to="/" className="nav-btn">
+                <Link to="/patientViewReport" className="nav-btn">
                   <span className="box">Report</span>
                 </Link>
                 <Link to="/chatbot" className="nav-btn">
@@ -104,12 +106,10 @@ const NavBar = () => {
               </div>
               <div className="log-text">Logout</div>
             </button>
-            <button
-              onClick={toggleTheme}
-              className="fixed top-4 right-4 bg-blue-500 dark:bg-yellow-500 text-white p-2 rounded"
-            >
-              Toggle Theme
-            </button>
+            <input type="checkbox" id="checkbox" className="theme-hidden" onChange={toggleTheme} checked={isDarkMode} />
+            <label htmlFor="checkbox" className={`theme-button ${isDarkMode ? 'dark' : 'light'}`}>
+              {isDarkMode ? <MdNightlightRound /> : <CiLight />}
+            </label>
           </div>
         </div>
       </div>
@@ -122,7 +122,7 @@ const NavBar = () => {
             <Link to="/reminder" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-white hover:bg-gray-700">
               Reminder
             </Link>
-            <Link to="/" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-white hover:bg-gray-700">
+            <Link to="/patientViewReport" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-white hover:bg-gray-700">
               Report
             </Link>
             <Link to="/chatbot" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-white hover:bg-gray-700">

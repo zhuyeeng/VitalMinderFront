@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { registerUser, setAuthToken } from '../../lib/axios'; // Adjust the path to your axios file
-import './RegisterForm.css'; // Ensure this path is correct based on your project structure
+import './RegisterForm.css';
 
 const RegisterForm = ({ onClose }) => {
     const [userType, setUserType] = useState('doctor');
@@ -93,10 +93,10 @@ const RegisterForm = ({ onClose }) => {
     };  
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
             <div className="bg-[#EEEDEB] rounded-lg shadow-lg p-5 w-full max-w-3xl max-h-screen overflow-y-auto relative">
                 <button 
-                    className="absolute top-2 right-2 text-gray-700 font-bold"
+                    className="absolute top-2 right-2 text-gray-700 font-bold text-2xl"
                     onClick={onClose}
                 >
                     &times;

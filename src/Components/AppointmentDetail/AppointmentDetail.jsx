@@ -1,8 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './AppointmentDetail.css';
+import CancelFormModal from '../CancelingAppointmentModal/CancelingAppointmentModal';
+import axiosInstance from '../../lib/axios';
 
 const AppointmentDetails = ({ appointment, onChange, onSubmit }) => {
+  const [showCancelModal, setShowCancelModal] = useState(false);
+
   if (!appointment) return null;
+
+  const isEditable = !['rejected', 'accepted', 'completed'].includes(appointment.status?.toLowerCase());
+
+  const handleCancel = async (reason) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axiosInstance.put(`/appointments/status/${appointment.id}`, {
+        status: 'rejected',
+        reason: reason,
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log('Appointment canceled:', response.data);
+      setShowCancelModal(false);
+      // Optionally, update the appointment details in the state
+    } catch (error) {
+      console.error('Error canceling appointment:', error.response?.data || error.message);
+    }
+  };
 
   return (
     <div className="bg-[#EEEDEB] p-5 rounded-l-xl shadow-lg w-full max-w-2xl mx-auto my-auto">
@@ -25,6 +50,7 @@ const AppointmentDetails = ({ appointment, onChange, onSubmit }) => {
               className="w-full p-3 border border-gray-300 rounded-md text-black"
               value={appointment.patient_name}
               onChange={(e) => onChange('patient_name', e.target.value)}
+              disabled={!isEditable}
             />
           </div>
         </div>
@@ -56,6 +82,7 @@ const AppointmentDetails = ({ appointment, onChange, onSubmit }) => {
               className="w-full p-3 border border-gray-300 rounded-md text-black"
               value={appointment.type}
               onChange={(e) => onChange('type', e.target.value)}
+              disabled={!isEditable}
             />
           </div>
           <div className="w-1/2">
@@ -64,6 +91,7 @@ const AppointmentDetails = ({ appointment, onChange, onSubmit }) => {
               className="w-full p-3 border border-gray-300 rounded-md text-black"
               value={appointment.blood_type}
               onChange={(e) => onChange('blood_type', e.target.value)}
+              disabled={!isEditable}
             >
               <option value="">Select Blood Type</option>
               <option value="A+">A+</option>
@@ -83,6 +111,7 @@ const AppointmentDetails = ({ appointment, onChange, onSubmit }) => {
             className="w-full p-3 border border-gray-300 rounded-md text-black"
             value={appointment.details}
             onChange={(e) => onChange('details', e.target.value)}
+            disabled={!isEditable}
           ></textarea>
         </div>
         {appointment.reason && (
@@ -93,6 +122,7 @@ const AppointmentDetails = ({ appointment, onChange, onSubmit }) => {
               className="w-full p-3 border border-gray-300 rounded-md text-black"
               value={appointment.reason}
               onChange={(e) => onChange('reason', e.target.value)}
+              disabled={!isEditable}
             />
           </div>
         )}
@@ -108,9 +138,25 @@ const AppointmentDetails = ({ appointment, onChange, onSubmit }) => {
           </div>
         )}
         <div className="flex justify-end">
-          <button type="submit" className="update-btn">Update</button>
+          <button type="submit" className="update-btn" disabled={!isEditable}>Update</button>
+          {appointment.status.toLowerCase() === 'pending' && (
+            <button
+              type="button"
+              className="ml-2 bg-red-500 text-white px-4 py-2 rounded"
+              onClick={() => setShowCancelModal(true)}
+            >
+              Cancel Appointment
+            </button>
+          )}
         </div>
       </form>
+      {showCancelModal && (
+        <CancelFormModal
+          appointment={appointment}
+          onSubmit={handleCancel}
+          onCancel={() => setShowCancelModal(false)}
+        />
+      )}
     </div>
   );
 };
