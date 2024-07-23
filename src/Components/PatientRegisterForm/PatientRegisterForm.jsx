@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { registerUser, setAuthToken } from '../../lib/axios'; // Adjust the path to your axios file
-import './PatientRegisterForm.css'; // Ensure this path is correct based on your project structure
 
 const PatientRegisterForm = ({ onClose }) => {
     const [formData, setFormData] = useState({
@@ -59,8 +58,8 @@ const PatientRegisterForm = ({ onClose }) => {
     };
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-gray-200 rounded-lg shadow-lg p-8 w-full max-w-3xl max-h-screen overflow-y-auto relative">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-gray-200 rounded-lg shadow-lg p-8 w-full max-w-3xl max-h-screen overflow-y-auto relative md:my-4">
                 <button 
                     className="absolute top-2 right-2 text-gray-700 font-bold"
                     onClick={onClose}
@@ -70,7 +69,7 @@ const PatientRegisterForm = ({ onClose }) => {
                 <h1 className="text-2xl font-bold mb-4">Register Patient</h1>
                 {error && <p className="text-red-500 text-center">{error}</p>}
                 <form onSubmit={handleRegister} className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="form-group">
                             <label className="block text-gray-700" htmlFor="name">Name:</label>
                             <input

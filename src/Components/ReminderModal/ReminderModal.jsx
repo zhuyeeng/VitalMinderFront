@@ -48,7 +48,7 @@ const ReminderModal = ({ showModal, handleClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[100]">
       <div className="w-96 bg-indigo-50 rounded shadow p-5 relative">
         <form className="text-indigo-500" onSubmit={handleSubmit}>
           <fieldset className="border-4 border-dotted border-indigo-500 p-5">

@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Carousel from 'react-multi-carousel';
+import 'react-multi-carousel/lib/styles.css';
 import NavBar from '../NavBar/NavBar';
 import './Dashboard.css'; // Ensure this CSS file is correctly imported
 import { SlCalender } from "react-icons/sl";
 import { TbBellSchool } from "react-icons/tb";
 import { TbReportAnalytics } from "react-icons/tb";
 import { BsChatSquareHeart } from "react-icons/bs";
+import { fetchMedicalStaff } from '../../lib/axios'; // Ensure this import is correct
 
 const Dashboard = () => {
   const [showButton, setShowButton] = useState(false);
+  const [doctors, setDoctors] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,6 +23,23 @@ const Dashboard = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    fetchDoctors();
+  }, []);
+
+  const fetchDoctors = async () => {
+    try {
+      const doctorData = await fetchMedicalStaff();
+      if (doctorData && Array.isArray(doctorData.doctors)) {
+        setDoctors(doctorData.doctors);
+      } else {
+        console.error("Unexpected data format:", doctorData);
+      }
+    } catch (error) {
+      console.error("Fetching Doctor Error:", error);
+    }
+  };
 
   const scrollToSection = (id) => {
     const element = document.getElementById(id);
@@ -33,6 +54,25 @@ const Dashboard = () => {
 
   const navigateToPage = (path) => {
     navigate(path);
+  };
+
+  const responsive = {
+    superLargeDesktop: {
+      breakpoint: { max: 4000, min: 1024 },
+      items: 3
+    },
+    desktop: {
+      breakpoint: { max: 1024, min: 768 },
+      items: 3
+    },
+    tablet: {
+      breakpoint: { max: 768, min: 464 },
+      items: 2
+    },
+    mobile: {
+      breakpoint: { max: 464, min: 0 },
+      items: 1
+    }
   };
 
   return (
@@ -108,8 +148,31 @@ const Dashboard = () => {
 
       {/* body part */}
       <div className="w-full py-24 lg:py-72">
+        {/* Carousel */}
+        <div className="carousel-container absolute w-full md:mt-0 mt-40">
+          <Carousel
+            responsive={responsive}
+            showDots={true}
+            autoPlay
+            infinite
+            containerClass="carousel-container"
+            itemClass="carousel-item-padding-40-px"
+          >
+            {Array.isArray(doctors) && doctors.length > 0 ? doctors.map((doctor, index) => (
+              <div key={index} className="flex flex-col items-center p-4">
+                <img src={doctor.details.profile_picture} alt={doctor.details.doctor_name} className="h-32 w-32 rounded-full" />
+                <h3 className="text-lg font-semibold mt-4">{doctor.details.doctor_name}</h3>
+                <p className="text-sm">{doctor.details.clinic_address}</p>
+              </div>
+            )) : (
+              <div className="flex flex-col items-center p-4">
+                <p className="text-lg">No doctors available.</p>
+              </div>
+            )}
+          </Carousel>
+        </div>
         {/* Section 1 */}
-        <div id="appointment" className="max-w-7xl mt-12 md:mt-0 mx-auto flex flex-col lg:flex-row items-center mb-48">
+        <div id="appointment" className="max-w-7xl mt-[26rem] md:mt-56 mx-auto flex flex-col lg:flex-row items-center mb-48">
           <div className="w-full lg:w-1/2 p-4">
             <h1 className='font-sans text-2xl lg:text-3xl'>Appointment Feature</h1>
               <p className="text-base lg:text-lg font-sans mt-4">

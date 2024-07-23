@@ -134,7 +134,7 @@ const AppointmentTable = () => {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row p-4 space-x-4">
+    <div className="flex flex-col lg:flex-row p-4 gap-4">
       {showRejectModal && (
         <RejectFormModal
           appointment={selectedAppointment}

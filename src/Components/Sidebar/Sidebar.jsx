@@ -190,8 +190,8 @@ const Sidebar = ({ onToggle }) => {
                   <button onClick={handleRegisterClick}>Register Patient</button>
                 </div>
                 <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
-                  <FaUserDoctor className='cursor-pointer' />
-                  <Link to="/doctorlist">Doctor List</Link>
+                  <MdPersonSearch />
+                  <Link to="/checkpatient">Check Patient</Link>
                 </div>
                 <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
                   <FaUserDoctor className='cursor-pointer' />
@@ -282,8 +282,8 @@ const Sidebar = ({ onToggle }) => {
                   </button>
                 </div>
                 <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
-                  <Link to="/doctorlist">
-                    <FaUserDoctor className='cursor-pointer'/>
+                  <Link to="/checkpatient">
+                    <MdPersonSearch className='cursor-pointer'/>
                   </Link>
                 </div>
                 <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">

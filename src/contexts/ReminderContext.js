@@ -15,13 +15,17 @@ export const ReminderProvider = ({ children }) => {
   useEffect(() => {
     const checkReminders = () => {
       const now = new Date();
+      console.log('Checking reminders at:', now);
       reminders.forEach(reminder => {
         const reminderDate = new Date(reminder.date);
         const reminderTime = reminder.time.split(':').map(Number);
         reminderDate.setHours(reminderTime[0]);
         reminderDate.setMinutes(reminderTime[1]);
+        reminderDate.setSeconds(0); // Ensure seconds are set to zero
+        console.log('Reminder date and time:', reminderDate);
 
-        if (reminderDate <= now && reminderDate > new Date(now - 60000)) {
+        if (reminderDate <= now && reminderDate > new Date(now.getTime() - 60000)) {
+          console.log('Showing notification for reminder:', reminder);
           showNotification(reminder);
         }
       });
@@ -52,6 +56,8 @@ export const ReminderProvider = ({ children }) => {
         body: `You have an appointment: ${reminder.type} at ${reminder.time}`,
         icon: '/path-to-icon/icon.png', // Adjust the path to your icon if you have one
       });
+    } else {
+      console.log('Notification permission not granted.');
     }
   };
 

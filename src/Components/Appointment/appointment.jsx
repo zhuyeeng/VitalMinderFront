@@ -31,10 +31,7 @@ const Appointment = () => {
 
   const { reminders, fetchReminders } = useReminder();
 
-  console.log(username);
-
   useEffect(() => {
-    // Request notification permissions
     if (Notification.permission !== 'granted') {
       Notification.requestPermission();
     }
@@ -49,22 +46,22 @@ const Appointment = () => {
       const now = new Date();
       appointments.forEach(appointment => {
         const appointmentDate = new Date(`${appointment.date}T${appointment.time}`);
-        if (appointmentDate <= now && appointmentDate > new Date(now - 60000)) {
+        if (appointmentDate <= now && appointmentDate > new Date(now.getTime() - 60000)) {
           showNotification(appointment);
         }
       });
     };
 
-    const interval = setInterval(checkAppointments, 60000); // Check every minute
+    const interval = setInterval(checkAppointments, 5000);
 
-    return () => clearInterval(interval); // Clear interval on component unmount
+    return () => clearInterval(interval);
   }, [appointments]);
 
   const showNotification = (appointment) => {
     if (Notification.permission === 'granted') {
       new Notification('Appointment Reminder', {
         body: `You have an appointment: ${appointment.type} at ${appointment.time}`,
-        icon: '/path-to-icon/icon.png', // Adjust the path to your icon if you have one
+        icon: '/path-to-icon/icon.png',
       });
     }
   };
@@ -81,7 +78,6 @@ const Appointment = () => {
           patient_id: patientId,
         },
       });
-      console.log('Fetched appointments:', response.data);
       setAppointments(response.data);
     } catch (error) {
       console.error('Error fetching appointments:', error.response?.data || error.message);
@@ -93,7 +89,6 @@ const Appointment = () => {
     const userId = user.id;
     setUserRole(user.user_role);
     setUsername(user.username);
-    console.log('Fetching patient ID for user ID:', userId);
 
     try {
       const token = localStorage.getItem('token');
@@ -103,7 +98,7 @@ const Appointment = () => {
         },
       });
       const patientId = response.data.patient_id;
-      setPatientId(patientId); // Set patientId state
+      setPatientId(patientId);
       setNewAppointment((prevState) => ({
         ...prevState,
         creator_id: userId,
@@ -131,15 +126,21 @@ const Appointment = () => {
   };
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user'));
     fetchPatientId();
     fetchPatients();
   }, [isForSelf]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchPatientId(); // You can call the fetch function that fits your requirements here
+    }, 10000); // Fetch every 10 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
   const handleAppointmentSubmit = async (appointment) => {
     try {
       const response = await axiosInstance.post('/appointments', appointment);
-      console.log('Appointment created successfully:', response.data);
       setAppointments([...appointments, response.data]);
       setIsCreating(false);
     } catch (error) {
@@ -155,7 +156,6 @@ const Appointment = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log('Updated appointment:', response.data);
       setAppointments(appointments.map(appt => (appt.id === id ? response.data : appt)));
     } catch (error) {
       console.error('Error updating appointment:', error.response?.data || error.message);
@@ -170,7 +170,6 @@ const Appointment = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log('Deleted appointment with ID:', id);
       setAppointments(appointments.filter(appt => appt.id !== id));
     } catch (error) {
       console.error('Error deleting appointment:', error.response?.data || error.message);
@@ -206,11 +205,8 @@ const Appointment = () => {
     const typeMatches = filterType === '' || (appointment.type && appointment.type.toLowerCase().includes(filterType.toLowerCase()));
     const creatorMatches = appointment.creator_id === JSON.parse(localStorage.getItem('user')).id;
 
-    console.log(`Filtering appointment ${appointment.id}: statusMatches=${statusMatches}, typeMatches=${typeMatches}, creatorMatches=${creatorMatches}`);
     return statusMatches && typeMatches && creatorMatches;
   });
-
-  console.log('Filtered appointments:', filteredAppointments);
 
   return (
     <div className='flex flex-col h-screen'>

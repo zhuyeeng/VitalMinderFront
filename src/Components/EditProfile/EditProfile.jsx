@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { updateProfile, updatePassword, setAuthToken, fetchStaffByUserId } from '../../lib/axios'; // Adjust the path based on your project structure
 import NavBar from '../NavBar/NavBar';
 import Sidebar from '../Sidebar/Sidebar';
-import ScheduleModal from '../ArrangeScheduleModal/ArrangeScheduleModal';
 
 const PatientEditProfile = () => {
   const [formData, setFormData] = useState({
@@ -187,7 +186,7 @@ const PatientEditProfile = () => {
   return (
     <div className="min-h-screen flex flex-col my-auto mx-auto">
       {userRole === 'patient' ? <NavBar /> : <Sidebar />}
-      <div className="flex-grow flex items-center justify-center py-10">
+      <div className="flex-grow flex items-center justify-center py-10 pl-11">
         <div className="bg-white rounded-lg shadow-md w-11/12 lg:w-4/5 max-w-4xl p-6">
           <h2 className="text-2xl font-bold mb-6 text-center text-black">Profile Editing</h2>
           <div className="flex flex-col lg:flex-row">
@@ -314,7 +313,6 @@ const PatientEditProfile = () => {
           </div>
         </div>
       </div>
-      {/* <ScheduleModal isOpen={isScheduleModalOpen} onClose={() => setIsScheduleModalOpen(false)} staffId={staffInfo?.details?.id} userRole={staffInfo?.user?.user_role} /> */}
     </div>
   );
 };

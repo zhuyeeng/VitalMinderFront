@@ -20,13 +20,13 @@ const Paramedic_Staff_Dashboard = () => {
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex flex-col lg:flex-row h-screen">
       <div className={`${isSidebarOpen ? 'w-64' : 'w-16'} transition-all duration-500`}>
         <Sidebar onToggle={handleSidebarToggle} />
       </div>
-      <div className="flex-1 flex flex-col gap-10 p-4">
+      <div className="flex-1 flex flex-col gap-6 pl-10 p-4">
         <AppointmentTable refreshFlag={refreshFlag} />
-        <div className="flex flex-col lg:flex-row justify-around items-stretch h-full">
+        <div className="flex flex-col lg:flex-row justify-around items-stretch h-full gap-6">
           <AppointmentLine refreshFlag={refreshFlag} />
           <WaitingListTable refreshFlag={refreshFlag} isParamedic={user.role === 'paramedic'} />
         </div>
