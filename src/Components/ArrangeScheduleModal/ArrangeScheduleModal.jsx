@@ -37,6 +37,7 @@ const ArrangeScheduleModal = ({ isOpen, onClose, staffId, userRole }) => {
       const response = await saveSchedule(userRole, staffId, schedule);
 
       console.log('Schedule saved successfully:', response);
+      onClose();
       // Optionally, handle UI updates or notifications
     } catch (error) {
       console.error('Failed to save schedule:', error);

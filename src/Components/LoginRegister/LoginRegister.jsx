@@ -214,7 +214,7 @@ const LoginRegister = () => {
             {error && <p className="text-red-500 text-sm mt-4">{error}</p>}
 
             <div className='remember-forgot flex justify-between text-sm my-5'>
-              <label className='mr-1 accent-white'><input type='checkbox' />Remember me</label>
+              {/* <label className='mr-1 accent-white'><input type='checkbox' />Remember me</label> */}
               <a href="#" className='text-white no-underline hover:underline' onClick={forgotPasswordLink}>Forgot Password?</a>
             </div>
 
@@ -276,7 +276,7 @@ const LoginRegister = () => {
               {validationErrors.identity_card_number && <p className="text-red-500 text-sm">{validationErrors.identity_card_number[0]}</p>}
             </div>
             <div className='remember-forgot flex justify-between text-sm my-5 col-span-1 md:col-span-2'>
-              <label className='mr-1 accent-white'><input type='checkbox' />I agree to the term & conditions</label>
+              <label className='mr-1 accent-white'><input type='checkbox' required />I agree to the term & conditions</label>
             </div>
 
             {error && <p className="text-red-500 text-sm mt-4 col-span-1 md:col-span-2">{error}</p>}
