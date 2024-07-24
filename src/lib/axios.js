@@ -380,6 +380,17 @@ export const updateProfile = async (profileData) => {
   }
 };
 
+// Function to insert the health information
+export const updateHealthInfo = async (healthData) => {
+  try {
+    const response = await axiosInstance.post('/update-health-info', healthData);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating health information:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
 // Function to update password
 export const updatePassword = async (passwordData) => {
   try {
@@ -448,27 +459,6 @@ export const updateReportStatus = async (reportId, status) => {
     throw error.response?.data || error.message;
   }
 };
-// Fetch medication report for a specific patient
-// export const fetchMedicationReport = async (patientId) => {
-//   try {
-//     const response = await axiosInstance.get(`/medication-reports/${patientId}`);
-//     return response.data;
-//   } catch (error) {
-//     console.error('Error fetching medication report:', error.response?.data || error.message);
-//     throw error.response?.data || error.message;
-//   }
-// };
-
-// Fetch all medication reports
-// export const fetchAllMedicationReports = async (patientId) => {
-//   try {
-//     const response = await axiosInstance.get('/medication-reports');
-//     return response.data;
-//   } catch (error) {
-//     console.error('Error fetching all medication reports:', error.response?.data || error.message);
-//     throw error.response?.data || error.message;
-//   }
-// };
 
 // Function to send a chat message
 export const sendChatMessage = async ({ message, user_id }) => {

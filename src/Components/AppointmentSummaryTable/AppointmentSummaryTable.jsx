@@ -1,25 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { fetchAppointmentsSummary } from '../../lib/axios';
-import 'chart.js/auto';
 
 const AppointmentSummary = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const fetchData = async () => {
+    try {
+      const response = await fetchAppointmentsSummary();
+      setAppointments(response);
+    } catch (error) {
+      console.error('Error fetching appointment summary:', error);
+      setError('Error fetching appointment summary');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetchAppointmentsSummary();
-        setAppointments(response);
-      } catch (error) {
-        console.error('Error fetching appointment summary:', error);
-        setError('Error fetching appointment summary');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
+    fetchData(); // Initial fetch
+    const interval = setInterval(fetchData, 5000); // Fetch every 10 seconds
+
+    return () => clearInterval(interval); // Cleanup interval on component unmount
   }, []);
 
   if (loading) {
@@ -32,7 +35,6 @@ const AppointmentSummary = () => {
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4">
-      
       <div className="mb-4">
         <h6 className="text-lg font-bold mb-2">Appointment Table</h6>
         <table className="min-w-full bg-white rounded-lg shadow overflow-hidden">

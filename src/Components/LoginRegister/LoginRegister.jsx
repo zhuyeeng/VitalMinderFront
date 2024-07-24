@@ -200,6 +200,7 @@ const LoginRegister = () => {
       <div className={`wrapper relative w-full bg-transparent border-[2px] border-[rgba(255,255,255,0.1)] rounded-xl text-white flex items-center overflow-hidden transition-all duration-200 ease-in-out ${action === 'register' ? 'scrollable h-[70rem] md:h-[45rem] w-[90%] md:w-[50rem]' : 'h-[450px] w-[90%] md:w-[420px]'} ${action === 'forgot-password' ? 'h-[250px] w-[90%] md:w-[420px]' : ''}`}>
         <div className={`form-box login w-full p-10 transition-transform duration-150 ease-in-out ${action === 'register' || action === 'forgot-password' ? 'translate-x-[-830px] transition-none' : 'translate-x-0'}`}>
           <form onSubmit={handleLogin}>
+            <h1 className='text-4xl text-center'>Vital Minder</h1>
             <h1 className='text-4xl text-center'>Login</h1>
             <div className='input-box relative w-full h-14 mt-8 mb-0'>
               <input type='email' name='email' placeholder='Email' required className='w-full h-full bg-transparent outline-none border-[2px] border-[rgba(255,255,255,0.1)] rounded-[40px] text-[16px] text-white placeholder:text-white py-5 pr-11 pl-5' value={formData.email} onChange={handleInputChange} />
@@ -228,6 +229,7 @@ const LoginRegister = () => {
         {/* Registration Form */}
         <div className={`form-box register w-full p-10 absolute transition-transform duration-150 ease-in-out overflow-y-auto ${action === 'register' ? 'translate-x-0' : 'translate-x-[400px]'}`}>
           <form onSubmit={handleRegister} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <h1 className='text-4xl text-center col-span-1 md:col-span-2'>Vital Minder</h1>
             <h1 className='text-4xl text-center col-span-1 md:col-span-2'>Registration</h1>
             <div className='input-box relative w-full h-14 mt-8 mb-0 col-span-1'>
               <input type='text' name='username' placeholder='Username' required className='w-full h-full bg-transparent outline-none border-[2px] border-[rgba(255,255,255,0.1)] rounded-[40px] text-[16px] text-white placeholder:text-white py-5 pr-11 pl-5' value={formData.username} onChange={handleInputChange} />
@@ -292,6 +294,7 @@ const LoginRegister = () => {
         {/* Forgot Password Form */}
         <div className={`form-box forgot-password w-full p-10 absolute transition-transform duration-150 ease-in-out ${action === 'forgot-password' ? 'translate-x-0' : 'translate-x-[1000px]'}`}>
           <form onSubmit={handleForgotPassword}>
+            <h1 className='text-4xl text-center mb-3'>Vital Minder</h1>
             <h1 className='text-4xl text-center'>Reset Password</h1>
             <div className='input-box relative w-full h-14 mt-8 mb-0'>
               <input
@@ -332,7 +335,7 @@ const LoginRegister = () => {
             
             {error && <p className="text-red-500 text-sm mt-4">{error}</p>}
             
-            <button type='submit' className='loginBtn'>Send Reset Email</button>
+            <button type='submit' className='loginBtn'>Reset Password</button>
 
             <div className='register-link text-sm text-center mx-0 mt-5 mb-4'>
               <p> Remembered your password? <a href='#' className='text-white no-underline font-semibold hover:underline' onClick={loginLink}>Login</a></p>

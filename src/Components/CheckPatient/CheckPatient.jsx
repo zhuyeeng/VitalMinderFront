@@ -20,7 +20,7 @@ const CheckPatientPage = () => {
 
   useEffect(() => {
     if (patients) {
-      fetchReports(patients);
+      fetchReports(patients.id);
     }
   }, [patients, reportType]);
 
@@ -28,7 +28,7 @@ const CheckPatientPage = () => {
     try {
       const foundPatients = await searchPatientByName(patientName);
       if (foundPatients.length > 0) {
-        setPatients(foundPatients[0].id);
+        setPatients(foundPatients[0]);
       } else {
         setPatients(null);
       }
@@ -37,6 +37,8 @@ const CheckPatientPage = () => {
       setPatients(null);
     }
   };
+
+  console.log(patients);
 
   const fetchReports = async (patientId) => {
     try {
@@ -105,6 +107,13 @@ const CheckPatientPage = () => {
               </button>
             </div>
           </div>
+          <h3>Blood pressure:{patients.blood_pressure}</h3>
+          <h3>Blood sugar:{patients.blood_sugar}</h3>
+          <h3>Emergency Contact:{patients.emergency_contect}</h3>
+          <h3>Height:{patients.height}</h3>
+          <h3>Medication History:{patients.medical_history}</h3>
+          <h3>medications:{patients.medications}</h3>
+          <h3>Weight:{patients.weight}</h3>
 
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white">

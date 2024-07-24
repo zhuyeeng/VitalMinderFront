@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { updateProfile, updatePassword, setAuthToken, fetchStaffByUserId } from '../../lib/axios'; // Adjust the path based on your project structure
+import { updateProfile, updatePassword, updateHealthInfo, setAuthToken, fetchStaffByUserId, searchPatientByName } from '../../lib/axios'; // Adjust the path based on your project structure
 import NavBar from '../NavBar/NavBar';
 import Sidebar from '../Sidebar/Sidebar';
 
@@ -19,25 +19,29 @@ const PatientEditProfile = () => {
     fieldExperience: '',
     oldPassword: '',
     newPassword: '',
-    confirmNewPassword: ''
+    confirmNewPassword: '',
+    bloodPressure: '',
+    bloodSugar: '',
+    height: '',
+    weight: '',
+    medicalHistory: '',
+    medications: '',
+    emergencyContact: ''
   });
   const [profileImage, setProfileImage] = useState(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
-  const [showProfileForm, setShowProfileForm] = useState(true);
+  const [showForm, setShowForm] = useState('profile');
   const [userRole, setUserRole] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
-  const [staffInfo, setStaffInfo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [username, setUsername] = useState('');
 
   useEffect(() => {
     const fetchAndSetUserData = async () => {
       try {
         const userId = JSON.parse(localStorage.getItem('user')).id; // Assume user ID is stored in local storage
         const userData = await fetchStaffByUserId(userId);
-        setStaffInfo(userData);
-        localStorage.setItem('user', JSON.stringify(userData.user));
-
+        setUsername(userData.user.username);
         setFormData((prevFormData) => ({
           ...prevFormData,
           name: userData.user.username,
@@ -51,12 +55,29 @@ const PatientEditProfile = () => {
           qualifications: userData.details?.qualifications || '',
           yearsOfExperience: userData.details?.years_of_experience || '',
           assignedArea: userData.details?.assigned_area || '',
-          fieldExperience: userData.details?.field_experience || ''
+          fieldExperience: userData.details?.field_experience || '',
         }));
         setUserRole(userData.user.user_role);
 
         if (userData.user.profile_picture) {
           setImagePreviewUrl(`http://localhost:8000/storage/${userData.user.profile_picture}`);
+        }
+
+        if (userData.user.user_role === 'patient') {
+          const patientData = await searchPatientByName(userData.user.username);
+          if (patientData.length > 0) {
+            const patient = patientData[0];
+            setFormData((prevFormData) => ({
+              ...prevFormData,
+              bloodPressure: patient.blood_pressure || '',
+              bloodSugar: patient.blood_sugar || '',
+              height: patient.height || '',
+              weight: patient.weight || '',
+              medicalHistory: patient.medical_history || '',
+              medications: patient.medications || '',
+              emergencyContact: patient.emergency_contact || ''
+            }));
+          }
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -67,6 +88,8 @@ const PatientEditProfile = () => {
 
     fetchAndSetUserData();
   }, []);
+
+  console.log(formData);
 
   const handleToggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -141,7 +164,14 @@ const PatientEditProfile = () => {
         qualifications: userData.details?.qualifications || '',
         yearsOfExperience: userData.details?.years_of_experience || '',
         assignedArea: userData.details?.assigned_area || '',
-        fieldExperience: userData.details?.field_experience || ''
+        fieldExperience: userData.details?.field_experience || '',
+        bloodPressure: userData.user.blood_pressure || '',
+        bloodSugar: userData.user.blood_sugar || '',
+        height: userData.user.height || '',
+        weight: userData.user.weight || '',
+        medicalHistory: userData.user.medical_history || '',
+        medications: userData.user.medications || '',
+        emergencyContact: userData.user.emergency_contact || ''
       }));
       setUserRole(userData.user.user_role);
       if (userData.user.profile_picture) {
@@ -171,17 +201,37 @@ const PatientEditProfile = () => {
     }
   };
 
+  const handleSubmitHealth = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+
+    try {
+      setAuthToken(token);
+      await updateHealthInfo({
+        blood_pressure: formData.bloodPressure,
+        blood_sugar: formData.bloodSugar,
+        height: parseFloat(formData.height),
+        weight: parseFloat(formData.weight),
+        medical_history: formData.medicalHistory,
+        medications: formData.medications,
+        emergency_contact: formData.emergencyContact
+      });
+      alert('Health information updated successfully');
+    } catch (error) {
+      console.error('Error updating health information:', error);
+      alert('Error updating health information. Please try again.');
+    }
+  };
+
   const toggleForm = (form) => {
-    setShowProfileForm(form === 'profile');
+    setShowForm(form);
   };
 
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  if (!staffInfo) {
-    return <div>Error loading data</div>;
-  }
+  console.log("Form: ", formData);
 
   return (
     <div className="min-h-screen flex flex-col my-auto mx-auto">
@@ -193,25 +243,27 @@ const PatientEditProfile = () => {
             <div className="flex gap-2 lg:w-1/4 lg:p-4 lg:flex-col mb-4 lg:mb-0 lg:gap-4">
               <button
                 onClick={() => toggleForm('profile')}
-                className={`w-full py-2 px-4 rounded ${showProfileForm ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}
+                className={`w-full py-2 px-4 rounded ${showForm === 'profile' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}
               >
                 Profile
               </button>
               <button
                 onClick={() => toggleForm('password')}
-                className={`w-full py-2 px-4 rounded ${!showProfileForm ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}
+                className={`w-full py-2 px-4 rounded ${showForm === 'password' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}
               >
                 Password
               </button>
-              {/* <button
-                onClick={() => setIsScheduleModalOpen(true)}
-                className="w-full py-2 px-4 rounded bg-gray-200 text-black"
-              >
-                Schedule
-              </button> */}
+              {userRole === 'patient' && (
+                <button
+                  onClick={() => toggleForm('health')}
+                  className={`w-full py-2 px-4 rounded ${showForm === 'health' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}
+                >
+                  Health
+                </button>
+              )}
             </div>
             <div className="w-full lg:w-3/4 p-4">
-              {showProfileForm ? (
+              {showForm === 'profile' && (
                 <form onSubmit={handleSubmitProfile}>
                   <div className="flex justify-center mb-4">
                     <label htmlFor="profileImage" className="w-32 h-32 rounded-full border-2 border-gray-300 flex items-center justify-center cursor-pointer overflow-hidden">
@@ -289,7 +341,8 @@ const PatientEditProfile = () => {
                     <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300">Update</button>
                   </div>
                 </form>
-              ) : (
+              )}
+              {showForm === 'password' && (
                 <form onSubmit={handleSubmitPassword}>
                   <h2 className="text-xl font-bold mb-4 text-black">Changing Password</h2>
                   <div className="mb-4">
@@ -302,7 +355,43 @@ const PatientEditProfile = () => {
                   </div>
                   <div className="mb-4">
                     <label className="block text-black">Confirm New Password</label>
-                    <input type="password" name="confirmNewPassword" value={formData.confirmNewPassword} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
+                    <input type="password" name="confirmNewPassword}" value={formData.confirmNewPassword} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
+                  </div>
+                  <div className="flex justify-end mt-4">
+                    <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300">Update</button>
+                  </div>
+                </form>
+              )}
+              {showForm === 'health' && userRole === 'patient' && (
+                <form onSubmit={handleSubmitHealth}>
+                  <h2 className="text-xl font-bold mb-4 text-black">Health Information</h2>
+                  <div className="mb-4">
+                    <label className="block text-black">Blood Pressure</label>
+                    <input type="text" name="bloodPressure" value={formData.bloodPressure} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-black">Blood Sugar</label>
+                    <input type="text" name="bloodSugar" value={formData.bloodSugar} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-black">Height</label>
+                    <input type="number" step="0.01" name="height" value={formData.height} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-black">Weight</label>
+                    <input type="number" step="0.01" name="weight" value={formData.weight} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-black">Medical History</label>
+                    <textarea name="medicalHistory" value={formData.medicalHistory} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-black">Medications</label>
+                    <input type="text" name="medications" value={formData.medications} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-black">Emergency Contact</label>
+                    <textarea name="emergencyContact" value={formData.emergencyContact} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
                   </div>
                   <div className="flex justify-end mt-4">
                     <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300">Update</button>

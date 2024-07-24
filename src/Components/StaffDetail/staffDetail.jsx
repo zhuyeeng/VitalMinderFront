@@ -7,18 +7,22 @@ const StaffDetail = ({ refreshFlag }) => {
   const [data, setData] = useState({ doctors: [], paramedics: [] });
   const [loading, setLoading] = useState(true);
 
+  const fetchData = async () => {
+    try {
+      const usersData = await fetchUsers();
+      setData(usersData);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching users data:', error);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const usersData = await fetchUsers();
-        setData(usersData);
-      } catch (error) {
-        console.error('Error fetching users data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
+    fetchData(); // Initial fetch
+    const interval = setInterval(fetchData, 5000); // Fetch every 10 seconds
+
+    return () => clearInterval(interval); // Cleanup interval on component unmount
   }, [refreshFlag]);
 
   if (loading) {
@@ -37,12 +41,6 @@ const StaffDetail = ({ refreshFlag }) => {
   };
 
   return (
-    // <div className="max-w-full w-full md:w-1/2 bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
-    //   <div className="flex justify-between mb-3">
-    //     <div className="flex justify-center items-center">
-    //       <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">Staff Details</h5>
-    //     </div>
-    //   </div>
     <div className="w-full max-w-sm bg-white rounded-lg shadow p-4">
       <h5 className="text-xl font-bold mb-3 text-black">Staff Details</h5>
 
