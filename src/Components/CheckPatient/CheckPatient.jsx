@@ -38,8 +38,6 @@ const CheckPatientPage = () => {
     }
   };
 
-  console.log(patients);
-
   const fetchReports = async (patientId) => {
     try {
       if (reportType === 'patient') {
@@ -57,8 +55,6 @@ const CheckPatientPage = () => {
       setMedicationReports([]);
     }
   };
-
-  console.log(medicationReports);
 
   const openModal = (report) => {
     setSelectedReport(report);
@@ -107,14 +103,19 @@ const CheckPatientPage = () => {
               </button>
             </div>
           </div>
-          <h3>Blood pressure:{patients.blood_pressure}</h3>
-          <h3>Blood sugar:{patients.blood_sugar}</h3>
-          <h3>Emergency Contact:{patients.emergency_contect}</h3>
-          <h3>Height:{patients.height}</h3>
-          <h3>Medication History:{patients.medical_history}</h3>
-          <h3>medications:{patients.medications}</h3>
-          <h3>Weight:{patients.weight}</h3>
-
+          {patients ? (
+            <>
+              <h3>Blood pressure: {patients.blood_pressure}</h3>
+              <h3>Blood sugar: {patients.blood_sugar}</h3>
+              <h3>Emergency Contact: {patients.emergency_contact}</h3>
+              <h3>Height: {patients.height}</h3>
+              <h3>Medication History: {patients.medical_history}</h3>
+              <h3>Medications: {patients.medications}</h3>
+              <h3>Weight: {patients.weight}</h3>
+            </>
+          ) : (
+            <div>No patient information available.</div>
+          )}
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white">
               <thead>
