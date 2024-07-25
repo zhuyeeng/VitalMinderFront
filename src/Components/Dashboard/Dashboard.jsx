@@ -32,7 +32,15 @@ const Dashboard = () => {
     try {
       const doctorData = await fetchMedicalStaff();
       if (doctorData && Array.isArray(doctorData.doctors)) {
-        setDoctors(doctorData.doctors);
+        const baseUrl = 'http://localhost:8000/storage/'; // Replace this with your actual base URL
+        const updatedDoctors = doctorData.doctors.map(doctor => ({
+          ...doctor,
+          user: {
+            ...doctor.user,
+            profile_picture: baseUrl + doctor.user.profile_picture
+          }
+        }));
+        setDoctors(updatedDoctors);
       } else {
         console.error("Unexpected data format:", doctorData);
       }
@@ -40,7 +48,8 @@ const Dashboard = () => {
       console.error("Fetching Doctor Error:", error);
     }
   };
-
+  
+  console.log(doctors);
   const scrollToSection = (id) => {
     const element = document.getElementById(id);
     const yOffset = -70; // Adjust this value to match the height of your fixed header
@@ -160,7 +169,7 @@ const Dashboard = () => {
           >
             {Array.isArray(doctors) && doctors.length > 0 ? doctors.map((doctor, index) => (
               <div key={index} className="flex flex-col items-center p-4">
-                <img src={doctor.details.profile_picture} alt={doctor.details.doctor_name} className="h-32 w-32 rounded-full" />
+                <img src={doctor.user.profile_picture} alt={doctor.details.doctor_name} className="h-32 w-32 rounded-full" />
                 <h3 className="text-lg font-semibold mt-4">{doctor.details.doctor_name}</h3>
                 <p className="text-sm">{doctor.details.clinic_address}</p>
               </div>
