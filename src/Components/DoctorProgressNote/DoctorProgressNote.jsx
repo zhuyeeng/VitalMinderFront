@@ -34,6 +34,7 @@ const DoctorProgressNoteModal = ({ isOpen, onClose, appointmentId, patientId, pa
         report_status: 'pending'
       };
       await onSave(reportData);
+      alert('Save Successfully.');
       onClose();
     } catch (error) {
       setError('Error creating medication report. Please try again.');

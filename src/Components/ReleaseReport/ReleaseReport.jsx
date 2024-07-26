@@ -76,6 +76,7 @@ const ReleaseReport = () => {
       formData.append('paramedic_staff_id', paramedicId);
 
       await uploadReport(formData);
+      alert('Report Upload Successfully.');
       handleCloseModal();
       // Optionally, refresh the patient list or show a success message
     } catch (error) {

@@ -45,9 +45,11 @@ const Appointment = () => {
     const checkAppointments = () => {
       const now = new Date();
       appointments.forEach(appointment => {
-        const appointmentDate = new Date(`${appointment.date}T${appointment.time}`);
-        if (appointmentDate <= now && appointmentDate > new Date(now.getTime() - 60000)) {
-          showNotification(appointment);
+        if (appointment.status.toLowerCase() === 'pending' || appointment.status.toLowerCase() === 'accepted') {
+          const appointmentDate = new Date(`${appointment.date}T${appointment.time}`);
+          if (appointmentDate <= now && appointmentDate > new Date(now.getTime() - 60000)) {
+            showNotification(appointment);
+          }
         }
       });
     };

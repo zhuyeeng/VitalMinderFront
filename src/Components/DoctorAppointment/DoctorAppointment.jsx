@@ -70,6 +70,14 @@ const DoctorAppointment = () => {
     }
   };
 
+  const appointmentCounts = appointments.reduce((acc, appt) => {
+    const date = new Date(appt.appointment.date).toDateString();
+    acc[date] = (acc[date] || 0) + 1;
+    return acc;
+  }, {});
+
+  console.log("Appointment Counts: ", appointmentCounts);
+
   return (
     <div className="flex flex-col md:flex-row gap-10 p-4">
       <div className="flex-1 h-full">
@@ -110,10 +118,15 @@ const DoctorAppointment = () => {
           <Calendar
             className="text-black"
             tileContent={({ date, view }) => {
-              const appointmentDates = appointments.map((appt) => new Date(appt.appointment.date).toDateString());
-              if (appointmentDates.includes(date.toDateString())) {
-                return <div className="dot"></div>;
-              }
+              const dateString = date.toDateString();
+              const count = appointmentCounts[dateString];
+              return count ? (
+                <div className="flex justify-center items-center h-full w-full">
+                  <div className="bg-yellow-200 text-black rounded-full h-6 w-6 flex items-center justify-center">
+                    {count}
+                  </div>
+                </div>
+              ) : null;
             }}
           />
         </div>
