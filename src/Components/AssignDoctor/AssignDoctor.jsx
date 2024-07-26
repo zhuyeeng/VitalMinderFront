@@ -32,6 +32,7 @@ const AssignDoctorModal = ({ appointment, onSubmit, onCancel }) => {
     fetchDoctors();
     fetchParamedicId();
   }, []);
+  console.log(paramedicId);
 
   const handleSubmit = (e) => {
     e.preventDefault();

@@ -42,9 +42,9 @@ const AppointmentTypeChart = () => {
 
   useEffect(() => {
     fetchData(); // Initial fetch
-    const interval = setInterval(fetchData, 5000); // Fetch every 10 seconds
+    // const interval = setInterval(fetchData, 5000); // Fetch every 10 seconds
 
-    return () => clearInterval(interval); // Cleanup interval on component unmount
+    // return () => clearInterval(interval); // Cleanup interval on component unmount
   }, []);
 
   if (loading) {

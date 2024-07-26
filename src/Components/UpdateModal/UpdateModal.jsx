@@ -28,7 +28,7 @@ const UpdateModal = ({ staff, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { role, details, user } = formData;
+      const { role, details } = formData;
       const payload = {
         ...details,
         email: role === 'doctor' ? details.doctor_email : details.paramedic_staff_email,
@@ -50,7 +50,15 @@ const UpdateModal = ({ staff, onClose }) => {
       console.log('Updated data:', response.data);
       onClose();
     } catch (error) {
-      console.error('Error updating staff:', error.response?.data || error.message);
+      const errorMessage = error.response?.data?.message || error.message;
+      console.error('Error updating staff:', errorMessage);
+
+      // Check for specific error messages or codes
+      if (errorMessage.includes('Duplicate entry')) {
+        alert('The username or email you are trying to use is already taken. Please use a different one.');
+      } else {
+        alert(`An error occurred: ${errorMessage}`);
+      }
     }
   };
 

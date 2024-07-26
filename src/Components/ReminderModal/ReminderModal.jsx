@@ -39,7 +39,8 @@ const ReminderModal = ({ showModal, handleClose }) => {
           ...reminderData,
           created_by: userId
         });
-        console.log('Reminder created:', response.data);
+        // console.log('Reminder created:', response.data);
+        alert("Reminder Create Successfully.");
         handleClose();
       }
     } catch (error) {

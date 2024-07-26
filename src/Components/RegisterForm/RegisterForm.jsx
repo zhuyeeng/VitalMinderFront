@@ -81,6 +81,7 @@ const RegisterForm = ({ onClose }) => {
             setAuthToken(response.token);
             setValidationErrors({});
             setError('');
+            alert('Register Successfully')
             onClose(); // Close the form after successful registration
         } catch (err) {
             if (err.response && err.response.data) {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axiosInstance from '../../lib/axios';
+import axiosInstance, { fetchPendingAppointments } from '../../lib/axios';
 import RejectFormModal from '../RejectAppointmentForm/RejectAppointmentForm';
 import AssignDoctorModal from '../AssignDoctor/AssignDoctor';
 import Calendar from 'react-calendar';
@@ -27,10 +27,21 @@ const AppointmentTable = () => {
       }
     };
 
+    const fetchPendingAppointment = async () => {
+      try {
+        const data = await fetchPendingAppointments();
+        setAppointments(data);
+      } catch (error) {
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     const intervalId = setInterval(loadAppointments, 5000); // Fetch data every 5 seconds
 
     loadAppointments();
-    fetchAppointments();
+    fetchPendingAppointment();
 
     return () => clearInterval(intervalId); // Clean up the interval on component unmount
   }, []);
