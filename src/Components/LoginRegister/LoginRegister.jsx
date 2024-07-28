@@ -95,7 +95,7 @@ const LoginRegister = () => {
       setError('Passwords do not match');
       return;
     }
-
+  
     try {
       const response = await registerUser({
         name: formData.username,
@@ -114,12 +114,18 @@ const LoginRegister = () => {
       window.alert('Registration successful! You can now log in.');
       window.location.reload(); // Refresh the page
     } catch (err) {
-      if (err.data) {
-        setValidationErrors(err.data);
-        if (err.data.email && err.data.email.includes('The email has already been taken.')) {
-          window.alert('The account is already registered. Please use a different email.');
+      if (err.response && err.response.data && err.response.data.errors) {
+        const errors = err.response.data.errors;
+        if (
+          (errors.email && errors.email.includes('The email has already been taken.')) ||
+          (errors.username && errors.username.includes('The username has already been taken.')) ||
+          (errors.identity_card_number && errors.identity_card_number.includes('The identity card number has already been taken.')) ||
+          (errors.phone_number && errors.phone_number.includes('The phone number has already been taken.'))
+        ) {
+          setError('User information such as username, email, identity card number or phone number had been used!');
+        } else {
+          setValidationErrors(errors);
         }
-        setError('');
       } else {
         setError('Registration failed. Please try again.');
       }

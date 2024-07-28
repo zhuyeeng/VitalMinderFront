@@ -355,7 +355,7 @@ const PatientEditProfile = () => {
                   </div>
                   <div className="mb-4">
                     <label className="block text-black">Confirm New Password</label>
-                    <input type="password" name="confirmNewPassword}" value={formData.confirmNewPassword} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
+                    <input type="password" name="confirmNewPassword" value={formData.confirmNewPassword} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
                   </div>
                   <div className="flex justify-end mt-4">
                     <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300">Update</button>

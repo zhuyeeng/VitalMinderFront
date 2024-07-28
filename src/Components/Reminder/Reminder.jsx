@@ -64,6 +64,7 @@ const Reminder = () => {
       fetchReminders(); // Fetch reminders after update
       alert('Reminder updated successfully');
     } catch (error) {
+      alert('Fail to updte reminder.');
       console.error('Error updating reminder:', error.response?.data || error.message);
     }
   };
@@ -80,6 +81,7 @@ const Reminder = () => {
       setSelectedReminder(null);
       alert('Reminder deleted successfully');
     } catch (error) {
+      alert('Fail to delete reminder');
       console.error('Error deleting reminder:', error.response?.data || error.message);
     }
   };
@@ -89,14 +91,10 @@ const Reminder = () => {
       const now = new Date();
       console.log('Checking reminders at:', now);
       reminders.forEach(reminder => {
-        const reminderDate = new Date(reminder.created_at);
         const reminderTime = reminder.time.split(':').map(Number);
-        reminderDate.setHours(reminderTime[0]);
-        reminderDate.setMinutes(reminderTime[1]);
-        reminderDate.setSeconds(0); // Ensure seconds are set to zero
-        console.log('Reminder date and time:', reminderDate);
+        const nowTime = [now.getHours(), now.getMinutes()];
 
-        if (reminderDate <= now && reminderDate > new Date(now.getTime() - 60000)) {
+        if (reminderTime[0] === nowTime[0] && reminderTime[1] === nowTime[1]) {
           console.log('Showing notification for reminder:', reminder);
           showNotification(reminder);
         }
@@ -110,8 +108,8 @@ const Reminder = () => {
 
   const showNotification = (reminder) => {
     if (Notification.permission === 'granted') {
-      new Notification('Medication Reminder', {
-        body: `It's time to take your medication: ${reminder.medication_types} at ${reminder.time}`,
+      new Notification('Reminder', {
+        body: `It's time for your reminder: ${reminder.medication_types} at ${reminder.time}`,
         icon: '/path-to-icon/icon.png', // Adjust the path to your icon if you have one
       });
     } else {
@@ -135,22 +133,26 @@ const Reminder = () => {
               <input type="text" placeholder="Search..." className="ml-4 p-2 rounded border border-gray-300" />
             </div>
             <div className="overflow-y-auto flex-grow flex flex-col gap-3">
-              {reminders.map((reminder) => (
-                <div
-                  key={reminder.id}
-                  className="p-4 mb-2 flex justify-between items-center cursor-pointer bg-white shadow-md rounded-md hover:bg-gray-100 transform transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg"
-                  onClick={() => handleReminderClick(reminder.id)}
-                >
-                  <div>
-                    <p className="font-bold text-xl text-black">{reminder.reminder_name}</p>
-                    <small className="text-gray-500 text-sm">Created By: {reminder.user?.username || 'Unknown'}</small>
+              {reminders.length > 0 ? (
+                reminders.map((reminder) => (
+                  <div
+                    key={reminder.id}
+                    className="p-4 mb-2 flex justify-between items-center cursor-pointer bg-white shadow-md rounded-md hover:bg-gray-100 transform transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg"
+                    onClick={() => handleReminderClick(reminder.id)}
+                  >
+                    <div>
+                      <p className="font-bold text-xl text-black">{reminder.reminder_name}</p>
+                      <small className="text-gray-500 text-sm">Created By: {reminder.user?.username || 'Unknown'}</small>
+                    </div>
+                    <div className="text-gray-500 text-sm text-right">
+                      <p>{new Date(reminder.created_at).toLocaleDateString()}</p>
+                      <p>{new Date(reminder.created_at).toLocaleTimeString()}</p>
+                    </div>
                   </div>
-                  <div className="text-gray-500 text-sm text-right">
-                    <p>{new Date(reminder.created_at).toLocaleDateString()}</p>
-                    <p>{new Date(reminder.created_at).toLocaleTimeString()}</p>
-                  </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p className="text-gray-500 text-center mt-4">No reminders found</p>
+              )}
             </div>
           </div>
         </div>

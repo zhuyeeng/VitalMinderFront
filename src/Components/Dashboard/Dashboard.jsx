@@ -49,7 +49,7 @@ const Dashboard = () => {
     }
   };
   
-  console.log(doctors);
+  // console.log(doctors);
   const scrollToSection = (id) => {
     const element = document.getElementById(id);
     const yOffset = -70; // Adjust this value to match the height of your fixed header

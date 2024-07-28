@@ -41,33 +41,6 @@ const Appointment = () => {
     fetchReminders();
   }, []);
 
-  useEffect(() => {
-    const checkAppointments = () => {
-      const now = new Date();
-      appointments.forEach(appointment => {
-        if (appointment.status.toLowerCase() === 'pending' || appointment.status.toLowerCase() === 'accepted') {
-          const appointmentDate = new Date(`${appointment.date}T${appointment.time}`);
-          if (appointmentDate <= now && appointmentDate > new Date(now.getTime() - 60000)) {
-            showNotification(appointment);
-          }
-        }
-      });
-    };
-
-    const interval = setInterval(checkAppointments, 5000);
-
-    return () => clearInterval(interval);
-  }, [appointments]);
-
-  const showNotification = (appointment) => {
-    if (Notification.permission === 'granted') {
-      new Notification('Appointment Reminder', {
-        body: `You have an appointment: ${appointment.type} at ${appointment.time}`,
-        icon: '/path-to-icon/icon.png',
-      });
-    }
-  };
-
   const fetchAppointmentsByUserIdAndPatientId = async (userId, patientId) => {
     try {
       const token = localStorage.getItem('token');
@@ -85,13 +58,13 @@ const Appointment = () => {
       console.error('Error fetching appointments:', error.response?.data || error.message);
     }
   };
-
+  
   const fetchPatientId = async () => {
     const user = JSON.parse(localStorage.getItem('user'));
     const userId = user.id;
     setUserRole(user.user_role);
     setUsername(user.username);
-
+  
     try {
       const token = localStorage.getItem('token');
       const response = await axiosInstance.get(`/appointments/patient-id/${userId}`, {
@@ -113,29 +86,14 @@ const Appointment = () => {
     }
   };
 
-  const fetchPatients = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axiosInstance.get('/patients', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setPatients(response.data);
-    } catch (error) {
-      console.error('Error fetching patients:', error.response?.data || error.message);
-    }
-  };
-
   useEffect(() => {
     fetchPatientId();
-    fetchPatients();
   }, [isForSelf]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      fetchPatientId(); // You can call the fetch function that fits your requirements here
-    }, 10000); // Fetch every 10 seconds
+      fetchPatientId();
+    }, 10000); 
 
     return () => clearInterval(interval);
   }, []);
@@ -160,6 +118,7 @@ const Appointment = () => {
       });
       setAppointments(appointments.map(appt => (appt.id === id ? response.data : appt)));
     } catch (error) {
+      alert('Fail to create appointment, please try again.');
       console.error('Error updating appointment:', error.response?.data || error.message);
     }
   };
@@ -202,11 +161,47 @@ const Appointment = () => {
     }
   };
 
+  useEffect(() => {
+    const checkAppointments = () => {
+      const now = new Date();
+      const nowTime = [now.getHours(), now.getMinutes()];
+      const nowDate = now.toISOString().split('T')[0];
+
+      appointments.forEach(appointment => {
+        const appointmentTime = appointment.time.split(':').map(Number);
+        const appointmentDate = appointment.date;
+
+        if (appointment.status === 'accepted' && 
+            appointmentDate === nowDate &&
+            appointmentTime[0] === nowTime[0] && 
+            appointmentTime[1] === nowTime[1]) {
+          console.log('Showing notification for appointment:', appointment);
+          showNotification(appointment);
+        }
+      });
+    };
+
+    const interval = setInterval(checkAppointments, 60000); // Check every minute
+
+    return () => clearInterval(interval); // Clear interval on component unmount
+  }, [appointments]);
+
+  const showNotification = (appointment) => {
+    if (Notification.permission === 'granted') {
+      new Notification('Appointment Reminder', {
+        body: `You have an appointment: ${appointment.type} at ${appointment.time}`,
+        icon: '/path-to-icon/icon.png', // Adjust the path to your icon if you have one
+      });
+    } else {
+      console.log('Notification permission not granted.');
+    }
+  };
+
   const filteredAppointments = appointments.filter(appointment => {
     const statusMatches = appointment.status && appointment.status.toLowerCase() === selectedStatus.toLowerCase();
     const typeMatches = filterType === '' || (appointment.type && appointment.type.toLowerCase().includes(filterType.toLowerCase()));
-    const creatorMatches = appointment.creator_id === JSON.parse(localStorage.getItem('user')).id;
-
+    const creatorMatches = appointment.creator_id === JSON.parse(localStorage.getItem('user')).id || appointment.patient_id === patientId;
+  
     return statusMatches && typeMatches && creatorMatches;
   });
 
@@ -244,30 +239,34 @@ const Appointment = () => {
             </div>
           </div>
           <div className='overflow-y-auto flex-grow flex flex-row md:flex-col gap-3'>
-            {filteredAppointments.map(appointment => (
-              <div key={appointment.id} className='mb-2 appointment-card max-h-80 bg-white p-4 rounded-lg shadow-md cursor-pointer hover:bg-gray-100 transform transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg'
-                onClick={() => setSelectedAppointment(appointment)}
-              >
-                <div className='flex flex-col md:flex-row justify-between'>
-                  <div>
-                    <h3 className='text-lg font-semibold text-black'>Appointment Type: {appointment.type}</h3>
+            {filteredAppointments.length > 0 ? (
+              filteredAppointments.map(appointment => (
+                <div key={appointment.id} className='mb-2 appointment-card max-h-80 bg-white p-4 rounded-lg shadow-md cursor-pointer hover:bg-gray-100 transform transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg'
+                  onClick={() => setSelectedAppointment(appointment)}
+                >
+                  <div className='flex flex-col md:flex-row justify-between'>
+                    <div>
+                      <h3 className='text-lg font-semibold text-black'>Appointment Type: {appointment.type}</h3>
+                    </div>
+                    <div className='text-right'>
+                      <p className='text-gray-600'>{appointment.date}</p>
+                      <p className='text-gray-600'>{appointment.time}</p>
+                    </div>
                   </div>
-                  <div className='text-right'>
-                    <p className='text-gray-600'>{appointment.date}</p>
-                    <p className='text-gray-600'>{appointment.time}</p>
+                  <div className='mt-8 flex flex-col md:flex-row justify-between'>
+                    <div>
+                      <p className='text-gray-600'>Patient Name: {appointment.patient?.username || appointment.patient_name}</p>
+                      <p className='text-gray-600'>Doctor: {appointment.doctor?.doctor_name || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <div className='border border-gray-500 bg-[#FF6969] text-black text-lg px-4 py-2 rounded'>{appointment.status.toUpperCase()}</div>
+                    </div>
                   </div>
                 </div>
-                <div className='mt-8 flex flex-col md:flex-row justify-between'>
-                  <div>
-                    <p className='text-gray-600'>Patient Name: {appointment.patient?.username || appointment.patient_name}</p>
-                    <p className='text-gray-600'>Doctor: {appointment.doctor?.doctor_name || 'N/A'}</p>
-                  </div>
-                  <div>
-                    <div className='border border-gray-500 bg-[#FF6969] text-black text-lg px-4 py-2 rounded'>{appointment.status.toUpperCase()}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <div className='text-center text-gray-600'>No Appointment Found</div>
+            )}
           </div>
         </div>
         <div className='content w-full md:w-3/4 p-4 flex flex-col justify-center items-center'>
@@ -275,6 +274,7 @@ const Appointment = () => {
             <div className='flex justify-center items-center'>
               <AppointmentDetails
                 appointment={selectedAppointment}
+                status={selectedAppointment.status}
                 onChange={handleDetailsChange}
                 onSubmit={handleDetailsSubmit}
               />

@@ -15,16 +15,12 @@ export const ReminderProvider = ({ children }) => {
   useEffect(() => {
     const checkReminders = () => {
       const now = new Date();
-      console.log('Checking reminders at:', now);
-      reminders.forEach(reminder => {
-        const reminderDate = new Date(reminder.date);
-        const reminderTime = reminder.time.split(':').map(Number);
-        reminderDate.setHours(reminderTime[0]);
-        reminderDate.setMinutes(reminderTime[1]);
-        reminderDate.setSeconds(0); // Ensure seconds are set to zero
-        console.log('Reminder date and time:', reminderDate);
+      const nowTime = [now.getHours(), now.getMinutes()];
 
-        if (reminderDate <= now && reminderDate > new Date(now.getTime() - 60000)) {
+      reminders.forEach(reminder => {
+        const reminderTime = reminder.time.split(':').map(Number);
+
+        if (reminderTime[0] === nowTime[0] && reminderTime[1] === nowTime[1]) {
           console.log('Showing notification for reminder:', reminder);
           showNotification(reminder);
         }
@@ -38,10 +34,15 @@ export const ReminderProvider = ({ children }) => {
 
   const fetchReminders = async () => {
     try {
+      const user = JSON.parse(localStorage.getItem('user'));
+      const userId = user.id;
       const token = localStorage.getItem('token');
       const response = await axiosInstance.get('/fetch-reminder', {
         headers: {
           Authorization: `Bearer ${token}`,
+        },
+        params: {
+          user_id: userId,
         },
       });
       setReminders(response.data);
@@ -52,8 +53,8 @@ export const ReminderProvider = ({ children }) => {
 
   const showNotification = (reminder) => {
     if (Notification.permission === 'granted') {
-      new Notification('Appointment Reminder', {
-        body: `You have an appointment: ${reminder.type} at ${reminder.time}`,
+      new Notification('Reminder', {
+        body: `You have a reminder: ${reminder.type} at ${reminder.time}`,
         icon: '/path-to-icon/icon.png', // Adjust the path to your icon if you have one
       });
     } else {

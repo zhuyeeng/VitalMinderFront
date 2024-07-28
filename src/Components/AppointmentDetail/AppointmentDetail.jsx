@@ -3,12 +3,10 @@ import './AppointmentDetail.css';
 import CancelFormModal from '../CancelingAppointmentModal/CancelingAppointmentModal';
 import axiosInstance from '../../lib/axios';
 
-const AppointmentDetails = ({ appointment, onChange, onSubmit }) => {
+const AppointmentDetails = ({ appointment, status, onChange, onSubmit }) => {
   const [showCancelModal, setShowCancelModal] = useState(false);
 
   if (!appointment) return null;
-
-  const isEditable = !['rejected', 'accepted', 'completed'].includes(appointment.status?.toLowerCase());
 
   const handleCancel = async (reason) => {
     try {
@@ -23,17 +21,29 @@ const AppointmentDetails = ({ appointment, onChange, onSubmit }) => {
       });
       console.log('Appointment canceled:', response.data);
       setShowCancelModal(false);
-      alert("Successfully Cancel Appointment")
-      // Optionally, update the appointment details in the state
+      alert("Successfully Canceled Appointment");
     } catch (error) {
       console.error('Error canceling appointment:', error.response?.data || error.message);
+      alert("Error canceling appointment: " + (error.response?.data || error.message));
     }
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await onSubmit(e);
+    } catch (error) {
+      console.error('Error updating appointment:', error.response?.data || error.message);
+      alert("Error updating appointment: " + (error.response?.data || error.message));
+    }
+  };
+
+  const isEditable = status?.toLowerCase() === 'pending';
 
   return (
     <div className="bg-[#EEEDEB] p-5 rounded-l-xl shadow-lg w-full max-w-2xl mx-auto my-auto">
       <h2 className="text-3xl font-semibold mb-6 text-black">Appointment Details</h2>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={handleSubmit}>
         <div className="flex flex-row gap-5 mb-4">
           <div className="w-1/2">
             <label className="block text-black font-medium">Created By:</label>
@@ -123,7 +133,7 @@ const AppointmentDetails = ({ appointment, onChange, onSubmit }) => {
               className="w-full p-3 border border-gray-300 rounded-md text-black"
               value={appointment.reason}
               onChange={(e) => onChange('reason', e.target.value)}
-              disabled={!isEditable}
+              disabled
             />
           </div>
         )}
@@ -138,9 +148,9 @@ const AppointmentDetails = ({ appointment, onChange, onSubmit }) => {
             />
           </div>
         )}
-        <div className="flex justify-end">
-          <button type="submit" className="update-btn" disabled={!isEditable}>Update</button>
-          {appointment.status.toLowerCase() === 'pending' && (
+        {isEditable && (
+          <div className="flex justify-end">
+            <button type="submit" className="update-btn">Update</button>
             <button
               type="button"
               className="ml-2 bg-red-500 text-white px-4 py-2 rounded"
@@ -148,8 +158,8 @@ const AppointmentDetails = ({ appointment, onChange, onSubmit }) => {
             >
               Cancel Appointment
             </button>
-          )}
-        </div>
+          </div>
+        )}
       </form>
       {showCancelModal && (
         <CancelFormModal
