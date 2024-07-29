@@ -38,6 +38,7 @@ const ScheduleTimeModal = ({ isOpen, onClose, selectedStaff, role }) => {
             console.error('Error fetching schedule:', error);
           });
       } else {
+        alert('Fail to fetch selected staff schedule.');
         console.error('Selected staff does not have an id');
       }
     }

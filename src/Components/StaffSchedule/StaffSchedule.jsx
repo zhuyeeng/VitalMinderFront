@@ -86,22 +86,28 @@ const StaffScheduleList = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredStaff.map((staff) => (
-                <tr key={`${staff.details.id}-${staff.role}`}>
-                  <td className="py-2 px-4 border-b">{staff.details.doctor_name || staff.details.paramedic_staff_name}</td>
-                  <td className="py-2 px-4 border-b">{staff.details.doctor_email || staff.details.paramedic_staff_email}</td>
-                  <td className="py-2 px-4 border-b">{staff.details.doctor_phone_number || staff.details.paramedic_staff_phone_number}</td>
-                  <td className="py-2 px-4 border-b">{staff.role}</td>
-                  <td className="py-2 px-4 border-b">
-                    <button
-                      className="py-2 px-4 bg-blue-500 text-white rounded"
-                      onClick={() => openTimeModal(staff)}
-                    >
-                      View Schedule
-                    </button>
-                  </td>
+              {filteredStaff.length > 0 ? (
+                filteredStaff.map((staff) => (
+                  <tr key={`${staff.details.id}-${staff.role}`}>
+                    <td className="py-2 px-4 border-b">{staff.details.doctor_name || staff.details.paramedic_staff_name}</td>
+                    <td className="py-2 px-4 border-b">{staff.details.doctor_email || staff.details.paramedic_staff_email}</td>
+                    <td className="py-2 px-4 border-b">{staff.details.doctor_phone_number || staff.details.paramedic_staff_phone_number}</td>
+                    <td className="py-2 px-4 border-b">{staff.role}</td>
+                    <td className="py-2 px-4 border-b">
+                      <button
+                        className="py-2 px-4 bg-blue-500 text-white rounded"
+                        onClick={() => openTimeModal(staff)}
+                      >
+                        View Schedule
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5" className="py-2 px-4 text-center">No staff found</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>

@@ -12,6 +12,7 @@ const AppointmentModal = ({ show, onClose, onSubmit, patients, userRole, usernam
     blood_type: '',
     details: ''
   });
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (userRole === 'patient') {
@@ -37,6 +38,10 @@ const AppointmentModal = ({ show, onClose, onSubmit, patients, userRole, usernam
       ...prevState,
       [field]: value
     }));
+    setErrors(prevState => ({
+      ...prevState,
+      [field]: ''
+    }));
   };
 
   const handlePatientChange = (value) => {
@@ -46,11 +51,31 @@ const AppointmentModal = ({ show, onClose, onSubmit, patients, userRole, usernam
       patient_id: selectedPatient ? selectedPatient.id : '',
       patient_name: selectedPatient ? selectedPatient.username : ''
     }));
+    setErrors(prevState => ({
+      ...prevState,
+      patient_name: ''
+    }));
+  };
+
+  const validate = () => {
+    let newErrors = {};
+    if (!appointment.patient_name) newErrors.patient_name = 'Please enter a patient name.';
+    if (!appointment.name) newErrors.name = 'Please enter an appointment name.';
+    if (!appointment.date) newErrors.date = 'Please select a date.';
+    if (!appointment.time) newErrors.time = 'Please select a time.';
+    if (!appointment.type) newErrors.type = 'Please select an appointment type.';
+    if (!appointment.blood_type) newErrors.blood_type = 'Please select a blood type.';
+    return newErrors;
   };
 
   const handleSubmit = (event) => {
     if (event && event.preventDefault) {
       event.preventDefault();
+    }
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
     }
     onSubmit(appointment);
   };
@@ -119,6 +144,7 @@ const AppointmentModal = ({ show, onClose, onSubmit, patients, userRole, usernam
                   disabled={isForSelf}
                 />
               )}
+              {errors.patient_name && <p className="text-red-500 text-sm mt-1">{errors.patient_name}</p>}
             </div>
             <div>
               <label className="block text-gray-700 text-xl">Appointment Name</label>
@@ -128,6 +154,7 @@ const AppointmentModal = ({ show, onClose, onSubmit, patients, userRole, usernam
                 value={appointment.name}
                 onChange={(e) => handleChange('name', e.target.value)}
               />
+              {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -139,6 +166,7 @@ const AppointmentModal = ({ show, onClose, onSubmit, patients, userRole, usernam
                 value={appointment.date}
                 onChange={(e) => handleChange('date', e.target.value)}
               />
+              {errors.date && <p className="text-red-500 text-sm mt-1">{errors.date}</p>}
             </div>
             <div>
               <label className="block text-gray-700 text-xl">Appointment Time</label>
@@ -148,6 +176,7 @@ const AppointmentModal = ({ show, onClose, onSubmit, patients, userRole, usernam
                 value={appointment.time}
                 onChange={(e) => handleChange('time', e.target.value)}
               />
+              {errors.time && <p className="text-red-500 text-sm mt-1">{errors.time}</p>}
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -165,6 +194,7 @@ const AppointmentModal = ({ show, onClose, onSubmit, patients, userRole, usernam
                 <option value="Emergency" className="text-black">Emergency</option>
                 <option value="Vaccination" className="text-black">Vaccination</option>
               </select>
+              {errors.type && <p className="text-red-500 text-sm mt-1">{errors.type}</p>}
             </div>
             <div>
               <label className="block text-gray-700 text-xl">Blood Type</label>
@@ -183,6 +213,7 @@ const AppointmentModal = ({ show, onClose, onSubmit, patients, userRole, usernam
                 <option value="O+" className="text-black">O+</option>
                 <option value="O-" className="text-black">O-</option>
               </select>
+              {errors.blood_type && <p className="text-red-500 text-sm mt-1">{errors.blood_type}</p>}
             </div>
           </div>
           <div className="mb-4">

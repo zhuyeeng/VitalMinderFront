@@ -86,7 +86,7 @@ const StaffTable = () => {
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex-1 overflow-y-auto p-4 rounded-lg shadow-lg h-full">
-        <h5 className="text-xl font-bold mb-4 text-black">Total Staff Information</h5>
+        <h5 className="text-xl font-bold mb-4">Total Staff Information</h5>
         <div className="w-full bg-gray-400 rounded-lg shadow-lg">
           <table className="min-w-full h-full divide-y divide-gray-700">
             <thead className="bg-gray-800">

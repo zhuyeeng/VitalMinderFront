@@ -84,9 +84,11 @@ const AppointmentTable = () => {
         doctor_id: doctorId,
         paramedic_id: paramedicId,
       });
+      alert('Appointment accepted successfully.');
       setShowAssignModal(false);
       fetchAppointments(); // Refresh appointments after accepting
     } catch (error) {
+      alert('Error on assigning doctor to the appointment');
       console.error('Error assigning doctor to appointment:', error.response?.data || error.message);
     }
   };
@@ -102,9 +104,11 @@ const AppointmentTable = () => {
         status: 'rejected',
         reason: reason,
       });
+      alert('Appointment reject successfully.');
       setShowRejectModal(false);
       fetchAppointments(); // Refresh appointments after rejecting
     } catch (error) {
+      alert('Fail to reject appointment.');
       console.error('Error rejecting appointment:', error.response?.data || error.message);
     }
   };

@@ -51,6 +51,7 @@ const UpdateModal = ({ staff, onClose }) => {
       onClose();
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;
+      alert('Error on updating staff details.');
       console.error('Error updating staff:', errorMessage);
 
       // Check for specific error messages or codes

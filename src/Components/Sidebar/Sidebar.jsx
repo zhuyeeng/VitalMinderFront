@@ -100,7 +100,7 @@ const Sidebar = ({ onToggle }) => {
   const handleAppointmentSubmit = async (appointment) => {
     try {
       const response = await axiosInstance.post('/appointments', appointment);
-      console.log('Appointment created successfully:', response.data);
+      alert('Appointment created successfully:', response.data);
       setIsAppointmentModalOpen(false);
     } catch (error) {
       console.error('Error creating appointment:', error.response?.data || error.message);

@@ -93,20 +93,26 @@ const DoctorAppointment = () => {
               </tr>
             </thead>
             <tbody className="bg-gray-100 divide-y divide-gray-200">
-              {appointments.map((waitingListItem) => (
-                <tr key={waitingListItem.id}>
-                  <td className="px-4 py-2 text-gray-900">{waitingListItem.appointment.type}</td>
-                  <td className="px-4 py-2 text-gray-900">{waitingListItem.patient_name}</td>
-                  <td className="px-4 py-2 text-gray-900">{waitingListItem.appointment.date} {waitingListItem.appointment.time}</td>
-                  <td className="px-4 py-2">
-                    <button 
-                      onClick={() => handleOpenModal(waitingListItem.appointment)}
-                      className="bg-blue-500 text-white py-1 px-3 rounded">
-                      Write Progress Note
-                    </button>
-                  </td>
+              {appointments.length > 0 ? (
+                appointments.map((waitingListItem) => (
+                  <tr key={waitingListItem.id}>
+                    <td className="px-4 py-2 text-gray-900">{waitingListItem.appointment.type}</td>
+                    <td className="px-4 py-2 text-gray-900">{waitingListItem.patient_name}</td>
+                    <td className="px-4 py-2 text-gray-900">{waitingListItem.appointment.date} {waitingListItem.appointment.time}</td>
+                    <td className="px-4 py-2">
+                      <button 
+                        onClick={() => handleOpenModal(waitingListItem.appointment)}
+                        className="bg-blue-500 text-white py-1 px-3 rounded">
+                        Write Progress Note
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4" className="px-4 py-2 text-center text-gray-900">No appointment found</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
           {error && <div className="text-red-500 mt-4">{error}</div>}

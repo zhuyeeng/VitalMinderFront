@@ -73,6 +73,7 @@ const DoctorProgressNoteModal = ({ isOpen, onClose, appointmentId, patientId, pa
               value={diagnosticTestsResults}
               onChange={(e) => setDiagnosticTestsResults(e.target.value)}
               className="w-full px-3 py-2 border rounded text-black"
+              required
             ></textarea>
           </div>
           <div className="mb-4">

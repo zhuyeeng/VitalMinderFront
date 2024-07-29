@@ -39,7 +39,7 @@ const AppointmentLine = ({ refreshFlag }) => {
       );
     } catch (error) {
       console.error('Error adding to waiting list:', error);
-      alert('Failed to add to waiting list. Please try again.');
+      alert('Failed to add to the waiting list. Please try again.');
     }
   };
 

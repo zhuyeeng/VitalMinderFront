@@ -54,7 +54,7 @@ const AssignDoctorModal = ({ appointment, onSubmit, onCancel }) => {
             >
               <option value="">Select a doctor</option>
               {doctors.map((doctor) => (
-                <option key={doctor.details.id} value={doctor.details.id} className='text-black'>
+                <option key={doctor.details.id} value={doctor.details.id} className='text-black' required>
                   {doctor.username}
                 </option>
               ))}

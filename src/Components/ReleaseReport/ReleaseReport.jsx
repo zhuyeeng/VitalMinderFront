@@ -12,15 +12,25 @@ const ReleaseReport = () => {
   const [reportTitle, setReportTitle] = useState(''); // Added state for report title
   const [isToggled, setIsToggled] = useState(false);
   const [paramedicId, setParamedicId] = useState(null);
+  const [fileError, setFileError] = useState('');
+  const [titleError, setTitleError] = useState('');
 
   useEffect(() => {
     fetchAllPatients();
 
-    const testingFetchingStaff = async() => {
+    const testingFetchingStaff = async () => {
       const user = JSON.parse(localStorage.getItem('user'));
-      const staffDetail = await fetchStaffByUserId(user.id);
-      setParamedicId(staffDetail.details.id);
-    }
+      try {
+        const staffDetail = await fetchStaffByUserId(user.id);
+        if (staffDetail && staffDetail.details && staffDetail.details.id) {
+          setParamedicId(staffDetail.details.id);
+        } else {
+          console.error('Staff details not found or invalid.');
+        }
+      } catch (error) {
+        console.error('Error fetching staff details:', error);
+      }
+    };
     testingFetchingStaff();
   }, []);
 
@@ -37,8 +47,8 @@ const ReleaseReport = () => {
   const handleSearch = (e) => {
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
-    const filtered = patients.filter(patient => 
-      (patient.username && patient.username.toLowerCase().includes(term)) || 
+    const filtered = patients.filter(patient =>
+      (patient.username && patient.username.toLowerCase().includes(term)) ||
       (patient.identity_card_number && patient.identity_card_number.includes(term))
     );
     setFilteredPatients(filtered);
@@ -54,19 +64,38 @@ const ReleaseReport = () => {
     setSelectedPatient(null);
     setReportFile(null);
     setReportTitle(''); // Reset report title
+    setFileError('');
+    setTitleError('');
   };
 
   const handleFileChange = (e) => {
-    setReportFile(e.target.files[0]);
+    const file = e.target.files[0];
+    if (file && file.type !== 'application/pdf') {
+      setFileError('Only PDF files are supported.');
+      return;
+    }
+    setReportFile(file);
+    setFileError('');
   };
 
   const handleTitleChange = (e) => {
     setReportTitle(e.target.value);
+    setTitleError('');
   };
 
   const handleUploadReport = async () => {
-    if (!reportFile || !selectedPatient || !reportTitle) return;
-    
+    if (!reportFile) {
+      setFileError('Please upload a PDF file.');
+      return;
+    }
+
+    if (!reportTitle) {
+      setTitleError('Please enter a report title.');
+      return;
+    }
+
+    if (!selectedPatient) return;
+
     try {
       const formData = new FormData();
       formData.append('patient_id', selectedPatient.id);
@@ -76,10 +105,11 @@ const ReleaseReport = () => {
       formData.append('paramedic_staff_id', paramedicId);
 
       await uploadReport(formData);
-      alert('Report Upload Successfully.');
+      alert('Report uploaded successfully.');
       handleCloseModal();
       // Optionally, refresh the patient list or show a success message
     } catch (error) {
+      alert('Failed to upload report. Please try again later.');
       console.error('Error uploading report:', error.response?.data || error.message);
     }
   };
@@ -97,10 +127,10 @@ const ReleaseReport = () => {
         <div className="container mx-auto">
           <div className="flex justify-between items-center mb-3">
             <h1 className="text-2xl font-bold">Release Report</h1>
-            <input 
-              type="text" 
-              className="text-black form-control block w-1/3 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" 
-              placeholder="Search Patient" 
+            <input
+              type="text"
+              className="text-black form-control block w-1/3 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              placeholder="Search Patient"
               value={searchTerm}
               onChange={handleSearch}
             />
@@ -114,21 +144,27 @@ const ReleaseReport = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredPatients.map(patient => (
-                <tr key={patient.id} className="hover:bg-gray-100 bg-gray-200">
-                  <td className="py-2 px-4 border-b text-black text-center">{patient.username}</td>
-                  <td className="py-2 px-4 border-b text-black text-center">{patient.identity_card_number}</td>
-                  <td className="py-2 px-4 border-b text-center">
-                    <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600" onClick={() => handleShowModal(patient)}>
-                      Release Report
-                    </button>
-                  </td>
+              {filteredPatients.length > 0 ? (
+                filteredPatients.map(patient => (
+                  <tr key={patient.id} className="hover:bg-gray-100 bg-gray-200">
+                    <td className="py-2 px-4 border-b text-black text-center">{patient.username}</td>
+                    <td className="py-2 px-4 border-b text-black text-center">{patient.identity_card_number}</td>
+                    <td className="py-2 px-4 border-b text-center">
+                      <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600" onClick={() => handleShowModal(patient)}>
+                        Release Report
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="3" className="py-2 px-4 text-center">No patient found</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
-        
+
         {showModal && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-white rounded-lg p-6 shadow-lg w-96">
@@ -139,27 +175,31 @@ const ReleaseReport = () => {
               <form>
                 <div className="mb-4">
                   <label htmlFor="report" className="block text-sm font-medium text-black">Upload PDF</label>
-                  <input 
-                    type="file" 
-                    className="mt-1 text-black block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" 
-                    id="report" 
-                    accept=".pdf" 
-                    onChange={handleFileChange} 
+                  <input
+                    type="file"
+                    className="mt-1 text-black block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    id="report"
+                    accept=".pdf"
+                    onChange={handleFileChange}
+                    required
                   />
+                  {fileError && <p className="text-red-500 text-sm mt-1">{fileError}</p>}
                 </div>
                 <div className="mb-4">
                   <label htmlFor="reportTitle" className="block text-sm font-medium text-black">Report Title</label>
-                  <input 
-                    type="text" 
-                    className="mt-1 text-black block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" 
-                    id="reportTitle" 
+                  <input
+                    type="text"
+                    className="mt-1 text-black block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    id="reportTitle"
                     value={reportTitle}
                     onChange={handleTitleChange}
+                    required
                   />
+                  {titleError && <p className="text-red-500 text-sm mt-1">{titleError}</p>}
                 </div>
-                <button 
-                  type="button" 
-                  className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600" 
+                <button
+                  type="button"
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
                   onClick={handleUploadReport}>
                   Upload Report
                 </button>
