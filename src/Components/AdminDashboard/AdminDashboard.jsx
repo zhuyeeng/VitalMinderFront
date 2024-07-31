@@ -40,11 +40,11 @@ const AdminDashboard = () => {
             <div className={`flex-1 flex flex-col gap-5 p-4 transition-all duration-500 overflow-y-auto ${isToggled ? '' : 'items-center'}`}>
                 {!showRegisterForm ? (
                     <>
-                        <div className={`w-full flex flex-col md:flex-row gap-10 ${isToggled ? '' : 'items-center justify-center'}`}>
+                        <div className={`w-full h-2/3 flex flex-col md:flex-row gap-10 ${isToggled ? '' : 'items-center justify-center'}`}>
                             <StaffDetail />
                             <StaffTable onUpdateClick={handleUpdateClick} />
                         </div>
-                        <div className={`w-full flex flex-col md:flex-row gap-10 ${isToggled ? '' : 'items-center justify-center'}`}>
+                        <div className={`w-full h-2/3 flex flex-col md:flex-row gap-10 ${isToggled ? '' : 'items-center justify-center'}`}>
                             <AppointmentSummaryTable />
                             <AppointmentTypeChart />
                         </div>

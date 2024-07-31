@@ -82,7 +82,7 @@ const DoctorAppointment = () => {
     <div className="flex flex-col md:flex-row gap-10 p-4">
       <div className="flex-1 h-full">
         <h2 className="text-2xl font-semibold mb-4">Appointments</h2>
-        <div className="w-full bg-gray-400 rounded-lg shadow-lg h-full overflow-x-auto p-4">
+        <div className="w-full rounded-lg shadow-lg h-full overflow-x-auto p-4">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-800">
               <tr>

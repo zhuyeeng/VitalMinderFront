@@ -169,7 +169,7 @@ const ReleaseReport = () => {
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-white rounded-lg p-6 shadow-lg w-96">
               <div className="flex justify-end">
-                <button className="text-gray-500 hover:text-gray-700" onClick={handleCloseModal}>&times;</button>
+                <button className="text-gray-500 hover:text-gray-700 text-4xl" onClick={handleCloseModal}>&times;</button>
               </div>
               <h2 className="text-xl font-semibold mb-4 text-black">Upload Report for {selectedPatient?.username}</h2>
               <form>

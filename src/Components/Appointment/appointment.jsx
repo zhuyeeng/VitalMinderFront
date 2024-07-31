@@ -103,6 +103,7 @@ const Appointment = () => {
       const response = await axiosInstance.post('/appointments', appointment);
       setAppointments([...appointments, response.data]);
       setIsCreating(false);
+      alert('Appointment create successfully.');
     } catch (error) {
       console.error('Error creating appointment:', error.response?.data || error.message);
     }
@@ -116,9 +117,10 @@ const Appointment = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+      alert('Appointment updated successfully.');
       setAppointments(appointments.map(appt => (appt.id === id ? response.data : appt)));
     } catch (error) {
-      alert('Fail to create appointment, please try again.');
+      alert('Fail to update appointment, please try again.');
       console.error('Error updating appointment:', error.response?.data || error.message);
     }
   };

@@ -172,34 +172,33 @@ const LoginRegister = () => {
   
   const handleForgotPassword = async (e) => {
     e.preventDefault();
+
     if (formData.new_password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      return;
+        setError('Passwords do not match');
+        return;
     }
 
     try {
-      const response = await axiosInstance.post('/reset-password', {
-        email: formData.email,
-        new_password: formData.new_password,
-        new_password_confirmation: formData.confirmPassword
-      });
+        const response = await axiosInstance.post('/reset-password', {
+            email: formData.email,
+            new_password: formData.new_password,
+            new_password_confirmation: formData.confirmPassword
+        });
 
-      setValidationErrors({});
-      setError('');
-      window.alert('Password reset successfully! You can now log in.');
-      loginLink();
-    } catch (err) {
-      if (err.data) {
-        setValidationErrors(err.data);
-        if (err.data.email && err.data.email.includes('The email has already been taken.')) {
-          window.alert('The account is already registered. Please use a different email.');
-        }
+        setValidationErrors({});
         setError('');
-      } else {
-        setError('Password reset failed. Please try again.');
-      }
+        window.alert('Password reset successfully! You can now log in.');
+        loginLink();
+        window.location.reload(); 
+    } catch (err) {
+        if (err.response && err.response.data) {
+            const errorMessage = err.response.data.message || 'Password reset failed. Please try again.';
+            setError(errorMessage);
+        } else {
+            setError('Password reset failed. Please try again.');
+        }
     }
-  };
+};
 
   return (
     <div className='flex justify-center items-center min-h-screen w-full h-full background backdrop-blur-2xl'>

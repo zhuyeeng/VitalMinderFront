@@ -13,7 +13,7 @@ const AppointmentLine = ({ refreshFlag }) => {
 
   const fetchAcceptedAppointments = async () => {
     try {
-      const response = await axiosInstance.get('/appointments/accepted');
+      const response = await axiosInstance.get('/appointments/accepted-paramedic');
       setAppointments(response.data);
     } catch (error) {
       console.error('Error fetching accepted appointments:', error);

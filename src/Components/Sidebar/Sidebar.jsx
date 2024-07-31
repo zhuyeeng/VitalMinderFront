@@ -139,75 +139,95 @@ const Sidebar = ({ onToggle }) => {
         <div className={`max ${isSidebarOpen ? 'flex' : 'hidden'} text-white mt-20 flex-col space-y-2 w-full h-[calc(100vh)]`}>
           {userRole === 'admin' && (
             <>
-              <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                </svg>
-                <Link to="/admindashboard">Home</Link>
-              </div>
-              <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+              <Link to="/admindashboard">
+                <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                  </svg>
+                  Home
+                </div>
+              </Link>
+              <div onClick={handleRegisterClick} className="hover:ml-4 w-full cursor-pointer text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5" />
                 </svg>
-                <button onClick={handleRegisterClick}>Register</button>
+                <button>Register</button>
               </div>
             </>
           )}
           {userRole === 'doctor' && (
             <>
-              <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                  </svg>
-                  <Link to="/doctordashboard">Home</Link>
-                </div>
+              <Link to="/doctordashboard">
                 <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
-                  <MdPersonSearch />
-                  <Link to="/checkpatient">Check Patient</Link>
-                </div>
-                <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
-                  <AiOutlineSchedule />
-                  <Link to="/staffschedule">View Staff Schedule</Link>
-                </div>
-                <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
-                  <ImProfile />
-                  <Link to="/editProfile">Edit Profile</Link>
-                </div>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                    </svg>
+                    Home
+                  </div>
+                </Link>
+                <Link to="/checkpatient">
+                  <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+                    <MdPersonSearch />
+                    Check Patient
+                  </div>
+                </Link>
+                <Link to="/staffschedule">
+                  <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+                    <AiOutlineSchedule />
+                    View Staff Schedule
+                  </div> 
+                </Link>
+                <Link to="/editProfile">
+                  <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+                    <ImProfile />
+                    Edit Profile
+                  </div>
+                </Link>
               </>
             )}
             {userRole === 'paramedic' && (
               <>
-                <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                  </svg>
-                  <Link to="/paramedic_staff_dashboard">Home</Link>
-                </div>
-                <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+                <Link to="/paramedic_staff_dashboard">
+                  <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                    </svg>
+                    Home
+                  </div>
+                </Link>
+                <div onClick={handleRegisterClick} className="hover:ml-4 w-full cursor-pointer text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5" />
                   </svg>
-                  <button onClick={handleRegisterClick}>Register Patient</button>
+                  <button>Register Patient</button>
                 </div>
-                <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
-                  <MdPersonSearch />
-                  <Link to="/checkpatient">Check Patient</Link>
-                </div>
-                <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
-                  <FaUserDoctor className='cursor-pointer' />
-                  <Link to="/staffschedule">Staff Schedule</Link>
-                </div>
-                <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
-                  <TbReportAnalytics  className='cursor-pointer' />
-                  <Link to="/releaseReport">Release Report</Link>
-                </div>
-                <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
-                  <ImProfile className='cursor-pointer' />
-                  <Link to="/editProfile">Edit Profile</Link>
-                </div>
-                <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+                <Link to="/checkpatient">
+                  <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+                    <MdPersonSearch />
+                    Check Patient
+                  </div>
+                </Link>
+                <Link to="/staffschedule">
+                  <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+                    <FaUserDoctor className='cursor-pointer' />
+                    Staff Schedule
+                  </div>
+                </Link>
+                <Link to="/releaseReport">
+                  <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+                    <TbReportAnalytics  className='cursor-pointer' />
+                    Release Report
+                  </div>
+                </Link>
+                <Link to="/editProfile">
+                  <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+                    <ImProfile className='cursor-pointer' />
+                    Edit Profile
+                  </div>
+                </Link>
+                <div onClick={() => setIsAppointmentModalOpen(true)} className="hover:ml-4 w-full cursor-pointer text-white hover:text-purple-500 dark:hover:text-blue-400 bg-gray-800 dark:bg-gray-900 p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
                   <MdAccountBox/>
-                  <button onClick={() => setIsAppointmentModalOpen(true)}>Create Appointment</button>
+                  <button>Create Appointment</button>
                 </div>
               </>
             )}
@@ -223,15 +243,15 @@ const Sidebar = ({ onToggle }) => {
           <div className={`mini mt-20 flex flex-col space-y-2 w-full h-[calc(100vh)] ${isSidebarOpen ? 'hidden' : 'flex'}`}>
             {userRole === 'admin' && (
               <>
-                <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
-                  <Link to="/admindashboard">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 cursor-pointer">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                    </svg>
+                <Link to="/admindashboard">
+                    <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 cursor-pointer">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                        </svg>
+                    </div>
                   </Link>
-                </div>
-                <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
-                  <button onClick={handleRegisterClick}>
+                <div onClick={handleRegisterClick} className="hover:ml-4 justify-end cursor-pointer pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
+                  <button>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 cursor-pointer">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5" />
                     </svg>
@@ -241,69 +261,68 @@ const Sidebar = ({ onToggle }) => {
             )}
             {userRole === 'doctor' && (
               <>
-                <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
-                  <Link to="/doctordashboard">
+                <Link to="/doctordashboard">
+                  <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 cursor-pointer">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
                     </svg>
-                  </Link>
-                </div>
-                <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
-                  <Link to="/checkpatient">
-                    <MdPersonSearch className='cursor-pointer'/>
-                  </Link>
-                </div>
-                <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
-                  <Link to="/staffschedule">
-                    <AiOutlineSchedule className='cursor-pointer'/>
-                  </Link>  
-                </div>
-                <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
-                  <Link to="/editProfile">
-                    <ImProfile className='cursor-pointer'/>
-                  </Link>
-                </div>
+                  </div>
+                </Link>
+                <Link to="/checkpatient">
+                  <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
+                      <MdPersonSearch className='cursor-pointer'/>
+                  </div>
+                </Link>
+                <Link to="/staffschedule">
+                  <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
+                      <AiOutlineSchedule className='cursor-pointer'/>
+                  </div>
+                </Link> 
+                <Link to="/editProfile">
+                  <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
+                      <ImProfile className='cursor-pointer'/>
+                  </div>
+                </Link>
               </>
             )}
             {userRole === 'paramedic' && (
               <>
-                <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
-                  <Link to="/paramedic_staff_dashboard">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 cursor-pointer">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                    </svg>
-                  </Link>
-                </div>
-                <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
-                  <button onClick={handleRegisterClick}>
+                <Link to="/paramedic_staff_dashboard">
+                  <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 cursor-pointer">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                      </svg>
+                  </div>
+                </Link>
+                <div onClick={handleRegisterClick} className="hover:ml-4 cursor-pointer justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
+                  <button>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 cursor-pointer">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5" />
                     </svg>
                   </button>
                 </div>
-                <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
-                  <Link to="/checkpatient">
-                    <MdPersonSearch className='cursor-pointer'/>
-                  </Link>
-                </div>
-                <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
+                <Link to="/checkpatient">
+                  <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
+                      <MdPersonSearch className='cursor-pointer'/>
+                  </div>
+                </Link>
                 <Link to="/staffschedule">
-                    <FaUserDoctor className='cursor-pointer'/>
-                  </Link>
-                </div>
-                <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
-                  <Link to="/releaseReport">
-                    <TbReportAnalytics className='cursor-pointer'/>
-                  </Link>  
-                </div>
-                <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
-                  <Link to="/editProfile">
-                    <ImProfile className='cursor-pointer'/>
-                  </Link>
-                </div>
-                <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
-                  
-                  <button onClick={() => setIsAppointmentModalOpen(true)}><MdAccountBox/></button>
+                  <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
+                      <FaUserDoctor className='cursor-pointer'/>
+                  </div>
+                </Link>
+                <Link to="/releaseReport">
+                  <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
+                      <TbReportAnalytics className='cursor-pointer'/>
+                  </div>
+                </Link>  
+                <Link to="/editProfile">
+                  <div className="hover:ml-4 justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
+                      <ImProfile className='cursor-pointer'/>
+                  </div>
+                </Link>
+                <div onClick={() => setIsAppointmentModalOpen(true)} className="hover:ml-4 cursor-pointer justify-end pr-5 text-white hover:text-purple-500 dark:hover:text-blue-400 w-full bg-gray-800 dark:bg-gray-900 p-3 rounded-full transform ease-in-out duration-300 flex">
+                  <button ><MdAccountBox/></button>
                 </div>
               </>
             )}

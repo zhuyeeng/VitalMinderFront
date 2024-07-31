@@ -45,9 +45,10 @@ const UpdateModal = ({ staff, onClose }) => {
         role: role // Include the role in the payload
       };
 
-      console.log('Submitting payload:', payload); // Log the payload before sending
+      // console.log('Submitting payload:', payload); // Log the payload before sending
       const response = await updateStaff(details.id, payload);
-      console.log('Updated data:', response.data);
+      // console.log('Updated data:', response.data);
+      alert('Successfully updated staff information.');
       onClose();
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;

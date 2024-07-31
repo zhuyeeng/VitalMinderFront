@@ -21,7 +21,7 @@ const AppointmentDetails = ({ appointment, status, onChange, onSubmit }) => {
       });
       console.log('Appointment canceled:', response.data);
       setShowCancelModal(false);
-      alert("Successfully Canceled Appointment");
+      alert("Successfully Cancelled Appointment");
     } catch (error) {
       console.error('Error canceling appointment:', error.response?.data || error.message);
       alert("Error canceling appointment: " + (error.response?.data || error.message));

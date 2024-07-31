@@ -27,7 +27,7 @@ const PatientRegisterForm = ({ onClose }) => {
     const handleRegister = async (e) => {
         e.preventDefault();
         if (formData.password !== formData.confirmPassword) {
-            setError('Passwords do not match');
+            setError('Password does not match. Please try again.');
             return;
         }
 
@@ -45,12 +45,16 @@ const PatientRegisterForm = ({ onClose }) => {
             setAuthToken(response.token);
             setValidationErrors({});
             setError('');
-            navigate('/');
+            alert('Patient registered successfully.');
             onClose(); // Close the form after successful registration
         } catch (err) {
-            if (err.data) {
-                setValidationErrors(err.data);
-                setError('');
+            if (err.response && err.response.data) {
+                if (err.response.data.message === 'The email has already been taken.') {
+                    setError('The email has already been taken.');
+                } else {
+                    setValidationErrors(err.response.data.errors || {});
+                    setError('');
+                }
             } else {
                 setError('Registration failed. Please try again.');
             }
@@ -61,7 +65,7 @@ const PatientRegisterForm = ({ onClose }) => {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
             <div className="bg-gray-200 rounded-lg shadow-lg p-8 w-full max-w-3xl max-h-screen overflow-y-auto relative md:my-4">
                 <button 
-                    className="absolute top-2 right-2 text-gray-700 font-bold"
+                    className="absolute top-2 right-2 text-gray-700 font-bold text-4xl"
                     onClick={onClose}
                 >
                     &times;

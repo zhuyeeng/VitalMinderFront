@@ -97,7 +97,7 @@ const RegisterForm = ({ onClose }) => {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
             <div className="bg-[#EEEDEB] rounded-lg shadow-lg p-5 w-full max-w-3xl max-h-screen overflow-y-auto relative">
                 <button 
-                    className="absolute top-2 right-2 text-gray-700 font-bold text-2xl"
+                    className="absolute top-2 right-2 text-gray-700 font-bold text-4xl"
                     onClick={onClose}
                 >
                     &times;

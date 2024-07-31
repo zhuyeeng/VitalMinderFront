@@ -114,7 +114,7 @@ const CheckPatientPage = () => {
               <h3>Weight: {patients.weight}</h3>
             </>
           ) : (
-            <div>No patient information available.</div>
+            <div>No patient found.</div>
           )}
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white">
