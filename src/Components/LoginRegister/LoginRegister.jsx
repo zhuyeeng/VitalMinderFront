@@ -133,41 +133,42 @@ const LoginRegister = () => {
   };
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await loginUser({
-        email: formData.email,
-        password: formData.password
-      });
+      e.preventDefault();
+      try {
+        const response = await loginUser({
+          email: formData.email,
+          password: formData.password
+        });
 
-      // Check if the user account is banned
-      if (response.status === 'false' && response.message === 'Your account is banned. Please contact support.') {
-        setError(response.message);
-        return;
-      }
+        // Check if the user account is banned
+        if (response.status === 'false' && response.message === 'Your account is banned. Please contact support.') {
+          setError(response.message);
+          return;
+        }
 
-      setAuthToken(response.token);
-      localStorage.setItem('token', response.token);
-      setUser(response.user);
-      localStorage.setItem('user', JSON.stringify(response.user));
-      setValidationErrors({});
+        setAuthToken(response.token);
+        localStorage.setItem('token', response.token);
+        setUser(response.user);
+        localStorage.setItem('user', JSON.stringify(response.user));
+        localStorage.setItem('userId', response.user.id); // Save user ID to localStorage
+        setValidationErrors({});
 
-      if (response.user.user_role === "patient") {
-        navigate('/dashboard');
-      } else if (response.user.user_role === "admin") {
-        navigate('/admindashboard');
-      } else if (response.user.user_role === "doctor") {
-        navigate('/doctordashboard');
-      } else if (response.user.user_role === "paramedic") {
-        navigate('/paramedic_staff_dashboard');
+        if (response.user.user_role === "patient") {
+          navigate('/dashboard');
+        } else if (response.user.user_role === "admin") {
+          navigate('/admindashboard');
+        } else if (response.user.user_role === "doctor") {
+          navigate('/doctordashboard');
+        } else if (response.user.user_role === "paramedic") {
+          navigate('/paramedic_staff_dashboard');
+        }
+      } catch (err) {
+        if (err.errors) {
+          setValidationErrors(err.errors);
+        } else {
+          setError('Login Failed. Please try again.');
+        }
       }
-    } catch (err) {
-      if (err.errors) {
-        setValidationErrors(err.errors);
-      } else {
-        setError('Login Failed. Please try again.');
-      }
-    }
   };
   
   const handleForgotPassword = async (e) => {

@@ -35,7 +35,6 @@ export const registerUser = async (userData) => {
   }
 };
 
-
 // Function to log in a user
 export const loginUser = async (userData) => {
   try {
