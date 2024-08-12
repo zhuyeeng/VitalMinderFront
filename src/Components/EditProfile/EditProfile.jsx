@@ -41,6 +41,7 @@ const PatientEditProfile = () => {
       try {
         const userId = JSON.parse(localStorage.getItem('user')).id; // Assume user ID is stored in local storage
         const userData = await fetchStaffByUserId(userId);
+        console.log(userData);
         setUsername(userData.user.username);
         setFormData((prevFormData) => ({
           ...prevFormData,
@@ -126,62 +127,64 @@ const PatientEditProfile = () => {
     formDataToSend.append('phone_number', formData.phoneNumber);
     formDataToSend.append('identity_card_number', formData.identityCardNumber);
     if (profileImage) {
-      formDataToSend.append('profile_picture', profileImage);
+        formDataToSend.append('profile_picture', profileImage);
     }
 
     if (userRole === 'doctor') {
-      formDataToSend.append('specialization', formData.specialization);
-      formDataToSend.append('clinic_address', formData.clinicAddress);
-      formDataToSend.append('qualifications', formData.qualifications);
-      formDataToSend.append('years_of_experience', formData.yearsOfExperience);
+        formDataToSend.append('specialization', formData.specialization);
+        formDataToSend.append('clinic_address', formData.clinicAddress);
+        formDataToSend.append('qualifications', formData.qualifications);
+        formDataToSend.append('years_of_experience', formData.yearsOfExperience);
     } else if (userRole === 'paramedic') {
-      formDataToSend.append('qualifications', formData.qualifications);
-      formDataToSend.append('assigned_area', formData.assignedArea);
-      formDataToSend.append('field_experience', formData.fieldExperience);
+        formDataToSend.append('qualifications', formData.qualifications);
+        formDataToSend.append('assigned_area', formData.assignedArea);
+        formDataToSend.append('field_experience', formData.fieldExperience);
     }
 
     try {
-      setAuthToken(token);
-      await updateProfile(formDataToSend);
-      alert('Profile updated successfully');
-      
-      // Fetch the latest user data and update local storage
-      const userId = JSON.parse(localStorage.getItem('user')).id;
-      const userData = await fetchStaffByUserId(userId);
-      localStorage.setItem('user', JSON.stringify(userData.user));
+        setAuthToken(token);
+        const response = await updateProfile(formDataToSend);
+        console.log(response.message); // Log the success message to the console
 
-      // Update the formData and image preview URL
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        name: userData.user.username,
-        email: userData.user.email,
-        dateOfBirth: userData.user.date_of_birth,
-        gender: userData.user.gender,
-        phoneNumber: userData.user.phone_number,
-        identityCardNumber: userData.user.identity_card_number,
-        specialization: userData.details?.specialization || '',
-        clinicAddress: userData.details?.clinic_address || '',
-        qualifications: userData.details?.qualifications || '',
-        yearsOfExperience: userData.details?.years_of_experience || '',
-        assignedArea: userData.details?.assigned_area || '',
-        fieldExperience: userData.details?.field_experience || '',
-        bloodPressure: userData.user.blood_pressure || '',
-        bloodSugar: userData.user.blood_sugar || '',
-        height: userData.user.height || '',
-        weight: userData.user.weight || '',
-        medicalHistory: userData.user.medical_history || '',
-        medications: userData.user.medications || '',
-        emergencyContact: userData.user.emergency_contact || ''
-      }));
-      setUserRole(userData.user.user_role);
-      if (userData.user.profile_picture) {
-        setImagePreviewUrl(`http://localhost:8000/storage/${userData.user.profile_picture}`);
-      }
+        alert('Profile updated successfully');
+
+        // Fetch the latest user data and update local storage
+        const userId = JSON.parse(localStorage.getItem('user')).id;
+        const userData = await fetchStaffByUserId(userId);
+        localStorage.setItem('user', JSON.stringify(userData.user));
+
+        // Update the formData and image preview URL
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            name: userData.user.username,
+            email: userData.user.email,
+            dateOfBirth: userData.user.date_of_birth,
+            gender: userData.user.gender,
+            phoneNumber: userData.user.phone_number,
+            identityCardNumber: userData.user.identity_card_number,
+            specialization: userData.details?.specialization || '',
+            clinicAddress: userData.details?.clinic_address || '',
+            qualifications: userData.details?.qualifications || '',
+            yearsOfExperience: userData.details?.years_of_experience || '',
+            assignedArea: userData.details?.assigned_area || '',
+            fieldExperience: userData.details?.field_experience || '',
+            bloodPressure: userData.user.blood_pressure || '',
+            bloodSugar: userData.user.blood_sugar || '',
+            height: userData.user.height || '',
+            weight: userData.user.weight || '',
+            medicalHistory: userData.user.medical_history || '',
+            medications: userData.user.medications || '',
+            emergencyContact: userData.user.emergency_contact || ''
+        }));
+        setUserRole(userData.user.user_role);
+        if (userData.user.profile_picture) {
+            setImagePreviewUrl(`http://localhost:8000/storage/${userData.user.profile_picture}`);
+        }
     } catch (error) {
-      console.error('Error updating profile:', error);
-      alert('Error updating profile. Please try again.');
+        console.error('Error updating profile:', error);
+        alert('Error updating profile. Please try again.');
     }
-  };
+};
 
   const handleSubmitPassword = async (e) => {
     e.preventDefault();
@@ -300,42 +303,6 @@ const PatientEditProfile = () => {
                       <label className="block text-black">Identity Card Number</label>
                       <input type="text" name="identityCardNumber" value={formData.identityCardNumber} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
                     </div>
-                    {userRole === 'doctor' && (
-                      <>
-                        <div>
-                          <label className="block text-black">Specialization</label>
-                          <input type="text" name="specialization" value={formData.specialization} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
-                        </div>
-                        <div>
-                          <label className="block text-black">Clinic Address</label>
-                          <input type="text" name="clinicAddress" value={formData.clinicAddress} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
-                        </div>
-                        <div>
-                          <label className="block text-black">Qualifications</label>
-                          <input type="text" name="qualifications" value={formData.qualifications} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
-                        </div>
-                        <div>
-                          <label className="block text-black">Years of Experience</label>
-                          <input type="number" name="yearsOfExperience" value={formData.yearsOfExperience} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
-                        </div>
-                      </>
-                    )}
-                    {userRole === 'paramedic' && (
-                      <>
-                        <div>
-                          <label className="block text-black">Qualifications</label>
-                          <input type="text" name="qualifications" value={formData.qualifications} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
-                        </div>
-                        <div>
-                          <label className="block text-black">Assigned Area</label>
-                          <input type="text" name="assignedArea" value={formData.assignedArea} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
-                        </div>
-                        <div>
-                          <label className="block text-black">Field Experience (Years)</label>
-                          <input type="number" name="fieldExperience" value={formData.fieldExperience} onChange={handleChange} className="w-full px-3 py-2 border rounded text-black focus:outline-none focus:border-blue-500" />
-                        </div>
-                      </>
-                    )}
                   </div>
                   <div className="flex justify-end mt-4">
                     <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300">Update</button>

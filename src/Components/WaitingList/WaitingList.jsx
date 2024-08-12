@@ -11,7 +11,6 @@ const WaitingListTable = ({ refreshFlag, isParamedic }) => {
     const getWaitingList = async () => {
       try {
         const data = await fetchWaitingList();
-        console.log('Waiting list data:', data); // Debug log
         setWaitingList(data);
       } catch (error) {
         console.error('Error fetching waiting list:', error);
@@ -28,7 +27,6 @@ const WaitingListTable = ({ refreshFlag, isParamedic }) => {
   const handleViewReport = async (appointmentId) => {
     try {
       const report = await fetchMedicationReportByAppointmentId(appointmentId);
-      console.log('Fetched report:', report); // Debug log
       setSelectedReport(report);
     } catch (error) {
       console.error('Error fetching medication report:', error);

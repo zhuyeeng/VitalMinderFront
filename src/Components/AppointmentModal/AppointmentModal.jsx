@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { fetchStaffByUserId } from '../../lib/axios';
 
-const AppointmentModal = ({ show, onClose, onSubmit, patients, userRole, username }) => {
+const AppointmentModal = ({ show, onClose, onSubmit, patients, doctors, userRole, username }) => {
   const [isForSelf, setIsForSelf] = useState(true);
   const [appointment, setAppointment] = useState({
     patient_id: '',
     patient_name: '',
+    doctor_id: '',
     name: '',
     date: '',
     time: '',
@@ -13,23 +15,44 @@ const AppointmentModal = ({ show, onClose, onSubmit, patients, userRole, usernam
     details: ''
   });
   const [errors, setErrors] = useState({});
+  const [paramedicId, setParamedicId] = useState('');
 
   useEffect(() => {
-    if (userRole === 'patient') {
+    if (userRole === 'patient' && patients.patient) {
       if (isForSelf) {
-        const currentPatient = patients.find(patient => patient.username === username);
         setAppointment(prevState => ({
           ...prevState,
           patient_name: username,
-          patient_id: currentPatient ? currentPatient.id : '' // Set patient ID to own ID
+          patient_id: patients.patient.id || '' 
         }));
       } else {
         setAppointment(prevState => ({
           ...prevState,
           patient_name: '',
-          patient_id: null // Set patient ID to null for someone else
+          patient_id: null 
         }));
       }
+    }
+
+    if (userRole === 'paramedic') {
+      const fetchStaffDetails = async () => {
+        const user = JSON.parse(localStorage.getItem('user'));
+        try {
+          const staffDetail = await fetchStaffByUserId(user.id);
+          if (staffDetail && staffDetail.details && staffDetail.details.id) {
+            setParamedicId(staffDetail.details.id); // Set the paramedic_id
+            setAppointment(prevState => ({
+              ...prevState,
+              paramedic_id: staffDetail.details.id // Include paramedic_id in appointment state
+            }));
+          } else {
+            console.error('Staff details not found or invalid.');
+          }
+        } catch (error) {
+          console.error('Error fetching staff details:', error);
+        }
+      };
+      fetchStaffDetails();
     }
   }, [isForSelf, username, userRole, patients]);
 
@@ -57,6 +80,13 @@ const AppointmentModal = ({ show, onClose, onSubmit, patients, userRole, usernam
     }));
   };
 
+  const handleDoctorChange = (doctorId) => {
+    setAppointment(prevState => ({
+      ...prevState,
+      doctor_id: doctorId
+    }));
+  };
+
   const validate = () => {
     let newErrors = {};
     if (!appointment.patient_name) newErrors.patient_name = 'Please enter a patient name.';
@@ -65,6 +95,7 @@ const AppointmentModal = ({ show, onClose, onSubmit, patients, userRole, usernam
     if (!appointment.time) newErrors.time = 'Please select a time.';
     if (!appointment.type) newErrors.type = 'Please select an appointment type.';
     if (!appointment.blood_type) newErrors.blood_type = 'Please select a blood type.';
+    if (userRole === 'paramedic' && !appointment.doctor_id) newErrors.doctor_id = 'Please select a doctor.';
     return newErrors;
   };
 
@@ -77,6 +108,7 @@ const AppointmentModal = ({ show, onClose, onSubmit, patients, userRole, usernam
       setErrors(validationErrors);
       return;
     }
+    // console.log(appointment);
     onSubmit(appointment);
   };
 
@@ -216,6 +248,35 @@ const AppointmentModal = ({ show, onClose, onSubmit, patients, userRole, usernam
               {errors.blood_type && <p className="text-red-500 text-sm mt-1">{errors.blood_type}</p>}
             </div>
           </div>
+          {userRole === 'paramedic' && (
+            <>
+              <div className="mb-4">
+                <label className="block text-gray-700 text-xl">Assign Doctor</label>
+                <select
+                  className="w-full p-2 border rounded-md text-black"
+                  value={appointment.doctor_id}
+                  onChange={(e) => handleDoctorChange(e.target.value)} // Pass the doctor ID directly
+                >
+                  <option value="" className="text-black">Select Doctor</option>
+                  {doctors.map(doctor => (
+                    <option key={doctor.id} value={doctor.details.id} className="text-black">
+                      {doctor.username} {/* Display the doctor's username */}
+                    </option>
+                  ))}
+                </select>
+                {errors.doctor_id && <p className="text-red-500 text-sm mt-1">{errors.doctor_id}</p>}
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700 text-xl hidden">Paramedic ID</label>
+                <input
+                  type="text"
+                  className="w-full p-2 border rounded-md text-black hidden"
+                  value={paramedicId}
+                  disabled
+                />
+              </div>
+            </>
+          )}
           <div className="mb-4">
             <label className="block text-gray-700 text-xl">Appointment Details</label>
             <textarea

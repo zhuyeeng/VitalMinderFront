@@ -72,8 +72,9 @@ const Appointment = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      const patientId = response.data.patient_id;
-      setPatientId(patientId);
+      const patient = response.data;
+      setPatientId(patient.patient.id);
+      setPatients(patient);
       setNewAppointment((prevState) => ({
         ...prevState,
         creator_id: userId,
@@ -125,19 +126,19 @@ const Appointment = () => {
     }
   };
 
-  const handleDeleteAppointment = async (id) => {
-    try {
-      const token = localStorage.getItem('token');
-      await axiosInstance.delete(`/appointments/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setAppointments(appointments.filter(appt => appt.id !== id));
-    } catch (error) {
-      console.error('Error deleting appointment:', error.response?.data || error.message);
-    }
-  };
+  // const handleDeleteAppointment = async (id) => {
+  //   try {
+  //     const token = localStorage.getItem('token');
+  //     await axiosInstance.delete(`/appointments/${id}`, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+  //     setAppointments(appointments.filter(appt => appt.id !== id));
+  //   } catch (error) {
+  //     console.error('Error deleting appointment:', error.response?.data || error.message);
+  //   }
+  // };
 
   const handleModalChange = (field, value) => {
     setNewAppointment((prevState) => ({

@@ -21,8 +21,10 @@ const Sidebar = ({ onToggle }) => {
   const [isRegisterFormModalOpen, setIsRegisterFormModalOpen] = useState(false); // State for admin register modal
   const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false); // State for appointment modal
   const [patients, setPatients] = useState([]); // State for patient names
+  const [doctors, setDoctors] = useState([]); // State for doctors data
+
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
@@ -34,8 +36,9 @@ const Sidebar = ({ onToggle }) => {
       setUserRole(user.user_role);
     }
 
-    // Fetch all patients when the sidebar is loaded
+    // Fetch all patients and doctors when the sidebar is loaded
     fetchPatients();
+    fetchDoctors();
   }, []);
 
   const fetchPatients = async () => {
@@ -44,6 +47,16 @@ const Sidebar = ({ onToggle }) => {
       setPatients(response.data);
     } catch (error) {
       console.error('Error fetching patients:', error.response?.data || error.message);
+    }
+  };
+
+  const fetchDoctors = async () => {
+    try {
+      const response = await axiosInstance.get('/fetchMedicalStaffWithDetails');
+      const doctors = response.data.filter(user => user.user_role === 'doctor');
+      setDoctors(doctors);
+    } catch (error) {
+      console.error('Error fetching doctors:', error.response?.data || error.message);
     }
   };
 
@@ -336,7 +349,16 @@ const Sidebar = ({ onToggle }) => {
         </aside>
         {isPatientRegisterModalOpen && <PatientRegisterForm onClose={closePatientRegisterModal} />}
         {isRegisterFormModalOpen && <RegisterForm onClose={closeRegisterFormModal} />}
-        {isAppointmentModalOpen && <AppointmentModal show={isAppointmentModalOpen} onClose={closeAppointmentModal} patients={patients} onSubmit={handleAppointmentSubmit} userRole={userRole} />}
+        {isAppointmentModalOpen && (
+          <AppointmentModal 
+            show={isAppointmentModalOpen} 
+            onClose={closeAppointmentModal} 
+            patients={patients} 
+            doctors={doctors} // Passing doctors data to the modal
+            onSubmit={handleAppointmentSubmit} 
+            userRole={userRole} 
+          />
+        )}
       </>
     );
   };
