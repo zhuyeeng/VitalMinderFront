@@ -41,7 +41,7 @@ const PatientEditProfile = () => {
       try {
         const userId = JSON.parse(localStorage.getItem('user')).id; // Assume user ID is stored in local storage
         const userData = await fetchStaffByUserId(userId);
-        console.log(userData);
+        // console.log(userData);
         setUsername(userData.user.username);
         setFormData((prevFormData) => ({
           ...prevFormData,
@@ -90,7 +90,7 @@ const PatientEditProfile = () => {
     fetchAndSetUserData();
   }, []);
 
-  console.log(formData);
+  // console.log(formData);
 
   const handleToggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -144,7 +144,7 @@ const PatientEditProfile = () => {
     try {
         setAuthToken(token);
         const response = await updateProfile(formDataToSend);
-        console.log(response.message); // Log the success message to the console
+        // console.log(response.message); // Log the success message to the console
 
         alert('Profile updated successfully');
 
@@ -234,7 +234,7 @@ const PatientEditProfile = () => {
     return <div>Loading...</div>;
   }
 
-  console.log("Form: ", formData);
+  // console.log("Form: ", formData);
 
   return (
     <div className="min-h-screen flex flex-col my-auto mx-auto">

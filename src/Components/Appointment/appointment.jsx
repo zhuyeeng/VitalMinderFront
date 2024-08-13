@@ -41,7 +41,11 @@ const Appointment = () => {
     fetchReminders();
   }, []);
 
-  const fetchAppointmentsByUserIdAndPatientId = async (userId, patientId) => {
+  // Step 1: Define the fetchAppointments function
+  const fetchAppointments = async () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const userId = user.id;
+
     try {
       const token = localStorage.getItem('token');
       const response = await axiosInstance.get('/appointments/user', {
@@ -58,13 +62,13 @@ const Appointment = () => {
       console.error('Error fetching appointments:', error.response?.data || error.message);
     }
   };
-  
+
   const fetchPatientId = async () => {
     const user = JSON.parse(localStorage.getItem('user'));
     const userId = user.id;
     setUserRole(user.user_role);
     setUsername(user.username);
-  
+
     try {
       const token = localStorage.getItem('token');
       const response = await axiosInstance.get(`/appointments/patient-id/${userId}`, {
@@ -81,7 +85,7 @@ const Appointment = () => {
         patient_id: isForSelf ? patientId : null,
         patient_name: isForSelf ? user.username : ''
       }));
-      await fetchAppointmentsByUserIdAndPatientId(userId, patientId);
+      await fetchAppointments(); // Call fetchAppointments here
     } catch (error) {
       console.error('Error fetching patient ID:', error.response?.data || error.message);
     }
@@ -94,7 +98,7 @@ const Appointment = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       fetchPatientId();
-    }, 10000); 
+    }, 10000);
 
     return () => clearInterval(interval);
   }, []);
@@ -104,7 +108,7 @@ const Appointment = () => {
       const response = await axiosInstance.post('/appointments', appointment);
       setAppointments([...appointments, response.data]);
       setIsCreating(false);
-      alert('Appointment create successfully.');
+      alert('Appointment created successfully.');
     } catch (error) {
       console.error('Error creating appointment:', error.response?.data || error.message);
     }
@@ -121,24 +125,10 @@ const Appointment = () => {
       alert('Appointment updated successfully.');
       setAppointments(appointments.map(appt => (appt.id === id ? response.data : appt)));
     } catch (error) {
-      alert('Fail to update appointment, please try again.');
+      alert('Failed to update appointment, please try again.');
       console.error('Error updating appointment:', error.response?.data || error.message);
     }
   };
-
-  // const handleDeleteAppointment = async (id) => {
-  //   try {
-  //     const token = localStorage.getItem('token');
-  //     await axiosInstance.delete(`/appointments/${id}`, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
-  //     setAppointments(appointments.filter(appt => appt.id !== id));
-  //   } catch (error) {
-  //     console.error('Error deleting appointment:', error.response?.data || error.message);
-  //   }
-  // };
 
   const handleModalChange = (field, value) => {
     setNewAppointment((prevState) => ({
@@ -165,11 +155,21 @@ const Appointment = () => {
   };
 
   useEffect(() => {
-    const checkAppointments = () => {
+    const checkRemindersAndAppointments = () => {
       const now = new Date();
       const nowTime = [now.getHours(), now.getMinutes()];
       const nowDate = now.toISOString().split('T')[0];
 
+      // Check reminders
+      reminders.forEach(reminder => {
+        const reminderTime = reminder.time.split(':').map(Number);
+        if (reminderTime[0] === nowTime[0] && reminderTime[1] === nowTime[1]) {
+          console.log('Showing notification for reminder:', reminder);
+          showNotification(reminder);
+        }
+      });
+
+      // Check accepted appointments
       appointments.forEach(appointment => {
         const appointmentTime = appointment.time.split(':').map(Number);
         const appointmentDate = appointment.date;
@@ -179,20 +179,23 @@ const Appointment = () => {
             appointmentTime[0] === nowTime[0] && 
             appointmentTime[1] === nowTime[1]) {
           console.log('Showing notification for appointment:', appointment);
-          showNotification(appointment);
+          showNotification({
+            type: appointment.type,
+            time: appointment.time,
+          });
         }
       });
     };
 
-    const interval = setInterval(checkAppointments, 60000); // Check every minute
+    const interval = setInterval(checkRemindersAndAppointments, 60000); // Check every minute
 
     return () => clearInterval(interval); // Clear interval on component unmount
-  }, [appointments]);
+  }, [reminders, appointments]);
 
-  const showNotification = (appointment) => {
+  const showNotification = (item) => {
     if (Notification.permission === 'granted') {
-      new Notification('Appointment Reminder', {
-        body: `You have an appointment: ${appointment.type} at ${appointment.time}`,
+      new Notification('Reminder', {
+        body: `You have a reminder: ${item.type} at ${item.time}`,
         icon: '/path-to-icon/icon.png', // Adjust the path to your icon if you have one
       });
     } else {
@@ -204,7 +207,7 @@ const Appointment = () => {
     const statusMatches = appointment.status && appointment.status.toLowerCase() === selectedStatus.toLowerCase();
     const typeMatches = filterType === '' || (appointment.type && appointment.type.toLowerCase().includes(filterType.toLowerCase()));
     const creatorMatches = appointment.creator_id === JSON.parse(localStorage.getItem('user')).id || appointment.patient_id === patientId;
-  
+
     return statusMatches && typeMatches && creatorMatches;
   });
 

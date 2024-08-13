@@ -43,6 +43,7 @@ const DoctorAppointment = () => {
       const waitingList = await fetchDoctorWaitingList(doctorId);
       setAppointments(waitingList);
       console.log(waitingList);
+      console.log(waitingList);
     } catch (error) {
       console.error('Error fetching waiting list:', error);
       setError('Error fetching waiting list. Please try again.');
